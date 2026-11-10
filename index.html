@@ -142,6 +142,7 @@ body.hot2 .verb{text-shadow:0 0 30px color-mix(in srgb,var(--t4) 30%,transparent
 .rankit{font-size:11px;color:var(--sub);letter-spacing:.04em}.rankit:hover{color:var(--text)}
 #chase b{color:var(--main)}
 .xpbar.off{display:none}
+.xpbar i{opacity:.85}.xpbar.full i{opacity:.35;box-shadow:none}
 .blegend{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;margin:2px 0 6px}
 .blegend span{font-size:13px}.blegend .t1{color:var(--t1)}.blegend .t2{color:var(--t2)}.blegend .t3{color:var(--t3)}.blegend .t4{color:var(--t4)}
 .blegend em{flex-basis:100%;font-style:normal;line-height:1.5}
@@ -1704,7 +1705,7 @@ function updateStats(quiet){
   if(s.streak>(cfg.best[k]||0)){cfg.best[k]=s.streak;save()}
   rollDay();$('sGoal').textContent=prog.today;$('goalOf').textContent=prog.today>=GOAL?' today':'/30';$('goal').title=`daily goal · ${prog.today}/30 today`+(prog.days>1?` · ${prog.days} days in a row`:'');
   $('ring').style.strokeDashoffset=87.96*(1-Math.min(1,prog.today/GOAL));$('goal').classList.toggle('done',prog.today>=GOAL);
-  ptsRoll();$('sPts').textContent=pts.today.toLocaleString('en');$('rankit').classList.toggle('off',!!lb.id||!pts.today);renderChase();
+  renderBar();ptsRoll();$('sPts').textContent=pts.today.toLocaleString('en');$('rankit').classList.toggle('off',!!lb.id||!pts.today);renderChase();
   const rv=(cfg.review[k]||[]).length;$('sRev').textContent=rv;$('revWrap').classList.toggle('off',!rv);
 }
 function shake(){row.classList.remove('shake');void row.offsetWidth;row.classList.add('shake')}
@@ -1836,7 +1837,13 @@ function rollDaily(){const t=dayStr();if(!cfg.daily||cfg.daily.day!==t){cfg.dail
 const mk=()=>W()?'words':'verbs';
 const usedNow=()=>{rollDaily();return cfg.daily[mk()]};
 const limited=()=>!cfg.pro&&usedNow()>=LIMIT;
-function countUse(){rollDaily();lastScored=(cfg.daily[mk()]||0)<LIMIT;cfg.daily[mk()]++;save();updateLeft()}
+function countUse(){rollDaily();lastScored=(cfg.daily[mk()]||0)<LIMIT;cfg.daily[mk()]++;save();updateLeft();renderBar();
+  if(cfg.pro&&cfg.daily[mk()]===LIMIT)setTimeout(()=>toast(`today's ranked ${mk()} done · keep practising`),900)}
+function renderBar(){
+  rollDaily();const used=Math.min(LIMIT,cfg.daily[mk()]||0),full=used>=LIMIT;
+  $('xpfill').style.width=(used/LIMIT*100)+'%';$('xpbar').classList.toggle('full',full);
+  $('xpbar').title=full?`today's ranked ${mk()} are done`:`${used}/${LIMIT} ranked ${mk()} today`;
+}
 function updateLeft(){
   const el=$('left');if(cfg.pro){el.classList.add('off');return}
   const n=Math.max(0,LIMIT-usedNow());$('sLeft').textContent=n;el.classList.toggle('low',n<=10);el.classList.toggle('off',n>10); // only appears near the limit
@@ -1901,13 +1908,12 @@ function chaseInfo(){
   return{mine,rank:ahead.length+1,above:ahead.sort((a,b)=>a.points-b.points)[0]};
 }
 function renderChase(){
-  const el=$('chase'),bar=$('xpbar');
-  if(!lb.id||!chaseRows){el.classList.add('off');bar.classList.add('off');return}
-  const c=chaseInfo();el.classList.remove('off');bar.classList.remove('off');if(lastRank===null)lastRank=c.rank;
+  const el=$('chase');
+  if(!lb.id||!chaseRows){el.classList.add('off');return}
+  const c=chaseInfo();el.classList.remove('off');if(lastRank===null)lastRank=c.rank;
   // footer shows just your rank; the top bar fills toward the next person up
   const was=el.dataset.rank;el.innerHTML=`<b>#${c.rank}</b> today`;el.dataset.rank=c.rank;
   if(was&&+was!==c.rank){const b=el.querySelector('b');b.classList.add('ptsflash')}
-  $('xpfill').style.width=c.above?Math.min(100,c.mine/Math.max(1,c.above.points)*100)+'%':'100%';
 }
 function chaseAfterAward(){
   if(!lb.id||!chaseRows)return;
