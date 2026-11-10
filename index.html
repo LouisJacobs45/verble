@@ -307,7 +307,7 @@ body.typing .hints,body.typing .gear,body.typing .langs{opacity:.12}
   <footer>
     <div class="stats">
       <span><b id="sStreak">0</b>streak</span>
-      <span class="goal" id="goal" title="daily goal"><svg width="16" height="16" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="var(--line)" stroke-width="5"/><circle id="ring" cx="18" cy="18" r="14" fill="none" stroke="var(--main)" stroke-width="5" stroke-linecap="round" stroke-dasharray="87.96" stroke-dashoffset="87.96" transform="rotate(-90 18 18)"/></svg><span><b id="sGoal">0</b><span id="goalOf">/30</span></span></span>
+      <span class="goal" id="goal" title="daily goal"><svg width="16" height="16" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="var(--line)" stroke-width="5"/><circle id="ring" cx="18" cy="18" r="14" fill="none" stroke="var(--main)" stroke-width="5" stroke-linecap="round" stroke-dasharray="87.96" stroke-dashoffset="87.96" transform="rotate(-90 18 18)"/></svg><span><b id="sGoal">0</b><span id="goalOf">/50</span></span></span>
       <span id="ptsWrap"><b id="sPts">0</b>pts</span>
       <span class="ctx off" id="chase"></span>
       <button class="rankit ctx off" id="rankit">rank it →</button>
@@ -1708,8 +1708,11 @@ function pop(id,v){const el=$(id);el.textContent=v;el.classList.add('pop');setTi
 function updateStats(quiet){
   const s=S(),k=statKey();(quiet?(id,v)=>$(id).textContent=v:pop)('sStreak',s.streak);
   if(s.streak>(cfg.best[k]||0)){cfg.best[k]=s.streak;save()}
-  rollDay();$('sGoal').textContent=prog.today;$('goalOf').textContent=prog.today>=GOAL?' today':'/30';$('goal').title=`daily goal · ${prog.today}/30 today`+(prog.days>1?` · ${prog.days} days in a row`:'');
-  $('ring').style.strokeDashoffset=87.96*(1-Math.min(1,prog.today/GOAL));$('goal').classList.toggle('done',prog.today>=GOAL);
+  // ring = today's free/ranked questions in this mode (same 50 as the top bar and the free limit)
+  rollDay();rollDaily();const used=cfg.daily[mk()]||0;
+  $('sGoal').textContent=used;$('goalOf').textContent=used>=LIMIT?' today':'/'+LIMIT;
+  $('goal').title=`${Math.min(used,LIMIT)}/${LIMIT} ${mk()} today`+(prog.days>1?` · ${prog.days} days in a row`:'');
+  $('ring').style.strokeDashoffset=87.96*(1-Math.min(1,used/LIMIT));$('goal').classList.toggle('done',used>=LIMIT);
   renderBar();ptsRoll();$('sPts').textContent=pts.today.toLocaleString('en');$('rankit').classList.toggle('off',!!lb.id||!pts.today);renderChase();
   const rv=(cfg.review[k]||[]).length;$('sRev').textContent=rv;$('revWrap').classList.toggle('off',!rv);
 }
@@ -1769,7 +1772,6 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------- reward layer ---------- */
-const GOAL=30;
 const prog=cfg.prog||(cfg.prog={day:'',today:0,days:0,last:''});
 const pts=cfg.pts||(cfg.pts={day:'',today:0}); // today's points that count (first 50 + 50), same day boundary as the leaderboard
 function ptsRoll(){const t=new Date().toISOString().slice(0,10);if(pts.day!==t){pts.day=t;pts.today=0}}
@@ -1826,7 +1828,6 @@ function reward(){
   setHot(t>=3);
   const sp=$('sPts');sp.style.color=`var(--t${t})`;sp.classList.remove('ptsflash');void sp.offsetWidth;sp.classList.add('ptsflash');setTimeout(()=>sp.style.color='',900);
   if(t>=3&&[5,10,15,20,30,50].includes(hot))setTimeout(()=>{toast(hot>=10?hot+' in a row · unstoppable':hot+' hard in a row');burst(36,1.6,4)},300);
-  if(prog.today===GOAL)setTimeout(()=>{toast('daily goal done');milestone();burst(30,1.5,4)},500);
   chaseAfterAward();
 }
 
@@ -1842,7 +1843,7 @@ function rollDaily(){const t=dayStr();if(!cfg.daily||cfg.daily.day!==t){cfg.dail
 const mk=()=>W()?'words':'verbs';
 const usedNow=()=>{rollDaily();return cfg.daily[mk()]};
 const limited=()=>!cfg.pro&&usedNow()>=LIMIT;
-function countUse(){rollDaily();lastScored=(cfg.daily[mk()]||0)<LIMIT;cfg.daily[mk()]++;save();updateLeft();renderBar();
+function countUse(){rollDaily();lastScored=(cfg.daily[mk()]||0)<LIMIT;cfg.daily[mk()]++;save();updateLeft();renderBar();updateStats(true);
   if(cfg.pro&&cfg.daily[mk()]===LIMIT)setTimeout(()=>toast(`today's ranked ${mk()} done · keep practising`),900)}
 function renderBar(){
   rollDaily();const used=Math.min(LIMIT,cfg.daily[mk()]||0),full=used>=LIMIT;
