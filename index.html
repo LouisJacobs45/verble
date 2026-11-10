@@ -23,7 +23,7 @@
 <meta name="twitter:title" content="verble — calm, minimal verb & vocab practice">
 <meta name="twitter:description" content="Free French, Spanish and German conjugation and vocabulary trainer.">
 <meta name="twitter:image" content="https://louisjacobs45.github.io/verble/og.png">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "verble", "url": "https://louisjacobs45.github.io/verble/", "description": "verble is a free, minimal web app for practising French, Spanish and German verb conjugation and vocabulary. Type the answer, hear a soft chime, and mistakes come back until you know them. No account needed.", "applicationCategory": "EducationalApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "inLanguage": "en", "isAccessibleForFree": true, "image": "https://louisjacobs45.github.io/verble/og.png", "educationalUse": "practice", "learningResourceType": "drill and practice", "teaches": ["French verb conjugation", "Spanish verb conjugation", "German verb conjugation", "French vocabulary", "Spanish vocabulary", "German vocabulary"], "about": [{"@type": "Language", "name": "French"}, {"@type": "Language", "name": "Spanish"}, {"@type": "Language", "name": "German"}], "featureList": ["Verb conjugation drills across 9+ tenses per language", "Vocabulary mode with 500+ words in 14 topics", "Mistakes resurface until learned (spaced review)", "Easy, medium and hard difficulty", "Accent shortcuts and lenient accent mode", "No account required"], "offers": [{"@type": "Offer", "price": "0", "priceCurrency": "EUR", "name": "Free (50 verbs + 50 words per day)"}, {"@type": "Offer", "price": "2.99", "priceCurrency": "EUR", "name": "Unlimited monthly"}, {"@type": "Offer", "price": "24.99", "priceCurrency": "EUR", "name": "Unlimited lifetime"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "verble", "url": "https://louisjacobs45.github.io/verble/", "description": "verble is a free, minimal web app for practising French, Spanish and German verb conjugation and vocabulary. Type the answer, hear a soft chime, and mistakes come back until you know them. No account needed.", "applicationCategory": "EducationalApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "inLanguage": "en", "isAccessibleForFree": true, "image": "https://louisjacobs45.github.io/verble/og.png", "educationalUse": "practice", "learningResourceType": "drill and practice", "teaches": ["French verb conjugation", "Spanish verb conjugation", "German verb conjugation", "French vocabulary", "Spanish vocabulary", "German vocabulary"], "about": [{"@type": "Language", "name": "French"}, {"@type": "Language", "name": "Spanish"}, {"@type": "Language", "name": "German"}], "featureList": ["Verb conjugation drills across 9+ tenses per language", "Vocabulary mode with 680+ words in 14 topics, including 150 rare words", "Mistakes resurface until learned (spaced review)", "Adaptive difficulty that rises as you improve", "Accent shortcuts and lenient accent mode", "No account required"], "offers": [{"@type": "Offer", "price": "0", "priceCurrency": "EUR", "name": "Free (50 verbs + 50 words per day)"}, {"@type": "Offer", "price": "2.99", "priceCurrency": "EUR", "name": "Unlimited monthly"}, {"@type": "Offer", "price": "24.99", "priceCurrency": "EUR", "name": "Unlimited lifetime"}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -102,6 +102,49 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:5}
 .goal svg{display:block}
 #ring{transition:stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1)}
 .goal.done b{color:var(--main)}
+/* ---- tiers & points ---- */
+:root{--t1:#9aa0ab;--t2:#6ea8ff;--t3:#ff6b6b;--t4:#f6c453}
+[data-theme=linen]{--t1:#8a8578;--t2:#2f6fd6;--t3:#d23f3f;--t4:#b8860b}
+.wrap{position:relative;z-index:1}
+.tdot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:9px;vertical-align:1px;background:var(--t1);transition:background .3s,box-shadow .3s}
+.tdot.t2{background:var(--t2)}.tdot.t3{background:var(--t3);box-shadow:0 0 8px var(--t3)}.tdot.t4{background:var(--t4);box-shadow:0 0 10px var(--t4)}
+.row.ok.t1 #ans{color:var(--t1);border-bottom-color:var(--t1)}.row.ok.t2 #ans{color:var(--t2);border-bottom-color:var(--t2)}
+.row.ok.t3 #ans{color:var(--t3);border-bottom-color:var(--t3)}.row.ok.t4 #ans{color:var(--t4);border-bottom-color:var(--t4)}
+.pts{position:fixed;pointer-events:none;z-index:6;transform:translateX(-50%);text-align:center;white-space:nowrap;animation:ptsRise 1.45s cubic-bezier(.2,.9,.25,1) forwards}
+.pts b{display:block;font-weight:500;letter-spacing:.02em}
+.pts.t1 b{font-size:16px;color:var(--t1)}
+.pts.t2 b{font-size:20px;color:var(--t2)}
+.pts.t3 b{font-size:25px;color:var(--t3);text-shadow:0 0 16px color-mix(in srgb,var(--t3) 55%,transparent)}
+.pts.t4 b{font-size:32px;background:linear-gradient(100deg,var(--t4) 0%,#fff6d0 22%,var(--t4) 44%,#d9a520 70%,#fff3c4 88%,var(--t4) 100%);background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 12px color-mix(in srgb,var(--t4) 65%,transparent));animation:shimmer 1.1s linear 2}
+.pts small{display:block;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--sub);margin-top:2px}
+.pts.prac b{opacity:.55}
+@keyframes ptsRise{0%{opacity:0;transform:translate(-50%,10px) scale(.55)}16%{opacity:1;transform:translate(-50%,-6px) scale(1.2)}30%{transform:translate(-50%,-10px) scale(1)}78%{opacity:1}100%{opacity:0;transform:translate(-50%,-58px) scale(1)}}
+@keyframes shimmer{from{background-position:110% 0}to{background-position:-110% 0}}
+/* hard streaks: the room warms up */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0;transition:opacity 1s ease;
+  background:radial-gradient(55% 45% at 50% 40%,color-mix(in srgb,var(--t3) 14%,transparent),transparent 72%)}
+body.hot2::before{background:radial-gradient(60% 50% at 50% 40%,color-mix(in srgb,var(--t4) 18%,transparent),transparent 72%)}
+body.hot1::before{opacity:.7}body.hot2::before{opacity:1}
+body.hot3::before{opacity:1;animation:breathe 2.8s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.55}}
+body.hot2 .verb{text-shadow:0 0 30px color-mix(in srgb,var(--t4) 30%,transparent);transition:text-shadow .6s}
+.stage{position:relative}
+.hotpill{position:absolute;top:-36px;left:50%;transform:translate(-50%,4px);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  padding:4px 11px;border-radius:999px;color:var(--t3);border:1px solid color-mix(in srgb,var(--t3) 50%,transparent);opacity:0;transition:opacity .35s,transform .35s,color .35s,border-color .35s;white-space:nowrap}
+.hotpill.on{opacity:1;transform:translate(-50%,0)}
+.hotpill.gold{color:var(--t4);border-color:color-mix(in srgb,var(--t4) 60%,transparent);box-shadow:0 0 18px color-mix(in srgb,var(--t4) 22%,transparent)}
+.hotpill.bump{animation:bump .35s ease}
+@keyframes bump{40%{transform:translate(-50%,0) scale(1.12)}}
+#sPts{transition:color .4s}
+.stats .ptsflash{animation:ptsflash .6s ease}
+@keyframes ptsflash{30%{transform:scale(1.25)}}
+.rankit{font-size:11px;color:var(--sub);letter-spacing:.04em}.rankit:hover{color:var(--text)}
+#chase b{color:var(--main)}
+.xpbar.off{display:none}
+.blegend{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;margin:2px 0 6px}
+.blegend span{font-size:13px}.blegend .t1{color:var(--t1)}.blegend .t2{color:var(--t2)}.blegend .t3{color:var(--t3)}.blegend .t4{color:var(--t4)}
+.blegend em{flex-basis:100%;font-style:normal;line-height:1.5}
 /* ---- leaderboard ---- */
 .fbtns{justify-self:end;display:flex;gap:18px}
 .board{position:fixed;inset:0;z-index:7;display:flex;align-items:center;justify-content:center;padding:20px;
@@ -235,13 +278,13 @@ body.typing .hints,body.typing .gear,body.typing .langs{opacity:.12}
     <div class="brand">
       <button class="logo" id="logo" title="switch mode">verble<i>.</i></button>
       <nav class="langs" id="modes"></nav>
-      <span class="lv" id="lv">lv <b id="lvn">1</b></span>
     </div>
     <nav class="langs" id="langs"></nav>
   </header>
 
   <main>
     <div class="stage" id="stage">
+      <div class="hotpill" id="hot"></div>
       <div class="kicker" id="tense">présent</div>
       <div class="verb" id="verb">parler</div>
       <div class="gloss" id="gloss">to speak</div>
@@ -259,7 +302,9 @@ body.typing .hints,body.typing .gear,body.typing .langs{opacity:.12}
     <div class="stats">
       <span><b id="sStreak">0</b>streak</span>
       <span class="goal" id="goal" title="daily goal"><svg width="16" height="16" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="var(--line)" stroke-width="5"/><circle id="ring" cx="18" cy="18" r="14" fill="none" stroke="var(--main)" stroke-width="5" stroke-linecap="round" stroke-dasharray="87.96" stroke-dashoffset="87.96" transform="rotate(-90 18 18)"/></svg><span><b id="sGoal">0</b><span id="goalOf">/30</span></span></span>
-      <span class="combo off" id="comboWrap"><b id="sCombo">×1</b>combo</span>
+      <span id="ptsWrap"><b id="sPts">0</b>pts</span>
+      <span class="ctx off" id="chase"></span>
+      <button class="rankit ctx off" id="rankit">rank it →</button>
       <span class="ctx" id="revWrap" title="mistakes waiting to come back"><b id="sRev">0</b>to review</span>
       <span class="left" id="left"><b id="sLeft">50</b> left</span>
     </div>
@@ -1269,9 +1314,162 @@ board game;le jeu de société;el juego de mesa;das Brettspiel~3
 novel;le roman;la novela;der Roman~3
 fishing;la pêche;la pesca;das Angeln~3`};
 for(const [c,t] of Object.entries(VOCAB_EXTRA))VOCAB_RAW[c]=(VOCAB_RAW[c]?VOCAB_RAW[c]+'\n':'')+t;
+// ---- "super hard" vocabulary (level 4): rare but real everyday words ----
+const VOCAB_SUPER={
+nature:`dandelion;le pissenlit;el diente de león;der Löwenzahn~4
+ladybird|ladybug;la coccinelle;la mariquita;der Marienkäfer~4
+earthworm|worm;le ver de terre;la lombriz;der Regenwurm~4
+bat;la chauve-souris;el murciélago;die Fledermaus~4
+seagull|gull;la mouette;la gaviota;die Möwe~4
+woodpecker;le pic|le pivert;el pájaro carpintero;der Specht~4
+dragonfly;la libellule;la libélula;die Libelle~4
+grasshopper;la sauterelle;el saltamontes;die Heuschrecke~4
+mole;la taupe;el topo;der Maulwurf~4
+badger;le blaireau;el tejón;der Dachs~4
+otter;la loutre;la nutria;der Otter~4
+jellyfish;la méduse;la medusa;die Qualle~4
+octopus;la pieuvre|le poulpe;el pulpo;der Krake|der Oktopus~4
+lobster;le homard;la langosta|el bogavante;der Hummer~4
+thistle;le chardon;el cardo;die Distel~4
+nettle|stinging nettle;l'ortie;la ortiga;die Brennnessel~4
+willow;le saule;el sauce;die Weide~4
+moss;la mousse;el musgo;das Moos~4
+puddle;la flaque;el charco;die Pfütze~4
+avalanche;l'avalanche;la avalancha|el alud;die Lawine~4
+waterfall;la cascade|la chute d'eau;la cascada|la catarata;der Wasserfall~4
+dew;la rosée;el rocío;der Tau~4`,
+body:`hiccup|hiccups;le hoquet;el hipo;der Schluckauf~4
+sneeze;l'éternuement;el estornudo;das Niesen~4
+eyelash;le cil;la pestaña;die Wimper~4
+eyelid;la paupière;el párpado;das Augenlid|das Lid~4
+jaw;la mâchoire;la mandíbula;der Kiefer~4
+nostril;la narine;la fosa nasal;das Nasenloch~4
+freckle|freckles;la tache de rousseur;la peca;die Sommersprosse~4
+wrinkle;la ride;la arruga;die Falte~4
+bruise;le bleu|l'ecchymose;el moretón|el cardenal;der blaue Fleck|der Bluterguss~4
+blister;l'ampoule;la ampolla;die Blase~4
+scar;la cicatrice;la cicatriz;die Narbe~4
+yawn;le bâillement;el bostezo;das Gähnen~4
+goosebumps|goose bumps;la chair de poule;la piel de gallina;die Gänsehaut~4
+skull;le crâne;el cráneo;der Schädel~4
+hangover;la gueule de bois;la resaca;der Kater~4
+sunburn;le coup de soleil;la quemadura solar|la quemadura de sol;der Sonnenbrand~4`,
+home:`corkscrew;le tire-bouchon;el sacacorchos;der Korkenzieher~4
+bottle opener;le décapsuleur|l'ouvre-bouteille;el abrebotellas|el abridor;der Flaschenöffner~4
+tin opener|can opener;l'ouvre-boîte;el abrelatas;der Dosenöffner~4
+colander|strainer;la passoire;el colador|el escurridor;das Sieb|der Durchschlag~4
+whisk;le fouet;el batidor|las varillas;der Schneebesen~4
+ladle;la louche;el cucharón|el cazo;die Schöpfkelle|die Kelle~4
+rolling pin;le rouleau à pâtisserie;el rodillo;das Nudelholz~4
+grater;la râpe;el rallador;die Reibe~4
+kettle;la bouilloire;el hervidor;der Wasserkocher~4
+broom;le balai;la escoba;der Besen~4
+dustpan;la pelle à poussière|la pelle;el recogedor;die Kehrschaufel~4
+lightbulb|light bulb|bulb;l'ampoule;la bombilla|el foco;die Glühbirne~4
+coat hanger|hanger;le cintre;la percha|el gancho;der Kleiderbügel|der Bügel~4
+iron;le fer à repasser;la plancha;das Bügeleisen~4
+tap|faucet;le robinet;el grifo;der Wasserhahn~4
+chimney;la cheminée;la chimenea;der Schornstein|der Kamin~4
+doormat;le paillasson;el felpudo;die Fußmatte~4
+screwdriver;le tournevis;el destornillador;der Schraubenzieher|der Schraubendreher~4
+string|twine;la ficelle;la cuerda|el cordel;die Schnur|der Bindfaden~4
+padlock;le cadenas;el candado;das Vorhängeschloss~4
+wheelbarrow;la brouette;la carretilla;die Schubkarre~4`,
+food:`hazelnut;la noisette;la avellana;die Haselnuss~4
+blackberry;la mûre;la mora;die Brombeere~4
+blueberry;la myrtille;el arándano;die Heidelbeere|die Blaubeere~4
+leek;le poireau;el puerro;der Lauch|der Porree~4
+cauliflower;le chou-fleur;la coliflor;der Blumenkohl~4
+asparagus;les asperges|l'asperge;los espárragos|el espárrago;der Spargel~4
+aubergine|eggplant;l'aubergine;la berenjena;die Aubergine~4
+courgette|zucchini;la courgette;el calabacín;die Zucchini~4
+parsley;le persil;el perejil;die Petersilie~4
+cinnamon;la cannelle;la canela;der Zimt~4
+nutmeg;la noix de muscade|la muscade;la nuez moscada;die Muskatnuss~4
+breadcrumbs;la chapelure;el pan rallado;das Paniermehl|die Semmelbrösel~4
+crumb;la miette;la miga|la migaja;der Krümel~4
+yeast;la levure;la levadura;die Hefe~4
+leftovers;les restes;las sobras;die Reste~4`,
+verbs:`to whisper;chuchoter;susurrar;flüstern~4
+to sneeze;éternuer;estornudar;niesen~4
+to yawn;bâiller;bostezar;gähnen~4
+to snore;ronfler;roncar;schnarchen~4
+to shiver;frissonner|grelotter;tiritar|temblar;zittern|frösteln~4
+to stumble|to trip;trébucher;tropezar;stolpern~4
+to blush;rougir;sonrojarse|ruborizarse;erröten~4
+to sweep;balayer;barrer;fegen|kehren~4
+to iron;repasser;planchar;bügeln~4
+to knit;tricoter;tejer|hacer punto;stricken~4
+to whistle;siffler;silbar;pfeifen~4
+to grate;râper;rallar;reiben~4
+to drown;se noyer|noyer;ahogarse;ertrinken~4
+to bark;aboyer;ladrar;bellen~4
+to purr;ronronner;ronronear;schnurren~4
+to hatch;éclore;eclosionar|salir del cascarón;schlüpfen~4
+to wither|to wilt;se faner|faner;marchitarse;verwelken~4
+to wink;faire un clin d'œil;guiñar|guiñar el ojo;zwinkern~4
+to nod;hocher la tête;asentir|asentir con la cabeza;nicken~4
+to shrug;hausser les épaules;encogerse de hombros;mit den Achseln zucken|mit den Schultern zucken~4
+to haggle|to bargain;marchander;regatear;feilschen|handeln~4
+to procrastinate;procrastiner|remettre à plus tard;procrastinar|postergar;aufschieben|prokrastinieren~4`,
+adjectives:`ticklish;chatouilleux;cosquilloso|cosquilludo;kitzlig~4
+hoarse;enroué;ronco|afónico;heiser~4
+sticky;collant|poisseux;pegajoso;klebrig~4
+slippery;glissant;resbaladizo|resbaloso;rutschig|glatt~4
+crunchy|crispy;croquant|croustillant;crujiente;knusprig~4
+bland|tasteless;fade;soso|insípido;fade|geschmacklos~4
+lukewarm;tiède;tibio;lauwarm~4
+grumpy;grincheux|ronchon;gruñón|malhumorado;mürrisch|grantig~4
+stingy|tight-fisted;avare|radin;tacaño;geizig~4
+cheeky;effronté|culotté;descarado|fresco;frech~4
+wobbly;bancal|branlant;cojo|tambaleante;wackelig~4
+fluffy;duveteux|moelleux;esponjoso|mullido;flauschig|flaumig~4`,
+travel:`windscreen|windshield;le pare-brise;el parabrisas;die Windschutzscheibe~4
+flat tyre|flat tire|puncture;la crevaison|le pneu crevé;el pinchazo;die Reifenpanne|der Platten~4
+lighthouse;le phare;el faro;der Leuchtturm~4
+steering wheel;le volant;el volante;das Lenkrad~4
+hitchhiking;l'auto-stop|le stop;el autostop;das Trampen~4
+seasickness;le mal de mer;el mareo;die Seekrankheit~4
+sleeping bag;le sac de couchage;el saco de dormir;der Schlafsack~4`,
+people:`godmother;la marraine;la madrina;die Patentante|die Patin~4
+stepfather;le beau-père;el padrastro;der Stiefvater~4
+great-grandmother;l'arrière-grand-mère;la bisabuela;die Urgroßmutter~4
+orphan;l'orphelin|l'orpheline;el huérfano|la huérfana;die Waise~4
+bridesmaid;la demoiselle d'honneur;la dama de honor;die Brautjungfer~4`,
+work:`plumber;le plombier;el fontanero|el plomero;der Klempner|der Installateur~4
+locksmith;le serrurier;el cerrajero;der Schlosser|der Schlüsseldienst~4
+blacksmith;le forgeron;el herrero;der Schmied~4
+chimney sweep;le ramoneur;el deshollinador;der Schornsteinfeger~4
+beekeeper;l'apiculteur|l'apicultrice;el apicultor|la apicultora;der Imker|die Imkerin~4
+lifeguard;le maître-nageur|le sauveteur;el socorrista|el salvavidas;der Rettungsschwimmer~4
+tax return;la déclaration d'impôts;la declaración de la renta|la declaración de impuestos;die Steuererklärung~4
+overtime;les heures supplémentaires;las horas extra|las horas extras;die Überstunden~4`,
+clothes:`shoelace;le lacet;el cordón;der Schnürsenkel~4
+zip|zipper;la fermeture éclair|la fermeture à glissière;la cremallera|el cierre;der Reißverschluss~4
+slipper|slippers;le chausson|la pantoufle;la zapatilla|la pantufla;der Hausschuh|der Pantoffel~4
+bow tie;le nœud papillon;la pajarita|el moño;die Fliege~4
+apron;le tablier;el delantal;die Schürze~4
+thimble;le dé à coudre;el dedal;der Fingerhut~4`,
+hobbies:`kite;le cerf-volant;la cometa|el papalote;der Drachen~4
+jigsaw puzzle|jigsaw|puzzle;le puzzle;el rompecabezas|el puzle;das Puzzle~4
+hide-and-seek|hide and seek;le cache-cache;el escondite;das Versteckspiel|das Verstecken~4
+merry-go-round|carousel;le manège|le carrousel;el tiovivo|el carrusel;das Karussell~4
+bagpipes;la cornemuse;la gaita;der Dudelsack~4
+tongue twister;le virelangue;el trabalenguas;der Zungenbrecher~4`,
+basics:`nightmare;le cauchemar;la pesadilla;der Albtraum|der Alptraum~4
+jealousy;la jalousie;los celos;die Eifersucht~4
+homesickness;le mal du pays;la morriña|la nostalgia;das Heimweh~4
+wanderlust;l'envie de voyager|la bougeotte;las ganas de viajar;das Fernweh~4
+rumour|rumor;la rumeur;el rumor;das Gerücht~4
+bargain;la bonne affaire;la ganga|la ocasión;das Schnäppchen~4
+queue|line;la file d'attente|la queue;la cola|la fila;die Schlange|die Warteschlange~4`,
+time:`dusk|twilight;le crépuscule;el crepúsculo|el anochecer;die Dämmerung|die Abenddämmerung~4
+eve|the day before;la veille;la víspera;der Vorabend~4
+solstice;le solstice;el solsticio;die Sonnenwende~4`};
+for(const [c,t] of Object.entries(VOCAB_SUPER))VOCAB_RAW[c]=(VOCAB_RAW[c]?VOCAB_RAW[c]+'\n':'')+t;
 const VOCAB=[];
 for(const [cat,txt] of Object.entries(VOCAB_RAW))txt.split('\n').forEach(l=>{
-  const m=l.match(/~([23])$/),lvl=m?+m[1]:1;if(m)l=l.slice(0,-2);
+  const m=l.match(/~([234])$/),lvl=m?+m[1]:1;if(m)l=l.slice(0,-2);
   const[en,fr,es,de]=l.split(';').map(alts);VOCAB.push({cat,lvl,en,fr,es,de});
 });
 const CATS=Object.keys(VOCAB_RAW);
@@ -1290,10 +1488,11 @@ for(const [k,L] of Object.entries(LANG)){
 }
 if(!LANG[cfg.lang])cfg.lang='fr';
 if(!['verbs','words'].includes(cfg.mode))cfg.mode='verbs';
-const DIFFS=['easy','medium','hard'];
+const DIFFS=['adaptive','easy','medium','hard','super'];
 cfg.review=cfg.review||{};cfg.qn=cfg.qn||{};
 if(cfg.set&&cfg.set!=='all'&&!cfg.diff._m){cfg.diff.verbs=cfg.set==='regular'?'easy':'hard'}cfg.diff._m=1;
-for(const m of ['verbs','words'])if(!DIFFS.includes(cfg.diff[m]))cfg.diff[m]=m==='verbs'?'medium':'easy';
+if(!cfg.diff.v3){cfg.diff.verbs='adaptive';cfg.diff.words='adaptive';cfg.diff.v3=1}
+for(const m of ['verbs','words'])if(!DIFFS.includes(cfg.diff[m]))cfg.diff[m]='adaptive';
 cfg.words.cats=(cfg.words.cats||[]).filter(c=>CATS.includes(c));
 if(!cfg.words.v2){cfg.words.cats=[...new Set([...cfg.words.cats,'school','work','clothes','hobbies'])];cfg.words.v2=1}if(!cfg.words.cats.length)cfg.words.cats=CATS.slice();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(cfg))}catch(e){}};
@@ -1330,7 +1529,7 @@ function renderPanel(){
   const upd=(fn,renew)=>()=>{fn();save();renderPanel();renderKeys();if(renew&&state!=='lock')next()};
   const toggle=(arr,x)=>{const i=arr.indexOf(x);if(i>=0){if(arr.length>1)arr.splice(i,1)}else arr.push(x)};
   const dk=W()?'words':'verbs';
-  rowEl('difficulty',DIFFS.map(k=>btn(k,cfg.diff[dk]===k,upd(()=>cfg.diff[dk]=k,1))));
+  rowEl('difficulty',DIFFS.map(k=>btn(k==='super'?'super hard':k,cfg.diff[dk]===k,upd(()=>cfg.diff[dk]=k,1))));
   if(W()){
     const s=L().short,w=cfg.words;
     rowEl('direction',[['to-en',`${s} → en`],['from-en',`en → ${s}`]].map(([k,n])=>btn(n,w.dir===k,upd(()=>w.dir=k,1))));
@@ -1400,26 +1599,40 @@ function insert(c,b){
   inp.value=inp.value.slice(0,s)+c+inp.value.slice(e);inp.setSelectionRange(s+1,s+1);sizeInput();click();
   b=b||$('keys').children[L().keys.indexOf(c)];if(b){b.classList.add('flash');setTimeout(()=>b.classList.remove('flash'),180)}
 }
+/* ---------- tiers: every question is easy / medium / hard / super ---------- */
+const TIERS=[null,{pts:10},{pts:20},{pts:30},{pts:50}];
+const TENSE_TIER={fr:{pres:1,imp:2,fut:2,pc:2,cond:3,subj:3,pqp:3,fa:3,cp:4},
+  es:{pres:1,pret:2,imp:2,fut:2,perf:2,cond:3,subj:3,plusc:3,futp:3,isubj:4,condp:4},
+  de:{praes:1,praet:2,perf:2,fut:2,plusq:3,k2:3}};
+const verbTier=(v,k)=>Math.min(4,(TENSE_TIER[cfg.lang][k]||2)+(v.irr?1:0));
+// adaptive skill (0.8–4): climbs when you're cruising, eases off when you're struggling
+function skill(){cfg.skill=cfg.skill||{};const v=cfg.skill[statKey()];return typeof v==='number'?v:1.6}
+function onResult(ok,t){const r=skill();cfg.skill[statKey()]=Math.max(.8,Math.min(4,ok?r+.16+.12*Math.max(0,t-r):r-.38-.15*Math.max(0,r-t)));save()}
+const FIXED={easy:1,medium:2,hard:3,super:4};
+function targetTier(avail){
+  const d=cfg.diff[W()?'words':'verbs'];let want=FIXED[d];
+  if(!want){const r=skill(),w=[1,2,3,4].map(t=>Math.exp(-((t-r)**2)/.8));let x=Math.random()*w.reduce((a,b)=>a+b);want=4;for(let t=1;t<=4;t++){x-=w[t-1];if(x<=0){want=t;break}}}
+  return avail.includes(want)?want:avail.slice().sort((a,b)=>Math.abs(a-want)-Math.abs(b-want)||a-b)[0];
+}
 function pickVerb(){
   const l=L(),p=P();
-  const d=cfg.diff.verbs;
-  let pool=l.verbs.filter(v=>d==='medium'||(d==='hard')===v.irr);
-  if(!pool.length)pool=l.verbs;
-  if(pool.length>1)pool=pool.filter(v=>v.inf!==last);
+  let pool=l.verbs.filter(v=>v.inf!==last);if(!pool.length)pool=l.verbs;
   if(!p.pron.includes(2))pool=pool.filter(v=>!v.only3);
-  const v=pick1(pool),pi=v.only3?2:pick1(p.pron);
-  buildVerb({inf:v.inf,k:pick1(p.tenses),pi,g:v.only3?false:l.gender(pi)});
+  const combos=[];pool.forEach(v=>p.tenses.forEach(k=>combos.push([v,k,verbTier(v,k)])));
+  const t=targetTier([...new Set(combos.map(c=>c[2]))]);
+  const [v,k]=pick1(combos.filter(c=>c[2]===t)),pi=v.only3?2:pick1(p.pron);
+  buildVerb({inf:v.inf,k,pi,g:v.only3?false:l.gender(pi)});
 }
 function buildVerb(sp){
   const l=L(),v=l.verbs.find(x=>x.inf===sp.inf);if(!v)return false;
   const {k,pi,g}=sp,ans=l.answers(v,k,pi,g),t=l.tenses.find(x=>x[0]===k),n=l.note(v,k);
-  q={ans,spec:sp,kicker:t[2],prompt:v.inf,gloss:v.g+(n?'  ·  '+n:''),pron:l.pronoun(k,pi,g,ans[0])};return true;
+  q={ans,spec:sp,tier:verbTier(v,k),kicker:t[2],prompt:v.inf,gloss:v.g+(n?'  ·  '+n:''),pron:l.pronoun(k,pi,g,ans[0])};return true;
 }
 function pickWord(){
   const lk=cfg.lang,w=cfg.words,toEn=w.dir==='to-en';
-  const lv=DIFFS.indexOf(cfg.diff.words)+1;
-  let pool=VOCAB.filter(x=>w.cats.includes(x.cat)&&x.lvl===lv);
-  if(!pool.length)pool=VOCAB.filter(x=>w.cats.includes(x.cat));
+  let all=VOCAB.filter(x=>w.cats.includes(x.cat));if(!all.length)all=VOCAB;
+  const t=targetTier([...new Set(all.map(x=>x.lvl))]);
+  let pool=all.filter(x=>x.lvl===t);
   if(pool.length>1)pool=pool.filter(x=>x.en[0]!==last);
   buildWord({en:pick1(pool).en[0]});
 }
@@ -1429,7 +1642,7 @@ function buildWord(sp){
   // words that look the same (la fille = girl/daughter, die Decke = ceiling/blanket) accept every meaning
   const same=VOCAB.filter(y=>y!==x&&(toEn?y[lk].includes(prompt):y.en.includes(prompt)));
   const ans=[...new Set([...(toEn?x.en:x[lk]),...same.flatMap(y=>toEn?y.en:y[lk])])],art=!toEn&&w.articles==='required'&&ans.some(a=>L().arts.test(a.toLowerCase()));
-  q={ans,word:true,toEn,kicker:x.cat+(art?'  ·  with article':''),prompt,
+  q={ans,word:true,toEn,tier:x.lvl,kicker:x.cat+(art?'  ·  with article':''),prompt,
     gloss:toEn?'into english':'into '+L().name,pron:'',spec:sp};return true;
 }
 const specId=sp=>sp.inf?[sp.inf,sp.k,sp.pi,sp.g].join(':'):sp.en;
@@ -1458,9 +1671,9 @@ function reviewed(){
   save();
 }
 function show(){
-  $('tense').innerHTML=(q.rev?'<span class="again">↺ again</span>  ·  ':'')+q.kicker;$('verb').textContent=q.prompt;$('gloss').textContent=q.gloss;
+  $('tense').innerHTML=`<span class="tdot t${q.tier||1}"></span>`+(q.rev?'<span class="again">↺ again</span>  ·  ':'')+q.kicker;$('verb').textContent=q.prompt;$('gloss').textContent=q.gloss;
   $('pron').textContent=q.pron;$('pron').style.display=q.pron?'':'none';row.style.gap=q.pron.endsWith("'")?'.05ch':'';
-  inp.value='';sizeInput();row.classList.remove('ok','bad');fb.innerHTML='';state='ask';setAct();q.t0=performance.now();
+  inp.value='';sizeInput();row.classList.remove('ok','bad','t1','t2','t3','t4');fb.innerHTML='';state='ask';setAct();q.t0=performance.now();
 }
 function setAct(){
   const a=$('act');a.className='act';
@@ -1488,10 +1701,9 @@ function pop(id,v){const el=$(id);el.textContent=v;el.classList.add('pop');setTi
 function updateStats(quiet){
   const s=S(),k=statKey();(quiet?(id,v)=>$(id).textContent=v:pop)('sStreak',s.streak);
   if(s.streak>(cfg.best[k]||0)){cfg.best[k]=s.streak;save()}
-  const m=mult(s.streak);$('sCombo').textContent='×'+m;$('comboWrap').classList.toggle('off',m<=1);
   rollDay();$('sGoal').textContent=prog.today;$('goalOf').textContent=prog.today>=GOAL?' today':'/30';$('goal').title=`daily goal · ${prog.today}/30 today`+(prog.days>1?` · ${prog.days} days in a row`:'');
   $('ring').style.strokeDashoffset=87.96*(1-Math.min(1,prog.today/GOAL));$('goal').classList.toggle('done',prog.today>=GOAL);
-  const li=lvl(prog.xp);$('lvn').textContent=li.l;$('xpfill').style.width=(li.into/li.need*100)+'%';
+  ptsRoll();$('sPts').textContent=pts.today.toLocaleString('en');$('rankit').classList.toggle('off',!!lb.id||!pts.today);renderChase();
   const rv=(cfg.review[k]||[]).length;$('sRev').textContent=rv;$('revWrap').classList.toggle('off',!rv);
 }
 function shake(){row.classList.remove('shake');void row.offsetWidth;row.classList.add('shake')}
@@ -1504,9 +1716,9 @@ function submit(){
   if(good){
     s.ok++;s.streak++;row.classList.add('ok');reviewed();
     if(!exact)fb.innerHTML=diff(near[0],clean(inp.value))+'<span class="tag">accents</span>';
-    reward(!!exact,performance.now()-q.t0<4500,!!q.rev);updateStats();state='lock';setAct();setTimeout(next,exact?560:1150);
+    onResult(true,q.tier||1);reward();updateStats();state='lock';setAct();setTimeout(next,exact?560:1150);
   }else{
-    if(s.streak>=5)floatAt('combo reset','',true);s.streak=0;row.classList.add('bad');shake();miss();schedule();
+    s.streak=0;row.classList.add('bad');shake();miss();schedule();onResult(false,q.tier||1);coolDown();
     const target=(near||A[0])[0];
     let tag=near?'watch the accents':'';
     if(!near&&q.word&&!q.toEn&&A.some(([,n])=>n.replace(L().arts,'')===u))tag='article';
@@ -1514,7 +1726,7 @@ function submit(){
     typed=inp.value;state='done';setAct();updateStats();
   }
 }
-function reveal(){countUse();const s=S();s.total++;s.streak=0;schedule();updateStats();miss(true);fb.innerHTML=q.ans[0];typed=inp.value;state='done';setAct()}
+function reveal(){countUse();const s=S();s.total++;s.streak=0;schedule();onResult(false,q.tier||1);coolDown();updateStats();miss(true);fb.innerHTML=q.ans[0];typed=inp.value;state='done';setAct()}
 
 let typed='';
 // never lock the input (iOS closes the keyboard on readonly fields); just refuse edits while not asking
@@ -1551,25 +1763,24 @@ document.addEventListener('click',e=>{
 
 /* ---------- reward layer ---------- */
 const GOAL=30;
-const prog=cfg.prog||(cfg.prog={xp:0,day:'',today:0,days:0,last:''});
+const prog=cfg.prog||(cfg.prog={day:'',today:0,days:0,last:''});
+const pts=cfg.pts||(cfg.pts={day:'',today:0}); // today's points that count (first 50 + 50), same day boundary as the leaderboard
+function ptsRoll(){const t=new Date().toISOString().slice(0,10);if(pts.day!==t){pts.day=t;pts.today=0}}
 const dayStr=(o=0)=>{const d=new Date();d.setDate(d.getDate()+o);return d.toLocaleDateString('en-CA')};
 function rollDay(){const t=dayStr();if(prog.day!==t){prog.day=t;prog.today=0;if(prog.last!==dayStr(-1)&&prog.last!==t)prog.days=0;save()}}
-function lvl(xp){let l=1,need=100;while(xp>=need){xp-=need;l++;need=100+40*(l-1)}return{l,into:xp,need}}
-const mult=st=>Math.min(3,1+Math.floor(st/5)*.5);
-const SCALE=[523.25,587.33,659.25,783.99,880,1046.5,1174.66,1318.51,1567.98,1760];
 function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),1800)}
-function floatAt(big,small,soft){
-  const r=inp.getBoundingClientRect(),el=document.createElement('div');el.className='float'+(soft?' soft':'');
-  el.innerHTML=`<b>${big}</b>${small?`<small>${small}</small>`:''}`;
-  el.style.left=(r.left+r.width/2)+'px';el.style.top=(r.top-34)+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),1200);
+function floatPts(p,t,ranked){
+  const r=inp.getBoundingClientRect(),el=document.createElement('div');
+  el.className='pts t'+t+(ranked?'':' prac');el.innerHTML=`<b>+${p}</b>`+(ranked?'':'<small>practice</small>');
+  el.style.left=(r.left+r.width/2)+'px';el.style.top=(r.top-30)+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),1600);
 }
 // particles
 const cv=$('fx'),cx=cv.getContext&&cv.getContext('2d');let parts=[],running=false;
 function fit(){const d=window.devicePixelRatio||1;cv.width=innerWidth*d;cv.height=innerHeight*d;cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px';if(cx)cx.setTransform(d,0,0,d,0,0)}
 fit();addEventListener('resize',fit);
-function burst(n,spread){
-  if(!cx)return;const r=inp.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2;
-  const col=getComputedStyle(document.documentElement).getPropertyValue('--main').trim(),col2=getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
+function burst(n,spread,t){
+  if(!cx)return;const r=inp.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,cs=getComputedStyle(document.documentElement);
+  const col=cs.getPropertyValue(t?'--t'+t:'--main').trim(),col2=t===4?'#fff3c4':cs.getPropertyValue('--text').trim();
   for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,sp=(1.5+Math.random()*3.5)*spread;
     parts.push({x:x+(Math.random()-.5)*r.width*.6,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,life:1,dec:.018+Math.random()*.02,r:1.2+Math.random()*2.2,c:Math.random()<.8?col:col2})}
   if(!running){running=true;requestAnimationFrame(tick)}
@@ -1580,27 +1791,36 @@ function tick(){
   for(const p of parts){p.x+=p.vx;p.y+=p.vy;p.vy+=.09;p.vx*=.985;p.life-=p.dec;cx.globalAlpha=Math.max(0,p.life);cx.fillStyle=p.c;cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fill()}
   cx.globalAlpha=1;if(parts.length)requestAnimationFrame(tick);else{running=false;cx.clearRect(0,0,innerWidth,innerHeight)}
 }
-function reward(exact,fast,wasRev){
-  const s=S(),m=mult(s.streak),gain=Math.round((10+(fast?5:0)+(wasRev?5:0))*m);
+let hot=0; // correct hard/super answers in a row
+function tierSound(t,h){
+  if(cfg.sound==='off')return;
+  const up=Math.pow(2,Math.min(h,12)/12); // every hard answer in a row lifts the pitch a semitone
+  if(t===1)bell(587.33,0,.085);
+  else if(t===2){bell(659.25,0,.1);bell(987.77,.07,.07)}
+  else if(t===3)[783.99,987.77,1174.66].forEach((f,i)=>bell(f*up,i*.06,.095));
+  else{[783.99,987.77,1174.66,1567.98].forEach((f,i)=>bell(f*up,i*.055,.09));bell(2637*up,.26,.03);bell(3136*up,.32,.025)}
+}
+function passSound(){if(cfg.sound!=='off')[523.25,659.25,783.99,1046.5,1318.5].forEach((f,i)=>bell(f,i*.07,.075))}
+function setHot(bump){
+  const b=document.body,el=$('hot');
+  b.classList.toggle('hot1',hot>=3);b.classList.toggle('hot2',hot>=5);b.classList.toggle('hot3',hot>=10);
+  el.classList.toggle('on',hot>=3);el.classList.toggle('gold',hot>=5);
+  if(hot>=3){el.textContent=hot+' hard in a row';if(bump){el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump')}}
+}
+function coolDown(){if(hot){hot=0;setHot()}}
+function reward(){
+  const t=q.tier||1,P_=TIERS[t].pts,ranked=lastScored;
   rollDay();
   if(prog.last!==prog.day){prog.days=prog.last===dayStr(-1)?prog.days+1:1;prog.last=prog.day}
-  const before=lvl(prog.xp).l;prog.xp+=gain;prog.today++;const after=lvl(prog.xp).l;save();
-  // sound: each answer in a streak climbs the scale; every 5th lands on a chord
-  const n=SCALE[Math.min(s.streak-1,SCALE.length-1)];
-  if(s.streak%5===0){[1,1.25,1.5,2].forEach((r,i)=>bell(n*r/2,i*.06,.07))}
-  else{bell(n,0,.1);bell(n*1.5,.07,.045)}
-  // visuals
-  const lp=lbAward(exact,fast,wasRev,s.streak);
-  const tags=[wasRev?'cleared':'',fast?'quick':'',m>1?'×'+m:'',lp?'★ '+lp+' ranked':''].filter(Boolean).join(' · ');
-  floatAt('+'+gain,tags);
-  burst(s.streak%5===0?26:12+Math.min(s.streak,10),s.streak%5===0?1.4:1);
-  if(s.streak%5===0&&s.streak)toast(s.streak+' in a row');
-  if(after>before){
-    setTimeout(()=>{[392,523.25,659.25,783.99,1046.5].forEach((f,i)=>bell(f,i*.08,.08));burst(40,1.8);toast('level '+after);
-      $('xpbar').classList.remove('up');void $('xpbar').offsetWidth;$('xpbar').classList.add('up');
-      $('lv').classList.add('up');setTimeout(()=>$('lv').classList.remove('up'),1600)},350);
-  }
-  if(prog.today===GOAL)setTimeout(()=>{toast('daily goal done');milestone();burst(30,1.5)},after>before?1300:400);
+  prog.today++;ptsRoll();if(ranked)pts.today+=P_;lbAward(P_);
+  if(t>=3)hot++;save();
+  row.classList.add('t'+t);
+  tierSound(t,t>=3?hot:0);floatPts(P_,t,ranked);burst([0,8,14,24,42][t],[0,.8,1,1.3,1.75][t],t);
+  setHot(t>=3);
+  const sp=$('sPts');sp.style.color=`var(--t${t})`;sp.classList.remove('ptsflash');void sp.offsetWidth;sp.classList.add('ptsflash');setTimeout(()=>sp.style.color='',900);
+  if(t>=3&&[5,10,15,20,30,50].includes(hot))setTimeout(()=>{toast(hot>=10?hot+' in a row · unstoppable':hot+' hard in a row');burst(36,1.6,4)},300);
+  if(prog.today===GOAL)setTimeout(()=>{toast('daily goal done');milestone();burst(30,1.5,4)},500);
+  chaseAfterAward();
 }
 
 /* ---------- daily limit + plans ---------- */
@@ -1662,18 +1882,39 @@ const utcMonday=()=>{const d=new Date();const k=(d.getUTCDay()+6)%7;d.setUTCDate
 function lbRoll(){const t=utcDay(),m=utcMonday();if(lb.day!==t){lb.day=t;lb.today=0}if(lb.weekOf!==m){lb.weekOf=m;lb.week=0}}
 
 // ranked points: only the first 50 verbs + 50 words each day, only once you've joined
-function lbPoints(exact,fast,wasRev,streak){
-  const base={easy:10,medium:15,hard:20}[cfg.diff[mk()]]||15;
-  let p=base+(fast?5:0)+(wasRev?5:0);
-  p*=Math.min(1.5,1+Math.floor(streak/5)*.1);
-  if(!exact||cfg.accents==='lenient')p*=.8;
-  return Math.round(p);
-}
-function lbAward(exact,fast,wasRev,streak){
+function lbAward(p){
   if(!lb.id||!lastScored)return 0;
-  const p=lbPoints(exact,fast,wasRev,streak);lbRoll();
-  lb.today+=p;lb.week+=p;lb.total+=p;lb.pending+=p;save();lbSchedule();
+  lbRoll();lb.today+=p;lb.week+=p;lb.total+=p;lb.pending+=p;save();lbSchedule();
   return p;
+}
+// rank chase: who's just above you today
+let chaseRows=null,chaseT=0,lastRank=null;
+async function chaseLoad(force){
+  if(!lb.id)return;if(!force&&Date.now()-chaseT<45000)return;chaseT=Date.now();
+  if(!LB_LIVE){const keep=lbTab;lbTab='today';chaseRows=sampleRows();lbTab=keep}
+  else{try{await lbFlush();chaseRows=await rpc('lb_top',{p_period:'today',p_id:lb.id})}catch(e){}}
+  renderChase();
+}
+function chaseInfo(){
+  lbRoll();const mine=lb.today,others=(chaseRows||[]).filter(r=>!r.is_me),ahead=others.filter(r=>Number(r.points)>mine);
+  return{mine,rank:ahead.length+1,above:ahead.sort((a,b)=>a.points-b.points)[0]};
+}
+function renderChase(){
+  const el=$('chase'),bar=$('xpbar');
+  if(!lb.id||!chaseRows){el.classList.add('off');bar.classList.add('off');return}
+  const c=chaseInfo();el.classList.remove('off');bar.classList.remove('off');if(lastRank===null)lastRank=c.rank;
+  if(c.above){el.innerHTML=`▲ <b>${(c.above.points-c.mine).toLocaleString('en')}</b> to pass ${esc(c.above.name)}`;$('xpfill').style.width=Math.min(100,c.mine/Math.max(1,c.above.points)*100)+'%'}
+  else{el.innerHTML='<b>#1</b> today';$('xpfill').style.width='100%'}
+}
+function chaseAfterAward(){
+  if(!lb.id||!chaseRows)return;
+  const me=chaseRows.find(r=>r.is_me);if(me)me.points=lb.today;else chaseRows.push({name:lb.name,points:lb.today,is_me:true});
+  const c=chaseInfo();
+  if(lastRank!==null&&c.rank<lastRank){
+    const passed=chaseRows.filter(r=>!r.is_me&&Number(r.points)<=c.mine).sort((a,b)=>b.points-a.points)[0];
+    setTimeout(()=>{toast(passed?`you passed ${passed.name} · #${c.rank}`:`#${c.rank} today`);passSound();burst(30,1.5,4)},420);
+  }
+  lastRank=c.rank;renderChase();chaseLoad();
 }
 
 async function rpc(fn,args){
@@ -1715,9 +1956,9 @@ async function lbJoin(name){
   name=name.trim();const msg=$('bmsg');
   if(!/^[A-Za-z0-9_.-]{3,16}$/.test(name)){msg.textContent='3–16 letters, numbers, _ . or -';return}
   const sec=[...crypto.getRandomValues(new Uint8Array(20))].map(b=>b.toString(16).padStart(2,'0')).join('');
-  if(!LB_LIVE){Object.assign(lb,{id:'preview',name,secret:sec});save();toast('joined as '+name);lbLoad();return}
+  if(!LB_LIVE){Object.assign(lb,{id:'preview',name,secret:sec});save();toast('joined as '+name);lbLoad();chaseLoad(true);updateStats(true);return}
   msg.textContent='joining…';
-  try{const id=await rpc('lb_join',{p_name:name,p_secret:sec});Object.assign(lb,{id,name,secret:sec,pending:0});lbRoll();save();toast('joined as '+name);lbLoad()}
+  try{const id=await rpc('lb_join',{p_name:name,p_secret:sec});Object.assign(lb,{id,name,secret:sec,pending:0});lbRoll();save();toast('joined as '+name);lbLoad();chaseLoad(true);updateStats(true)}
   catch(e){msg.textContent=/taken/.test(e.message)?'that name is taken':/invalid name/.test(e.message)?'3–16 letters, numbers, _ . or -':"couldn't connect, try again"}
 }
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1739,16 +1980,11 @@ function lbRender(){
   rollDaily();
   const left=m=>Math.max(0,LIMIT-(cfg.daily[m]||0));
   $('bfoot').innerHTML=(lb.id?`<div class="bstat"><span><b>${lb.today.toLocaleString('en')}</b> pts today</span><span><b>${left('verbs')}</b> ranked verbs left</span><span><b>${left('words')}</b> ranked words left</span></div>`:'')+
-   `<details class="bhow"><summary>how points work</summary><ul>
-     <li>correct answer: <b>10</b> easy · <b>15</b> medium · <b>20</b> hard</li>
-     <li><b>+5</b> answering within 4.5 s · <b>+5</b> clearing a past mistake</li>
-     <li>streak bonus up to <b>×1.5</b> (+10% every 5 in a row)</li>
-     <li>lenient accents or an accent slip: <b>×0.8</b></li>
-     <li>only your first 50 verbs + 50 words each day are ranked; practice after that still earns XP</li>
-     <li>today resets at midnight UTC · the week resets on Monday</li></ul></details>`+
+   `<div class="blegend"><span class="t1">+10</span><span class="t2">+20</span><span class="t3">+30</span><span class="t4">+50</span>
+     <em>harder questions earn more, and verble adapts to you. Your first 50 verbs and 50 words each day go on the board.</em></div>`+
    (lb.id?`<button class="bleave" id="bleave">${leaveArm?'tap again to stop logging':'signed in as '+esc(lb.name)+' · stop logging'}</button>`:'')+
    (LB_LIVE?'':'<div class="bprev">preview · sample players, not live yet</div>');
-  const lv=$('bleave');if(lv)lv.onclick=()=>{if(!leaveArm){leaveArm=true;lbRender();return}leaveArm=false;lb.id=null;save();lbRows=null;lbLoad()};
+  const lv=$('bleave');if(lv)lv.onclick=()=>{if(!leaveArm){leaveArm=true;lbRender();return}leaveArm=false;lb.id=null;save();lbRows=null;chaseRows=null;lbLoad();updateStats(true)};
 }
 function openBoard(){lbOpen=true;leaveArm=false;closePanel();inp.blur();$('board').classList.add('open');lbRows=null;lbLoad()}
 function closeBoard(){lbOpen=false;$('board').classList.remove('open');if(!TOUCH&&state==='ask')inp.focus()}
@@ -1757,7 +1993,8 @@ $('lbBtn').onclick=()=>lbOpen?closeBoard():openBoard();
 $('bclose').onclick=closeBoard;
 $('board').addEventListener('click',e=>{if(e.target.id==='board')closeBoard()});
 document.addEventListener('keydown',e=>{if(lbOpen&&e.key==='Escape')closeBoard()},true);
-lbRoll();setTimeout(lbFlush,2000);
+lbRoll();setTimeout(lbFlush,2000);setTimeout(()=>chaseLoad(true),1200);
+$('rankit').onmousedown=e=>e.preventDefault();$('rankit').onclick=openBoard;
 
 addEventListener('resize',()=>{clearTimeout(window._rt);window._rt=setTimeout(renderTop,150)});
 renderAll();if(limited())showWall();else{pick();show();if(!TOUCH)inp.focus()}
