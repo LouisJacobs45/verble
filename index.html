@@ -102,6 +102,11 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:5}
 .goal svg{display:block}
 #ring{transition:stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1)}
 .goal.done b{color:var(--main)}
+/* ---- words mode gets its own accent so you always know where you are ---- */
+[data-mode=words]{--main:#b4a2fb}
+[data-theme=paper][data-mode=words]{--main:#7c3aed}
+[data-theme=moss][data-mode=words]{--main:#b4a2fb}
+[data-theme=dusk][data-mode=words]{--main:#f4a6c8}
 /* ---- tiers & points ---- */
 :root{--t1:#9aa0ab;--t2:#6ea8ff;--t3:#ff6b6b;--t4:#f6c453}
 [data-theme=paper]{--t1:#8a8578;--t2:#2f6fd6;--t3:#d23f3f;--t4:#b8860b}
@@ -1547,7 +1552,7 @@ function renderPanel(){
   if(!TOUCH)rowEl('keys',[['enter','check / next'],['tab','reveal'],['1–9','accents'],['esc','close']].map(([k,t])=>{const e=document.createElement('span');e.className='kh';e.innerHTML=`<b>${k}</b> ${t}`;return e}));
   {const a=document.createElement('a');a.href='about.html';a.textContent='about verble ↗';rowEl('more',[a])}
 }
-function renderAll(){document.documentElement.dataset.theme=cfg.theme;renderTop();renderKeys();renderPanel();updateStats(true)}
+function renderAll(){document.documentElement.dataset.theme=cfg.theme;document.documentElement.dataset.mode=cfg.mode;renderTop();renderKeys();renderPanel();updateStats(true)}
 
 $('logo').onmousedown=e=>e.preventDefault();
 $('logo').onclick=()=>setMode(W()?'verbs':'words');
