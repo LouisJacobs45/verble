@@ -10,6 +10,9 @@ URL: https://louisjacobs45.github.io/verble/
 - Mistakes come back a few questions later, and again later, until answered correctly twice in a row.
 - Adaptive difficulty (harder questions as you improve; +10/+20/+30/+50 points by difficulty), choice of tenses, pronouns and topics, accent shortcuts and a lenient-accent mode.
 
+- Golden questions: about 1 in 20 questions turns gold and is worth +100 points.
+- Daily challenge: the same 10 questions for everyone each day (per language), one try, with a shareable emoji result.
+
 ## Coverage
 - French: 138 verbs (including the 100 most common), 9 tenses (présent, imparfait, futur simple, conditionnel, subjonctif, passé composé, plus-que-parfait, futur antérieur, conditionnel passé), être agreement.
 - Spanish: 123 verbs (including the 100 most common), 11 tenses incl. pretérito, imperfecto, subjuntivo (presente and imperfecto -ra/-se) and compound tenses; stem-changing and irregular verbs.

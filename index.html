@@ -151,6 +151,36 @@ body.hot2 .verb{text-shadow:0 0 30px color-mix(in srgb,var(--t4) 30%,transparent
 .blegend{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;margin:2px 0 6px}
 .blegend span{font-size:13px}.blegend .t1{color:var(--t1)}.blegend .t2{color:var(--t2)}.blegend .t3{color:var(--t3)}.blegend .t4{color:var(--t4)}
 .blegend em{flex-basis:100%;font-style:normal;line-height:1.5}
+/* ---- golden questions ---- */
+[data-mode=daily]{--main:#f6c453}
+[data-theme=paper][data-mode=daily]{--main:#b8860b}
+.gold{color:var(--t4);letter-spacing:.2em}
+.stage.golden .verb{background:linear-gradient(100deg,var(--t4) 0%,#fff6d0 25%,var(--t4) 50%,#d9a520 75%,var(--t4) 100%);background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 2.4s linear infinite;filter:drop-shadow(0 0 18px color-mix(in srgb,var(--t4) 35%,transparent))}
+.stage.golden #ans{border-bottom-color:var(--t4)}
+.stage.golden .gloss{color:color-mix(in srgb,var(--t4) 70%,var(--sub))}
+/* ---- daily challenge ---- */
+.langs button.new::before{content:'';position:absolute;top:3px;right:2px;width:5px;height:5px;border-radius:50%;background:var(--t4);box-shadow:0 0 6px var(--t4)}
+.dc{position:fixed;inset:0;z-index:7;display:flex;align-items:center;justify-content:center;padding:20px;
+  background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .25s}
+.dc.open{opacity:1;pointer-events:auto}
+.dcc{width:min(440px,100%);background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:30px 26px 22px;text-align:center;transform:translateY(8px);transition:transform .25s}
+.dc.open .dcc{transform:none}
+.dcc .k{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--t4)}
+.dcc h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:38px;line-height:1.05;margin:10px 0 8px}
+.dcc p{font-size:13px;color:var(--sub);line-height:1.6}
+.dcdots{display:flex;justify-content:center;gap:7px;margin:20px 0 6px}
+.dcdots span{width:9px;height:9px;border-radius:50%;background:var(--t1)}
+.dcdots .t2{background:var(--t2)}.dcdots .t3{background:var(--t3)}.dcdots .t4{background:var(--t4)}
+.dcgrid{font-size:26px;letter-spacing:2px;margin:18px 0 6px;line-height:1.2}
+.dcscore{font-size:13px;color:var(--sub)}
+.dcscore b{color:var(--text);font-weight:400}
+.dcpts{font-size:30px;color:var(--t4);margin:10px 0 4px;filter:drop-shadow(0 0 10px color-mix(in srgb,var(--t4) 45%,transparent))}
+.dcbtn{display:block;width:100%;background:var(--t4);color:#1b1500;border-radius:12px;padding:13px;font-size:13px;letter-spacing:.06em;margin-top:18px}
+.dclink{display:block;width:100%;font-size:12px;color:var(--sub);padding:10px 0 0}
+.dclink:hover{color:var(--text)}
+.dcnext{font-size:11px;color:var(--sub);margin-top:10px;opacity:.8}
+.dcshare{width:100%;margin-top:10px;font:inherit;font-size:12px;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px;resize:none;display:none}
 /* ---- leaderboard ---- */
 .fbtns{justify-self:end;display:flex;gap:18px}
 .board{position:fixed;inset:0;z-index:7;display:flex;align-items:center;justify-content:center;padding:20px;
@@ -319,6 +349,7 @@ body.typing .hints,body.typing .gear,body.typing .langs{opacity:.12}
 </div>
 
 <div class="panel" id="panel"></div>
+<div class="dc" id="dc" aria-label="daily challenge"><div class="dcc" id="dcc"></div></div>
 <div class="board" id="board" aria-label="leaderboard"><div class="bcard">
   <div class="bhead"><span class="t">leaderboard</span><button id="bclose">esc</button></div>
   <div class="tabs" id="btabs"></div>
@@ -1505,7 +1536,7 @@ if(!cfg.words.v2){cfg.words.cats=[...new Set([...cfg.words.cats,'school','work',
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(cfg))}catch(e){}};
 const L=()=>LANG[cfg.lang],P=()=>cfg.per[cfg.lang],W=()=>cfg.mode==='words';
 const statKey=()=>cfg.lang+(W()?':w':'');
-const typingTarget=()=>!W()||cfg.words.dir==='from-en';
+const typingTarget=()=>DC.active?!(q&&q.word&&q.toEn):(!W()||cfg.words.dir==='from-en');
 
 const inp=$('ans'),row=$('row'),fb=$('fb'),stage=$('stage'),panel=$('panel');
 let state='ask',q=null,last='';
@@ -1516,13 +1547,14 @@ function btn(label,on,fn){
   const b=document.createElement('button');b.textContent=label;if(on)b.className='on';
   b.onmousedown=e=>e.preventDefault();b.onclick=fn;return b;
 }
-function setMode(m){if(cfg.mode===m)return;cfg.mode=m;save();renderAll();next()}
+function setMode(m){if(DC.active){DC.active=false;closeDc()}else if(cfg.mode===m)return;cfg.mode=m;save();renderAll();next()}
 function renderTop(){
   const n=$('langs');n.innerHTML='';
   const narrow=innerWidth<600;
   Object.entries(LANG).forEach(([k,l])=>n.appendChild(btn(narrow?l.short:l.name,cfg.lang===k,()=>{if(cfg.lang!==k){cfg.lang=k;save();renderAll();next()}})));
   const m=$('modes');m.innerHTML='';
-  [['verbs','verbs'],['words','words']].forEach(([k,n])=>m.appendChild(btn(n,cfg.mode===k,()=>setMode(k))));
+  [['verbs','verbs'],['words','words']].forEach(([k,n])=>m.appendChild(btn(n,!DC.active&&cfg.mode===k,()=>setMode(k))));
+  const db=btn('daily',DC.active,openDaily);if(!dcState().done)db.classList.add('new');m.appendChild(db);
 }
 function renderKeys(){
   const box=$('keys');box.innerHTML='';box.style.visibility=typingTarget()?'':'hidden';
@@ -1552,7 +1584,7 @@ function renderPanel(){
   if(!TOUCH)rowEl('keys',[['enter','check / next'],['tab','reveal'],['1–9','accents'],['esc','close']].map(([k,t])=>{const e=document.createElement('span');e.className='kh';e.innerHTML=`<b>${k}</b> ${t}`;return e}));
   {const a=document.createElement('a');a.href='about.html';a.textContent='about verble ↗';rowEl('more',[a])}
 }
-function renderAll(){document.documentElement.dataset.theme=cfg.theme;document.documentElement.dataset.mode=cfg.mode;renderTop();renderKeys();renderPanel();updateStats(true)}
+function renderAll(){document.documentElement.dataset.theme=cfg.theme;document.documentElement.dataset.mode=DC.active?'daily':cfg.mode;renderTop();renderKeys();renderPanel();updateStats(true)}
 
 $('logo').onmousedown=e=>e.preventDefault();
 $('logo').onclick=()=>setMode(W()?'verbs':'words');
@@ -1616,8 +1648,9 @@ const verbTier=(v,k)=>Math.min(4,(TENSE_TIER[cfg.lang][k]||2)+(v.irr?1:0));
 function skill(){cfg.skill=cfg.skill||{};const v=cfg.skill[statKey()];return typeof v==='number'?v:1.6}
 function onResult(ok,t){const r=skill();cfg.skill[statKey()]=Math.max(.8,Math.min(4,ok?r+.16+.12*Math.max(0,t-r):r-.38-.15*Math.max(0,r-t)));save()}
 const FIXED={easy:1,medium:2,hard:3,super:4};
+let forceTier=0;
 function targetTier(avail){
-  const d=cfg.diff[W()?'words':'verbs'];let want=FIXED[d];
+  const d=cfg.diff[W()?'words':'verbs'];let want=forceTier||FIXED[d];
   if(!want){const r=skill(),w=[1,2,3,4].map(t=>Math.exp(-((t-r)**2)/.8));let x=Math.random()*w.reduce((a,b)=>a+b);want=4;for(let t=1;t<=4;t++){x-=w[t-1];if(x<=0){want=t;break}}}
   return avail.includes(want)?want:avail.slice().sort((a,b)=>Math.abs(a-want)-Math.abs(b-want)||a-b)[0];
 }
@@ -1658,6 +1691,17 @@ function validSpec(sp){
   return P().tenses.includes(sp.k)&&P().pron.includes(sp.pi);
 }
 function pick(){
+  if(DC.active){dcBuild(dcState().i);return}
+  pickNormal();
+  // golden question: ~1 in 20 while today's ranked questions remain, max 5 per mode per day
+  const g=goldState();
+  if(!q.rev&&(cfg.daily[mk()]||0)<LIMIT&&g[mk()]<5&&Math.random()<1/20){
+    forceTier=Math.max(3,Math.min(4,Math.round(skill()+.5)));W()?pickWord():pickVerb();forceTier=0;
+    q.golden=true;g[mk()]++;save();
+  }
+}
+function goldState(){const t=new Date().toISOString().slice(0,10);if(!cfg.gold||cfg.gold.day!==t)cfg.gold={day:t,verbs:0,words:0};return cfg.gold}
+function pickNormal(){
   const key=statKey(),n=cfg.qn[key]=(cfg.qn[key]||0)+1,R=cfg.review[key]||(cfg.review[key]=[]);
   const due=R.filter(r=>r.due<=n&&validSpec(r.spec)&&specId(r.spec)!==last).sort((a,b)=>a.due-b.due);
   if(!(due.length&&(W()?buildWord(due[0].spec):buildVerb(due[0].spec))))W()?pickWord():pickVerb();
@@ -1678,7 +1722,9 @@ function reviewed(){
   save();
 }
 function show(){
-  $('tense').innerHTML=`<span class="tdot t${q.tier||1}"></span>`+(q.rev?'<span class="again">↺ again</span>  ·  ':'')+q.kicker;$('verb').textContent=q.prompt;$('gloss').textContent=q.gloss;
+  stage.classList.toggle('golden',!!q.golden);if(DC.active)renderKeys();
+  if(q.golden&&cfg.sound!=='off')setTimeout(()=>{bell(2093,0,.025);bell(2637,.07,.02);bell(3136,.14,.016)},120);
+  $('tense').innerHTML=(q.golden?'<span class="gold">★ golden</span>  ·  ':`<span class="tdot t${q.tier||1}"></span>`)+(q.rev?'<span class="again">↺ again</span>  ·  ':'')+q.kicker;$('verb').textContent=q.prompt;$('gloss').textContent=q.gloss;
   $('pron').textContent=q.pron;$('pron').style.display=q.pron?'':'none';row.style.gap=q.pron.endsWith("'")?'.05ch':'';
   inp.value='';sizeInput();row.classList.remove('ok','bad','t1','t2','t3','t4');fb.innerHTML='';state='ask';setAct();q.t0=performance.now();
 }
@@ -1690,7 +1736,7 @@ function setAct(){
 }
 function act(){if(state==='ask')submit();else if(state==='done')next()}
 const TOUCH=matchMedia('(hover: none)').matches;
-function next(){if(limited()){showWall();return}hideWall();
+function next(){if(DC.active&&dcState().i>=10){dcFinish();return}if(!DC.active&&limited()){showWall();return}hideWall();
   const keep=!TOUCH||document.activeElement===inp; // on phones, only keep the keyboard if it was already open
   state='lock';setAct();stage.classList.add('out');setTimeout(()=>{pick();show();stage.classList.remove('out');if(keep)inp.focus()},180)}
 
@@ -1701,7 +1747,7 @@ function T(s,isUser){
   s=clean(s);
   if(!q.word)return isUser?s.replace(L().strip,''):s;
   if(q.toEn)return s.replace(/^(to |the |a |an )/,'');
-  return cfg.words.articles==='optional'?s.replace(L().arts,''):s;
+  return (cfg.words.articles==='optional'||q.artOpt)?s.replace(L().arts,''):s;
 }
 const diff=(c,u)=>[...c].map((ch,i)=>ch.toLowerCase()===u[i]?ch:`<span class="d">${ch}</span>`).join('');
 function pop(id,v){const el=$(id);el.textContent=v;el.classList.add('pop');setTimeout(()=>el.classList.remove('pop'),200)}
@@ -1718,9 +1764,10 @@ function updateStats(quiet){
 }
 function shake(){row.classList.remove('shake');void row.offsetWidth;row.classList.add('shake')}
 function submit(){
+  if(DC.active)return dcSubmit();
   const u=T(inp.value,1);if(!u){shake();return}
   const A=q.ans.map(a=>[a,T(a)]);
-  countUse();
+  if(q.golden)lastScored=false;else countUse(); // golden questions don't use up a daily question
   const s=S(),exact=A.find(([,n])=>n===u),near=A.find(([,n])=>bare(n)===bare(u)),good=exact||(near&&cfg.accents==='lenient');
   s.total++;
   if(good){
@@ -1728,7 +1775,7 @@ function submit(){
     if(!exact)fb.innerHTML=diff(near[0],clean(inp.value))+'<span class="tag">accents</span>';
     onResult(true,q.tier||1);reward();updateStats();state='lock';setAct();setTimeout(next,exact?560:1150);
   }else{
-    s.streak=0;row.classList.add('bad');shake();miss();schedule();onResult(false,q.tier||1);coolDown();
+    s.streak=0;row.classList.add('bad');shake();miss();schedule();onResult(false,q.tier||1);coolDown();if(q.golden)setTimeout(()=>toast('golden missed'),300);
     const target=(near||A[0])[0];
     let tag=near?'watch the accents':'';
     if(!near&&q.word&&!q.toEn&&A.some(([,n])=>n.replace(L().arts,'')===u))tag='article';
@@ -1736,7 +1783,7 @@ function submit(){
     typed=inp.value;state='done';setAct();updateStats();
   }
 }
-function reveal(){countUse();const s=S();s.total++;s.streak=0;schedule();onResult(false,q.tier||1);coolDown();updateStats();miss(true);fb.innerHTML=q.ans[0];typed=inp.value;state='done';setAct()}
+function reveal(){if(DC.active)return dcReveal();if(!q.golden)countUse();const s=S();s.total++;s.streak=0;schedule();onResult(false,q.tier||1);coolDown();updateStats();miss(true);fb.innerHTML=q.ans[0];typed=inp.value;state='done';setAct()}
 
 let typed='';
 // never lock the input (iOS closes the keyboard on readonly fields); just refuse edits while not asking
@@ -1757,10 +1804,10 @@ inp.addEventListener('keydown',e=>{
   if(e.key==='Backspace')click(true);else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey)click();
 });
 document.addEventListener('mousemove',()=>document.body.classList.remove('typing'));
-document.addEventListener('keydown',e=>{if(lbOpen)return;if(e.key==='Escape')closePanel();else if(document.activeElement!==inp&&scrollY<innerHeight*.5&&(e.key.length===1||e.key==='Enter'))inp.focus()});
+document.addEventListener('keydown',e=>{if(lbOpen||$('dc').classList.contains('open'))return;if(e.key==='Escape')closePanel();else if(document.activeElement!==inp&&scrollY<innerHeight*.5&&(e.key.length===1||e.key==='Enter'))inp.focus()});
 document.addEventListener('click',e=>{
   if(e.target.closest('.about')||e.target.closest('a'))return;
-  if(e.target.closest('button')||e.target.closest('.panel')||e.target.closest('.wall')||e.target.closest('.board'))return;
+  if(e.target.closest('button')||e.target.closest('.panel')||e.target.closest('.wall')||e.target.closest('.board')||e.target.closest('.dc'))return;
   closePanel();
   if(TOUCH){
     // phones: only the word / answer area opens the keyboard; tapping elsewhere closes it
@@ -1818,18 +1865,98 @@ function setHot(bump){
 }
 function coolDown(){if(hot){hot=0;setHot()}}
 function reward(){
-  const t=q.tier||1,P_=TIERS[t].pts,ranked=lastScored;
+  const t=q.tier||1,P_=q.golden?100:TIERS[t].pts,ranked=q.golden||lastScored;
   rollDay();
   if(prog.last!==prog.day){prog.days=prog.last===dayStr(-1)?prog.days+1:1;prog.last=prog.day}
-  prog.today++;ptsRoll();if(ranked)pts.today+=P_;lbAward(P_);
+  prog.today++;ptsRoll();if(ranked)pts.today+=P_;if(q.golden)lbBonus(P_);else lbAward(P_);
   if(t>=3)hot++;save();
   row.classList.add('t'+t);
-  tierSound(t,t>=3?hot:0);floatPts(P_,t,ranked);burst([0,8,14,24,42][t],[0,.8,1,1.3,1.75][t],t);
+  tierSound(q.golden?4:t,t>=3?hot:0);floatPts(P_,q.golden?4:t,ranked);burst(q.golden?64:[0,8,14,24,42][t],q.golden?2.1:[0,.8,1,1.3,1.75][t],q.golden?4:t);
+  if(q.golden)setTimeout(()=>{toast('golden ✦ +100');passSound()},260);
   setHot(t>=3);
   const sp=$('sPts');sp.style.color=`var(--t${t})`;sp.classList.remove('ptsflash');void sp.offsetWidth;sp.classList.add('ptsflash');setTimeout(()=>sp.style.color='',900);
   if(t>=3&&[5,10,15,20,30,50].includes(hot))setTimeout(()=>{toast(hot>=10?hot+' in a row · unstoppable':hot+' hard in a row');burst(36,1.6,4)},300);
   chaseAfterAward();
 }
+
+/* ---------- daily challenge: the same 10 questions for everyone, once a day ---------- */
+const DC={active:false};
+const DC_TIERS=[1,1,2,2,3,3,3,4,4,4],DC_LAUNCH=Date.UTC(2026,10,10);
+const FLAG={fr:'🇫🇷',es:'🇪🇸',de:'🇩🇪'};
+const dcDay=()=>new Date().toISOString().slice(0,10);
+const dcNumber=()=>Math.floor((Date.parse(dcDay())-DC_LAUNCH)/864e5)+1;
+function dcState(){cfg.dc=cfg.dc||{};const k=cfg.lang;if(!cfg.dc[k]||cfg.dc[k].day!==dcDay())cfg.dc[k]={day:dcDay(),i:0,res:[],pts:0,time:0,done:false};return cfg.dc[k]}
+function seeded(str){let h=2166136261;for(const c of str)h=Math.imul(h^c.charCodeAt(0),16777619);let a=h>>>0;
+  return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function dcSpec(i){
+  const r=seeded(dcDay()+':'+cfg.lang+':'+i),t=DC_TIERS[i],l=L(),R=a=>a[Math.floor(r()*a.length)];
+  if(i%2===0){
+    const combos=[];l.verbs.forEach(v=>l.tenses.forEach(([k])=>{if(verbTier(v,k)===t)combos.push([v,k])}));
+    const [v,k]=R(combos),pi=v.only3?2:Math.floor(r()*6);
+    const g=v.only3?false:cfg.lang==='de'?(pi===2?Math.floor(r()*3):0):cfg.lang==='es'?(pi>=2&&r()<.5):((pi===2||pi===5)&&r()<.5);
+    return{inf:v.inf,k,pi,g};
+  }
+  return{en:R(VOCAB.filter(x=>x.lvl===t)).en[0],toEn:t<=2};
+}
+function dcBuild(i){
+  const sp=dcSpec(i);
+  if(sp.inf)buildVerb(sp);
+  else{const keep=[cfg.words.dir,cfg.words.articles];cfg.words.dir=sp.toEn?'to-en':'from-en';cfg.words.articles='optional';buildWord({en:sp.en});[cfg.words.dir,cfg.words.articles]=keep;q.artOpt=true}
+  q.kicker=`${i+1}/10  ·  `+q.kicker;q.dc=true;
+}
+function dcSubmit(){
+  const u=T(inp.value,1);if(!u){shake();return}
+  const A=q.ans.map(a=>[a,T(a)]),exact=A.find(([,n])=>n===u),near=A.find(([,n])=>bare(n)===bare(u));
+  const sec=(performance.now()-q.t0)/1000,d=dcState(),t=q.tier||1;
+  d.time+=Math.min(sec,60);d.i++;
+  if(exact){
+    const p=30+Math.max(0,Math.min(20,Math.round(20*(1-(sec-4)/16)))); // 30 for right, up to +20 for fast
+    d.res.push(sec<8?'g':'y');d.pts+=p;save();
+    row.classList.add('ok','t'+t);tierSound(t,0);floatPts(p,t,true);burst([0,10,16,26,44][t],[0,.9,1.1,1.35,1.8][t],t);
+    state='lock';setAct();setTimeout(next,650);
+  }else{
+    d.res.push('r');save();row.classList.add('bad');shake();miss();
+    fb.innerHTML=diff((near||A[0])[0],clean(inp.value))+(near?'<span class="tag">watch the accents</span>':'');
+    typed=inp.value;state='done';setAct();
+  }
+}
+function dcReveal(){const d=dcState();d.i++;d.res.push('r');d.time+=Math.min((performance.now()-q.t0)/1000,60);save();miss(true);fb.innerHTML=q.ans[0];typed=inp.value;state='done';setAct()}
+function dcFinish(){
+  const d=dcState();DC.active=false;d.done=true;ptsRoll();pts.today+=d.pts;lbBonus(d.pts);save();
+  renderAll();dcResults(true);
+}
+function dcText(){
+  const d=dcState(),ok=d.res.filter(x=>x!=='r').length,m=Math.floor(d.time/60),sec=String(Math.round(d.time%60)).padStart(2,'0');
+  const grid=d.res.map(x=>x==='g'?'🟩':x==='y'?'🟨':'🟥').join('');
+  const url=(document.querySelector('link[rel=canonical]')||{}).href||location.href;
+  return{grid,ok,time:`${m}:${sec}`,text:`verble daily #${dcNumber()} ${FLAG[cfg.lang]}\n${grid}\n${ok}/10 · ${m}:${sec} · ${d.pts} pts\n${url.replace(/^https?:\/\//,'')}`};
+}
+function dcUntil(){const n=new Date(),t=Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()+1),ms=t-n;return`${Math.floor(ms/36e5)}h ${Math.floor(ms%36e5/6e4)}m`}
+function openDaily(){closePanel();if(lbOpen)closeBoard();const d=dcState();d.done?dcResults(false):dcIntro()}
+function dcIntro(){
+  const d=dcState(),c=$('dcc');
+  c.innerHTML=`<div class="k">daily challenge #${dcNumber()} ${FLAG[cfg.lang]}</div><h2>${d.i?'Pick up where you left off.':'Ten questions. Same for everyone.'}</h2>
+    <p>${d.i?`You're on question ${d.i+1} of 10.`:'One try per day. They get harder as you go, and faster answers score more.'} Every point goes on the leaderboard and doesn't use your daily 50.</p>
+    <div class="dcdots">${DC_TIERS.map(t=>`<span class="t${t}"></span>`).join('')}</div>
+    <button class="dcbtn" id="dcgo">${d.i?'resume':'start'}</button><button class="dclink" id="dcno">not now</button>`;
+  $('dc').classList.add('open');
+  $('dcgo').onclick=()=>{closeDc();DC.active=true;renderAll();next()};$('dcno').onclick=closeDc;
+}
+function dcResults(fresh){
+  const d=dcState(),r=dcText(),c=$('dcc');
+  c.innerHTML=`<div class="k">daily challenge #${dcNumber()} ${FLAG[cfg.lang]}</div><h2>${r.ok>=9?'Flawless.':r.ok>=7?'Nicely done.':r.ok>=4?'Good effort.':'Tough one.'}</h2>
+    <div class="dcgrid">${r.grid}</div><div class="dcscore"><b>${r.ok}/10</b> · ${r.time}</div><div class="dcpts">+${d.pts}</div>
+    <button class="dcbtn" id="dccopy">copy result</button><textarea class="dcshare" id="dcshare" rows="4" readonly>${r.text}</textarea>
+    <button class="dclink" id="dcback">back to practice</button><div class="dcnext">next challenge in ${dcUntil()}</div>`;
+  $('dc').classList.add('open');
+  if(fresh){setTimeout(()=>{[523.25,659.25,783.99,1046.5,1318.5,1567.98].forEach((f,i)=>bell(f,i*.08,.08));burst(70,2.2,4)},200)}
+  $('dccopy').onclick=()=>{const b=$('dccopy');
+    (navigator.clipboard?navigator.clipboard.writeText(r.text):Promise.reject()).then(()=>{b.textContent='copied ✓'},()=>{const t=$('dcshare');t.style.display='block';t.select();b.textContent='copy the text below'})};
+  $('dcback').onclick=()=>{closeDc();if(fresh||state!=='ask')next()};
+}
+function closeDc(){$('dc').classList.remove('open')}
+$('dc').addEventListener('click',e=>{if(e.target.id==='dc'){closeDc();if(!DC.active&&dcState().done&&state==='lock')next()}});
+document.addEventListener('keydown',e=>{if($('dc').classList.contains('open')&&e.key==='Escape')closeDc()},true);
 
 /* ---------- daily limit + plans ---------- */
 const LIMIT=50;
@@ -1896,6 +2023,9 @@ const utcMonday=()=>{const d=new Date();const k=(d.getUTCDay()+6)%7;d.setUTCDate
 function lbRoll(){const t=utcDay(),m=utcMonday();if(lb.day!==t){lb.day=t;lb.today=0}if(lb.weekOf!==m){lb.weekOf=m;lb.week=0}}
 
 // ranked points: only the first 50 verbs + 50 words each day, only once you've joined
+function lbBonus(p){ // golden questions and the daily challenge: on the board, outside the 50
+  if(!lb.id)return 0;lbRoll();lb.today+=p;lb.week+=p;lb.total+=p;lb.pending+=p;save();lbSchedule();return p;
+}
 function lbAward(p){
   if(!lb.id||!lastScored)return 0;
   lbRoll();lb.today+=p;lb.week+=p;lb.total+=p;lb.pending+=p;save();lbSchedule();
