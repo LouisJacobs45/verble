@@ -127,6 +127,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:5}
 .brow .bn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .brow .bn i{font-style:normal;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--main);margin-left:8px}
 .brow .bp{font-variant-numeric:tabular-nums;color:var(--text)}
+.brow .flair{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--bg);background:var(--main);padding:2px 7px 2px 6px;border-radius:999px;margin-left:8px;vertical-align:2px}
 .brow.me{background:var(--bg);box-shadow:inset 0 0 0 1px var(--main)}
 .bempty{color:var(--sub);font-size:12px;text-align:center;padding:18px 0}
 .bjoin p{font-size:13px;color:var(--sub);line-height:1.6}
@@ -1653,6 +1654,7 @@ const LB_LIVE=!!(SUPABASE_URL&&SUPABASE_KEY);
 const lb=Object.assign({id:null,name:'',secret:'',pending:0,day:'',today:0,week:0,weekOf:'',total:0},cfg.lb||{});
 cfg.lb=lb;
 if(LB_LIVE&&lb.id==='preview'){lb.id=null;lb.pending=0} // preview joins don't carry over to the live board
+const FLAIR={nancy:'owner'}; // username (lowercase) → badge. Names are unique, so nobody else can take these.
 let lastScored=false,lbOpen=false,lbTab='week',lbRows=null,lbErr='',lbBusy=false,leaveArm=false;
 
 const utcDay=()=>new Date().toISOString().slice(0,10);
@@ -1724,7 +1726,7 @@ function lbRender(){
   $('btabs').innerHTML='';
   [['today','today'],['week','this week'],['all','all time']].forEach(([k,n])=>{const b=btn(n,lbTab===k,()=>{lbTab=k;lbRows=null;lbLoad()});$('btabs').appendChild(b)});
   const body=$('bbody');
-  const rowsHtml=rows=>rows.map(r=>`<div class="brow${r.is_me?' me':''}${r.rank<=3?' top':''}"><span class="br">${r.rank}</span><span class="bn">${esc(r.name)}${r.is_me?' <i>you</i>':''}</span><span class="bp">${Number(r.points).toLocaleString('en')}</span></div>`).join('');
+  const rowsHtml=rows=>rows.map(r=>`<div class="brow${r.is_me?' me':''}${r.rank<=3?' top':''}"><span class="br">${r.rank}</span><span class="bn">${esc(r.name)}${FLAIR[String(r.name).toLowerCase()]?` <span class="flair">✦ ${FLAIR[String(r.name).toLowerCase()]}</span>`:''}${r.is_me?' <i>you</i>':''}</span><span class="bp">${Number(r.points).toLocaleString('en')}</span></div>`).join('');
   let list=lbBusy&&!lbRows?'<div class="bempty">loading…</div>':lbRows&&lbRows.length?rowsHtml(lbRows):'<div class="bempty">no scores yet · be the first</div>';
   if(lbErr)list=`<div class="bempty">${lbErr}</div>`+(lbRows&&lbRows.length?list:'');
   if(!lb.id){
