@@ -57,7 +57,7 @@ main{flex:1;display:flex;flex-direction:column;align-items:center;justify-conten
 .gloss{font-size:13px;color:var(--sub);margin-top:8px;min-height:17px;text-align:center}
 .row{display:flex;justify-content:center;align-items:baseline;gap:.55ch;margin-top:52px;font-size:clamp(21px,3.4vw,29px);max-width:100%}
 .pron{color:var(--sub);white-space:nowrap}
-#ans{font:inherit;color:var(--text);background:none;border:0;outline:0;caret-color:var(--main);width:2ch;min-width:2ch;max-width:80vw;
+#ans{font:inherit;color:var(--text);background:none;border:0;outline:0;caret-color:var(--main);width:1.6ch;min-width:1.6ch;max-width:80vw;box-sizing:content-box;
   padding:0 0 8px;border-bottom:1px solid var(--line);transition:color .2s,border-color .25s,width .12s ease}
 #ans:focus{border-bottom-color:var(--sub)}
 .row.ok #ans{color:var(--main);border-bottom-color:var(--main)}
@@ -1633,7 +1633,7 @@ function miss(quiet){
 }
 
 /* ---------- game ---------- */
-function sizeInput(){inp.style.width=(inp.value.length+1)+'ch'} // underline grows with the answer
+function sizeInput(){const n=[...inp.value].length;inp.style.width=n?`calc(${n}ch + 3px)`:'1.6ch'} // underline ends exactly where the text does
 function insert(c,b){
   if(state!=='ask'||!typingTarget())return;const s=inp.selectionStart,e=inp.selectionEnd;
   inp.value=inp.value.slice(0,s)+c+inp.value.slice(e);inp.setSelectionRange(s+1,s+1);sizeInput();click();
@@ -1723,7 +1723,7 @@ function reviewed(){
   save();
 }
 function show(){
-  stage.classList.toggle('golden',!!q.golden);if(DC.active)renderKeys();
+  stage.classList.toggle('golden',!!q.golden);if(DC.active)renderKeys();renderBar();
   if(q.golden&&cfg.sound!=='off')setTimeout(()=>{bell(2093,0,.025);bell(2637,.07,.02);bell(3136,.14,.016)},120);
   $('tense').innerHTML=(q.golden?'<span class="gold">★ golden</span>  ·  ':`<span class="tdot t${q.tier||1}"></span>`)+(q.rev?'<span class="again">↺ again</span>  ·  ':'')+q.kicker;$('verb').textContent=q.prompt;$('gloss').textContent=q.gloss;
   $('pron').textContent=q.pron;$('pron').style.display=q.pron?'':'none';row.style.gap=q.pron.endsWith("'")?'.05ch':'';
@@ -1913,7 +1913,7 @@ function dcSubmit(){
   const u=T(inp.value,1);if(!u){shake();return}
   const A=q.ans.map(a=>[a,T(a)]),exact=A.find(([,n])=>n===u),near=A.find(([,n])=>bare(n)===bare(u));
   const sec=(performance.now()-q.t0)/1000,d=dcState(),t=q.tier||1;
-  d.time+=Math.min(sec,60);d.i++;
+  d.time+=Math.min(sec,60);d.i++;renderBar();
   if(exact){
     const p=30+Math.max(0,Math.min(20,Math.round(20*(1-(sec-4)/16)))); // 30 for right, up to +20 for fast
     d.res.push(sec<8?'g':'y');d.pts+=p;save();
@@ -1925,7 +1925,7 @@ function dcSubmit(){
     typed=inp.value;state='done';setAct();
   }
 }
-function dcReveal(){const d=dcState();d.i++;d.res.push('r');d.time+=Math.min((performance.now()-q.t0)/1000,60);save();miss(true);fb.innerHTML=q.ans[0];typed=inp.value;state='done';setAct()}
+function dcReveal(){const d=dcState();d.i++;renderBar();d.res.push('r');d.time+=Math.min((performance.now()-q.t0)/1000,60);save();miss(true);fb.innerHTML=q.ans[0];typed=inp.value;state='done';setAct()}
 function dcFinish(){
   const d=dcState();DC.active=false;d.done=true;ptsRoll();pts.today+=d.pts;lbBonus(d.pts);save();
   renderAll();dcResults(true);
@@ -1982,6 +1982,7 @@ const limited=()=>!cfg.pro&&usedNow()>=LIMIT;
 function countUse(){rollDaily();lastScored=(cfg.daily[dk()]||0)<LIMIT;cfg.daily[dk()]=(cfg.daily[dk()]||0)+1;save();updateLeft();renderBar();updateStats(true);
   if(cfg.pro&&cfg.daily[dk()]===LIMIT)setTimeout(()=>toast(`today's ranked ${mk()} done · keep practising`),900)}
 function renderBar(){
+  if(DC.active){const i=Math.min(10,dcState().i);$('xpfill').style.width=(i/10*100)+'%';$('xpbar').classList.remove('full');$('xpbar').title=`daily challenge · ${i}/10`;return}
   rollDaily();const used=Math.min(LIMIT,cfg.daily[dk()]||0),full=used>=LIMIT;
   $('xpfill').style.width=(used/LIMIT*100)+'%';$('xpbar').classList.toggle('full',full);
   $('xpbar').title=full?`today's ranked ${mk()} are done`:`${used}/${LIMIT} ranked ${mk()} today`;
