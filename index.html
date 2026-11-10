@@ -257,7 +257,7 @@ body.typing .hints,body.typing .gear,body.typing .langs{opacity:.12}
   <footer>
     <div class="stats">
       <span><b id="sStreak">0</b>streak</span>
-      <span class="goal" id="goal" title="daily goal"><svg width="16" height="16" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="var(--line)" stroke-width="5"/><circle id="ring" cx="18" cy="18" r="14" fill="none" stroke="var(--main)" stroke-width="5" stroke-linecap="round" stroke-dasharray="87.96" stroke-dashoffset="87.96" transform="rotate(-90 18 18)"/></svg><span><b id="sGoal">0</b>/30</span></span>
+      <span class="goal" id="goal" title="daily goal"><svg width="16" height="16" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="var(--line)" stroke-width="5"/><circle id="ring" cx="18" cy="18" r="14" fill="none" stroke="var(--main)" stroke-width="5" stroke-linecap="round" stroke-dasharray="87.96" stroke-dashoffset="87.96" transform="rotate(-90 18 18)"/></svg><span><b id="sGoal">0</b><span id="goalOf">/30</span></span></span>
       <span class="combo off" id="comboWrap"><b id="sCombo">×1</b>combo</span>
       <span class="ctx" id="revWrap" title="mistakes waiting to come back"><b id="sRev">0</b>to review</span>
       <span class="left" id="left"><b id="sLeft">50</b> left</span>
@@ -1488,7 +1488,7 @@ function updateStats(quiet){
   const s=S(),k=statKey();(quiet?(id,v)=>$(id).textContent=v:pop)('sStreak',s.streak);
   if(s.streak>(cfg.best[k]||0)){cfg.best[k]=s.streak;save()}
   const m=mult(s.streak);$('sCombo').textContent='×'+m;$('comboWrap').classList.toggle('off',m<=1);
-  rollDay();$('sGoal').textContent=prog.today;$('goal').title=`daily goal · ${prog.today}/30 today`+(prog.days>1?` · ${prog.days} days in a row`:'');
+  rollDay();$('sGoal').textContent=prog.today;$('goalOf').textContent=prog.today>=GOAL?' today':'/30';$('goal').title=`daily goal · ${prog.today}/30 today`+(prog.days>1?` · ${prog.days} days in a row`:'');
   $('ring').style.strokeDashoffset=87.96*(1-Math.min(1,prog.today/GOAL));$('goal').classList.toggle('done',prog.today>=GOAL);
   const li=lvl(prog.xp);$('lvn').textContent=li.l;$('xpfill').style.width=(li.into/li.need*100)+'%';
   const rv=(cfg.review[k]||[]).length;$('sRev').textContent=rv;$('revWrap').classList.toggle('off',!rv);
