@@ -7,10 +7,10 @@
 <meta name="description" content="verble is a free, minimal web app for practising French, Spanish and German verb conjugation and vocabulary. Type the answer, hear a soft chime, and mistakes come back until you know them. No account needed.">
 <link rel="canonical" href="https://louisjacobs45.github.io/verble/">
 <meta name="robots" content="index, follow, max-image-preview:large">
-<meta name="theme-color" content="#15171c">
+<meta name="theme-color" content="#111317">
 <meta name="application-name" content="verble">
 <meta name="keywords" content="French verb conjugation practice, Spanish conjugation trainer, German verb practice, conjugaison, vocabulary trainer, passé composé, subjonctif, pretérito, Perfekt, language learning">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2315171c'/%3E%3Ctext x='29' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' fill='%23e8e4da' text-anchor='middle'%3Ev%3C/text%3E%3Ccircle cx='47' cy='43' r='4' fill='%23f2a57c'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23111317'/%3E%3Ctext x='29' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' fill='%23e8ebf0' text-anchor='middle'%3Ev%3C/text%3E%3Ccircle cx='47' cy='43' r='4' fill='%236ee7b7'/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="verble">
 <meta property="og:title" content="verble — calm, minimal verb & vocab practice">
@@ -28,8 +28,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#15171c;--surface:#1c1f25;--line:#2b2f37;--sub:#5f6573;--text:#e8e4da;--main:#f2a57c;--err:#e2727a}
-[data-theme=linen]{--bg:#f3f0e8;--surface:#ebe7dd;--line:#dbd5c8;--sub:#a29b8c;--text:#2c2a26;--main:#2f6e5b;--err:#c2513d}
+:root{--bg:#111317;--surface:#181b20;--line:#272b33;--sub:#646c78;--text:#e8ebf0;--main:#6ee7b7;--err:#f87171}
+[data-theme=paper]{--bg:#f5f6f8;--surface:#eceef2;--line:#dcdfe5;--sub:#8a919d;--text:#1b1f26;--main:#0e9f6e;--err:#dc2626}
 [data-theme=moss]{--bg:#171c19;--surface:#1e2420;--line:#2b332e;--sub:#617266;--text:#e3e8de;--main:#b7d68c;--err:#e48a76}
 [data-theme=dusk]{--bg:#1f1d2b;--surface:#262434;--line:#35314a;--sub:#6a6487;--text:#e7e2f4;--main:#c7a8f4;--err:#f08aa0}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -104,7 +104,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:5}
 .goal.done b{color:var(--main)}
 /* ---- tiers & points ---- */
 :root{--t1:#9aa0ab;--t2:#6ea8ff;--t3:#ff6b6b;--t4:#f6c453}
-[data-theme=linen]{--t1:#8a8578;--t2:#2f6fd6;--t3:#d23f3f;--t4:#b8860b}
+[data-theme=paper]{--t1:#8a8578;--t2:#2f6fd6;--t3:#d23f3f;--t4:#b8860b}
 .wrap{position:relative;z-index:1}
 .tdot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:9px;vertical-align:1px;background:var(--t1);transition:background .3s,box-shadow .3s}
 .tdot.t2{background:var(--t2)}.tdot.t3{background:var(--t3);box-shadow:0 0 8px var(--t3)}.tdot.t4{background:var(--t4);box-shadow:0 0 10px var(--t4)}
@@ -1487,6 +1487,7 @@ for(const [k,L] of Object.entries(LANG)){
   p.pron=(p.pron&&p.pron.length?p.pron:[0,1,2,3,4,5]);cfg.per[k]=p;
 }
 if(!LANG[cfg.lang])cfg.lang='fr';
+if(cfg.theme==='linen')cfg.theme='paper';
 if(!['verbs','words'].includes(cfg.mode))cfg.mode='verbs';
 const DIFFS=['adaptive','easy','medium','hard','super'];
 cfg.review=cfg.review||{};cfg.qn=cfg.qn||{};
@@ -1541,7 +1542,7 @@ function renderPanel(){
   }
   rowEl('accents',[['strict','strict'],['lenient','lenient']].map(([k,n])=>btn(n,cfg.accents===k,upd(()=>cfg.accents=k))));
   rowEl('sound',[['all','keys + chimes'],['chimes','chimes only'],['off','off']].map(([k,n])=>btn(n,cfg.sound===k,upd(()=>{cfg.sound=k;if(k!=='off')chime()}))));
-  rowEl('theme',['ink','linen','moss','dusk'].map(k=>btn(k,cfg.theme===k,upd(()=>{cfg.theme=k;document.documentElement.dataset.theme=k}))));
+  rowEl('theme',['ink','paper','moss','dusk'].map(k=>btn(k,cfg.theme===k,upd(()=>{cfg.theme=k;document.documentElement.dataset.theme=k}))));
   if(!TOUCH)rowEl('keys',[['enter','check / next'],['tab','reveal'],['1–9','accents'],['esc','close']].map(([k,t])=>{const e=document.createElement('span');e.className='kh';e.innerHTML=`<b>${k}</b> ${t}`;return e}));
   {const a=document.createElement('a');a.href='about.html';a.textContent='about verble ↗';rowEl('more',[a])}
 }
