@@ -2053,7 +2053,7 @@ let chaseRows=null,chaseT=0,lastRank=null;
 async function chaseLoad(force){
   if(!lb.id)return;if(!force&&Date.now()-chaseT<45000)return;chaseT=Date.now();
   if(!LB_LIVE){const keep=lbTab;lbTab='today';chaseRows=sampleRows();lbTab=keep}
-  else{try{await lbFlush();chaseRows=await rpc('lb_top',{p_period:'today',p_id:lb.id,p_lang:cfg.lang})}catch(e){}}
+  else{try{await lbFlush();chaseRows=await rpcL('lb_top',{p_period:'today',p_id:lb.id,p_lang:cfg.lang})}catch(e){lbLastErr=e.message}}
   renderChase();
 }
 function chaseInfo(){
@@ -2086,14 +2086,20 @@ async function rpc(fn,args){
   if(!r.ok)throw new Error((j&&(j.message||j.hint))||('error '+r.status));
   return j;
 }
-let flushT=null,flushing=false;
+let flushT=null,flushing=false,lbOldSchema=false,lbLastErr='';
+// works whether or not leaderboard-update-3.sql has been run (before it, there is one shared board)
+const noFn=e=>/could not find the function|schema cache|PGRST202|does not exist/i.test(e.message);
+async function rpcL(fn,args){
+  if(!lbOldSchema){try{return await rpc(fn,args)}catch(e){if(!noFn(e))throw e;lbOldSchema=true}}
+  const a=Object.assign({},args);delete a.p_lang;return rpc(fn,a);
+}
 function lbSchedule(){clearTimeout(flushT);flushT=setTimeout(lbFlush,6000)}
 async function lbFlush(){
   if(!LB_LIVE||!lb.id||lb.id==='preview'||flushing)return;
-  const k=Object.keys(lb.L).find(x=>lb.L[x].pending>0);if(!k)return; // send each language's points to its own board
+  const k=Object.keys(lb.L).find(x=>lb.L[x].pending>0&&(!lbOldSchema||x==='fr'));if(!k)return; // send each language's points to its own board
   flushing=true;const x=lb.L[k],n=Math.min(x.pending,1500);
-  try{await rpc('lb_add',{p_id:lb.id,p_secret:lb.secret,p_points:n,p_lang:k});x.pending-=n;save();if(Object.values(lb.L).some(y=>y.pending>0))lbSchedule()}
-  catch(e){if(/not allowed/.test(e.message)){lb.id=null;save()}else setTimeout(lbFlush,30000)} // offline: retry later, points are kept
+  try{await rpcL('lb_add',{p_id:lb.id,p_secret:lb.secret,p_points:n,p_lang:k});x.pending-=n;lbLastErr='';save();if(Object.values(lb.L).some(y=>y.pending>0))lbSchedule()}
+  catch(e){lbLastErr=e.message;if(/not allowed/.test(e.message)){lb.id=null;save()}else setTimeout(lbFlush,30000)} // offline: retry later, points are kept
   finally{flushing=false}
 }
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')lbFlush()});
@@ -2111,17 +2117,21 @@ async function lbLoad(){
   lbErr='';
   if(!LB_LIVE){lbRows=sampleRows();lbRender();return}
   lbBusy=true;lbRender();
-  try{await lbFlush();lbRows=await rpc('lb_top',{p_period:lbTab,p_id:lb.id&&lb.id!=='preview'?lb.id:null,p_lang:cfg.lang})}
-  catch(e){lbErr="couldn't reach the leaderboard · your points are saved and will sync";lbRows=lbRows||[]}
+  try{await lbFlush();lbRows=await rpcL('lb_top',{p_period:lbTab,p_id:lb.id&&lb.id!=='preview'?lb.id:null,p_lang:cfg.lang});
+    if(lbOldSchema&&cfg.lang!=='fr'){lbRows=[];lbErr="this language's board opens once the latest leaderboard update is run · your points are saved"}}
+  catch(e){lbErr=`couldn't reach the leaderboard (${esc(e.message).slice(0,80)}) · your points are saved and will sync`;lbRows=lbRows||[]}
   lbBusy=false;lbRender();
+}
+function lbCarry(){ // points you earned today before joining count too
+  ptsRoll();lbRoll();const c=Math.max(0,pts.today-LS.today);if(c){LS.today+=c;LS.week+=c;LS.total+=c;LS.pending+=c;lbSchedule()}
 }
 async function lbJoin(name){
   name=name.trim();const msg=$('bmsg');
   if(!/^[A-Za-z0-9_.-]{3,16}$/.test(name)){msg.textContent='3–16 letters, numbers, _ . or -';return}
   const sec=[...crypto.getRandomValues(new Uint8Array(20))].map(b=>b.toString(16).padStart(2,'0')).join('');
-  if(!LB_LIVE){Object.assign(lb,{id:'preview',name,secret:sec});save();toast('joined as '+name);lbLoad();chaseLoad(true);updateStats(true);return}
+  if(!LB_LIVE){Object.assign(lb,{id:'preview',name,secret:sec});lbCarry();save();toast('joined as '+name);lbLoad();chaseLoad(true);updateStats(true);return}
   msg.textContent='joining…';
-  try{const id=await rpc('lb_join',{p_name:name,p_secret:sec});Object.assign(lb,{id,name,secret:sec,pending:0});lbRoll();save();toast('joined as '+name);lbLoad();chaseLoad(true);updateStats(true)}
+  try{const id=await rpc('lb_join',{p_name:name,p_secret:sec});Object.assign(lb,{id,name,secret:sec});lbCarry();save();toast('joined as '+name);lbLoad();chaseLoad(true);updateStats(true)}
   catch(e){msg.textContent=/taken/.test(e.message)?'that name is taken':/invalid name/.test(e.message)?'3–16 letters, numbers, _ . or -':"couldn't connect, try again"}
 }
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2142,7 +2152,8 @@ function lbRender(){
   }else body.innerHTML=`<div class="blist">${list}</div>`;
   rollDaily();
   const left=m=>Math.max(0,LIMIT-(cfg.daily[dk(m)]||0));
-  $('bfoot').innerHTML=(lb.id?`<div class="bstat"><span><b>${LS.today.toLocaleString('en')}</b> pts today</span><span><b>${left('verbs')}</b> ranked verbs left</span><span><b>${left('words')}</b> ranked words left</span></div>`:'')+
+  const waiting=lb.id&&lb.id!=='preview'?Object.values(lb.L).reduce((a,y)=>a+(y.pending||0),0):0;
+  $('bfoot').innerHTML=(waiting?`<div class="bmsg">${waiting} pts waiting to sync${lbLastErr?' · '+esc(lbLastErr).slice(0,70):''}</div>`:'')+(lb.id?`<div class="bstat"><span><b>${LS.today.toLocaleString('en')}</b> pts today</span><span><b>${left('verbs')}</b> ranked verbs left</span><span><b>${left('words')}</b> ranked words left</span></div>`:'')+
    `<div class="blegend"><span class="t1">+10</span><span class="t2">+20</span><span class="t3">+30</span><span class="t4">+50</span>
      <em>harder questions earn more, and verble adapts to you. Your first 50 verbs and 50 words each day go on the board.</em></div>`+
    (lb.id?`<button class="bleave" id="bleave">${leaveArm?'tap again to stop logging':'signed in as '+esc(lb.name)+' · stop logging'}</button>`:'')+
