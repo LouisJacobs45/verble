@@ -1904,8 +1904,10 @@ function renderChase(){
   const el=$('chase'),bar=$('xpbar');
   if(!lb.id||!chaseRows){el.classList.add('off');bar.classList.add('off');return}
   const c=chaseInfo();el.classList.remove('off');bar.classList.remove('off');if(lastRank===null)lastRank=c.rank;
-  if(c.above){el.innerHTML=`▲ <b>${(c.above.points-c.mine).toLocaleString('en')}</b> to pass ${esc(c.above.name)}`;$('xpfill').style.width=Math.min(100,c.mine/Math.max(1,c.above.points)*100)+'%'}
-  else{el.innerHTML='<b>#1</b> today';$('xpfill').style.width='100%'}
+  // footer shows just your rank; the top bar fills toward the next person up
+  const was=el.dataset.rank;el.innerHTML=`<b>#${c.rank}</b> today`;el.dataset.rank=c.rank;
+  if(was&&+was!==c.rank){const b=el.querySelector('b');b.classList.add('ptsflash')}
+  $('xpfill').style.width=c.above?Math.min(100,c.mine/Math.max(1,c.above.points)*100)+'%':'100%';
 }
 function chaseAfterAward(){
   if(!lb.id||!chaseRows)return;
