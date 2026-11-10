@@ -3,7 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>verble (demo)</title>
+<title>verble — free French, Spanish & German verb conjugation and vocabulary practice</title>
+<meta name="description" content="verble is a free, minimal web app for practising French, Spanish and German verb conjugation and vocabulary. Type the answer, hear a soft chime, and mistakes come back until you know them. No account needed.">
+<link rel="canonical" href="https://louisjacobs45.github.io/verble/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#15171c">
+<meta name="application-name" content="verble">
+<meta name="keywords" content="French verb conjugation practice, Spanish conjugation trainer, German verb practice, conjugaison, vocabulary trainer, passé composé, subjonctif, pretérito, Perfekt, language learning">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2315171c'/%3E%3Ctext x='29' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' fill='%23e8e4da' text-anchor='middle'%3Ev%3C/text%3E%3Ccircle cx='47' cy='43' r='4' fill='%23f2a57c'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="verble">
+<meta property="og:title" content="verble — calm, minimal verb & vocab practice">
+<meta property="og:description" content="Free French, Spanish and German conjugation and vocabulary trainer. Type, chime, repeat.">
+<meta property="og:url" content="https://louisjacobs45.github.io/verble/">
+<meta property="og:image" content="https://louisjacobs45.github.io/verble/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="verble — calm, minimal verb & vocab practice">
+<meta name="twitter:description" content="Free French, Spanish and German conjugation and vocabulary trainer.">
+<meta name="twitter:image" content="https://louisjacobs45.github.io/verble/og.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "verble", "url": "https://louisjacobs45.github.io/verble/", "description": "verble is a free, minimal web app for practising French, Spanish and German verb conjugation and vocabulary. Type the answer, hear a soft chime, and mistakes come back until you know them. No account needed.", "applicationCategory": "EducationalApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "inLanguage": "en", "isAccessibleForFree": true, "image": "https://louisjacobs45.github.io/verble/og.png", "educationalUse": "practice", "learningResourceType": "drill and practice", "teaches": ["French verb conjugation", "Spanish verb conjugation", "German verb conjugation", "French vocabulary", "Spanish vocabulary", "German vocabulary"], "about": [{"@type": "Language", "name": "French"}, {"@type": "Language", "name": "Spanish"}, {"@type": "Language", "name": "German"}], "featureList": ["Verb conjugation drills across 9+ tenses per language", "Vocabulary mode with 250+ words in 10 topics", "Mistakes resurface until learned (spaced review)", "Easy, medium and hard difficulty", "Accent shortcuts and lenient accent mode", "No account required"], "offers": [{"@type": "Offer", "price": "0", "priceCurrency": "EUR", "name": "Free (50 verbs + 50 words per day)"}, {"@type": "Offer", "price": "2.99", "priceCurrency": "EUR", "name": "Unlimited monthly"}, {"@type": "Offer", "price": "24.99", "priceCurrency": "EUR", "name": "Unlimited lifetime"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is verble free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. You get 50 verbs and 50 words free every day, with no account. Unlimited practice is €2.99 a month or €24.99 once for lifetime access."}}, {"@type": "Question", "name": "Which languages can I practise on verble?", "acceptedAnswer": {"@type": "Answer", "text": "French, Spanish and German. Each has its own verb trainer and vocabulary trainer, and English translations."}}, {"@type": "Question", "name": "Which French tenses does verble cover?", "acceptedAnswer": {"@type": "Answer", "text": "Présent, imparfait, futur simple, conditionnel présent, subjonctif présent, passé composé, plus-que-parfait, futur antérieur and conditionnel passé, including être verbs with agreement (elle est allée)."}}, {"@type": "Question", "name": "Which Spanish tenses does verble cover?", "acceptedAnswer": {"@type": "Answer", "text": "Presente, pretérito indefinido, imperfecto, futuro, condicional, presente de subjuntivo, imperfecto de subjuntivo (both -ra and -se forms), pretérito perfecto, pluscuamperfecto, futuro perfecto and condicional perfecto, with stem-changing and irregular verbs."}}, {"@type": "Question", "name": "Which German tenses does verble cover?", "acceptedAnswer": {"@type": "Answer", "text": "Präsens, Präteritum, Perfekt (with haben or sein), Plusquamperfekt, Futur I and Konjunktiv II, including strong, mixed, modal and separable verbs such as aufstehen."}}, {"@type": "Question", "name": "How does verble help me remember?", "acceptedAnswer": {"@type": "Answer", "text": "Anything you get wrong comes back a few questions later, and again after that, until you get it right twice in a row. You can choose tenses, pronouns, topics and an easy, medium or hard difficulty."}}, {"@type": "Question", "name": "Do I need to type accents?", "acceptedAnswer": {"@type": "Answer", "text": "Number keys 1–9 type accented letters (é, è, ç, ñ, ü, ß…), there are tap-to-type accent keys on phones, and a lenient mode accepts answers without accents."}}, {"@type": "Question", "name": "Does verble work on my phone?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. verble works in any modern browser on iPhone, Android, Mac and Windows, with nothing to install."}}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -37,7 +58,7 @@ main{flex:1;display:flex;flex-direction:column;align-items:center;justify-conten
 .gloss{font-size:13px;color:var(--sub);margin-top:8px;min-height:17px;text-align:center}
 .row{display:flex;justify-content:center;align-items:baseline;gap:.55ch;margin-top:52px;font-size:clamp(21px,3.4vw,29px);max-width:100%}
 .pron{color:var(--sub);white-space:nowrap}
-#ans{font:inherit;color:var(--text);background:none;border:0;outline:0;caret-color:var(--main);width:9ch;max-width:70vw;
+#ans{font:inherit;color:var(--text);background:none;border:0;outline:0;caret-color:var(--main);width:2ch;min-width:2ch;max-width:80vw;
   padding:0 0 8px;border-bottom:1px solid var(--line);transition:color .2s,border-color .25s,width .12s ease}
 #ans:focus{border-bottom-color:var(--sub)}
 .row.ok #ans{color:var(--main);border-bottom-color:var(--main)}
@@ -133,6 +154,24 @@ body.typing .hints,body.typing .gear,body.typing .langs{opacity:.12}
   footer{grid-template-columns:1fr auto}.hints{display:none}
   .stats{gap:12px}.prow{grid-template-columns:1fr}.wrap{padding:20px 18px}
 }
+
+/* ---- about / FAQ (readable by people, search engines and AI) ---- */
+.about{max-width:680px;margin:0 auto;padding:90px 28px 70px;color:var(--sub);font-size:14px;line-height:1.75;border-top:1px solid var(--line)}
+.about h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(30px,5vw,40px);line-height:1.1;color:var(--text);margin-bottom:14px}
+.about h2{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--main);font-weight:400;margin:38px 0 10px}
+.about p{margin-bottom:10px}
+.about strong{color:var(--text);font-weight:400}
+.about ul{list-style:none;display:grid;gap:4px}
+.about li::before{content:'·';color:var(--main);margin-right:10px}
+.about details{border-bottom:1px solid var(--line);padding:12px 0}
+.about summary{cursor:pointer;color:var(--text);list-style:none;display:flex;justify-content:space-between;gap:16px}
+.about summary::-webkit-details-marker{display:none}
+.about summary::after{content:'+';color:var(--sub);transition:transform .2s}
+.about details[open] summary::after{transform:rotate(45deg)}
+.about details p{margin:8px 0 2px}
+.about .fine{margin-top:40px;font-size:11px;color:var(--sub);opacity:.8}
+.scrollhint{color:var(--sub);font-size:11px}
+.scrollhint:hover{color:var(--text)}
 </style>
 </head>
 <body>
@@ -151,9 +190,9 @@ body.typing .hints,body.typing .gear,body.typing .langs{opacity:.12}
 
   <main>
     <div class="stage" id="stage">
-      <div class="kicker" id="tense"></div>
-      <div class="verb" id="verb"></div>
-      <div class="gloss" id="gloss"></div>
+      <div class="kicker" id="tense">présent</div>
+      <div class="verb" id="verb">parler</div>
+      <div class="gloss" id="gloss">to speak</div>
       <form class="row" id="row" autocomplete="off" novalidate>
         <span class="pron" id="pron"></span>
         <input id="ans" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="go" aria-label="your answer">
@@ -173,10 +212,39 @@ body.typing .hints,body.typing .gear,body.typing .langs{opacity:.12}
       <span class="left" id="left"><b id="sLeft">50</b> left today</span>
       <span title="mistakes waiting to come back"><b id="sRev">0</b>to review</span>
     </div>
-    <div class="hints"><span><b>enter</b> check</span><span><b>tab</b> reveal</span><span><b>1–9</b> accents</span></div>
+    <div class="hints"><span><b>enter</b> check</span><span><b>tab</b> reveal</span><span><b>1–9</b> accents</span><a class="scrollhint" href="#about">about ↓</a></div>
     <button class="gear" id="gear">settings</button>
   </footer>
 </div>
+<noscript><p style="text-align:center;padding:40px;color:#888">verble needs JavaScript to run the trainer. Below is what it does.</p></noscript>
+<section class="about" id="about" aria-labelledby="about-title">
+  <h1 id="about-title">Free French, Spanish &amp; German verb conjugation and vocabulary practice</h1>
+  <p><strong>verble</strong> is a calm, minimal trainer for learning to conjugate verbs and remember vocabulary.
+  You see a verb, a tense and a pronoun (for example <em>finir · futur simple · nous</em>), type the answer
+  (<em>finirons</em>) and press Enter. Right answers chime; mistakes come back a few questions later until they stick.</p>
+  <p><strong>50 verbs and 50 words free every day, no account.</strong> Unlimited practice is €2.99 a month, or €24.99 once for lifetime access.</p>
+
+  <h2>What you can practise</h2>
+  <ul>
+    <li><strong>French</strong>: 89 verbs, including être verbs, spelling-change verbs (manger, acheter, appeler) and irregulars, in 9 tenses from présent to conditionnel passé</li>
+    <li><strong>Spanish</strong>: 66 verbs, including stem-changing (dormir → durmió) and irregular verbs, in 11 tenses including both forms of the imperfect subjunctive</li>
+    <li><strong>German</strong>: 76 verbs, including strong, mixed, modal and separable verbs (stehe … auf), in 6 tenses from Präsens to Konjunktiv II</li>
+    <li><strong>Vocabulary</strong>: 257 everyday words in 10 topics (food, home, travel, people, time…), translated in either direction, with articles to learn noun gender</li>
+  </ul>
+
+  <h2>How it works</h2>
+  <ul>
+    <li>Choose your tenses, pronouns, topics and an easy, medium or hard difficulty</li>
+    <li>Type with accent shortcuts (1–9) or tap the accent keys on a phone; lenient mode ignores accents</li>
+    <li>Wrong answers resurface after 3–5 questions, then again later, until you get them right twice</li>
+    <li>Streaks, accuracy and progress are saved in your browser</li>
+  </ul>
+
+  <h2>Questions</h2>
+  <details><summary>Is verble free?</summary><p>Yes. You get 50 verbs and 50 words free every day, with no account. Unlimited practice is €2.99 a month or €24.99 once for lifetime access.</p></details><details><summary>Which languages can I practise on verble?</summary><p>French, Spanish and German. Each has its own verb trainer and vocabulary trainer, and English translations.</p></details><details><summary>Which French tenses does verble cover?</summary><p>Présent, imparfait, futur simple, conditionnel présent, subjonctif présent, passé composé, plus-que-parfait, futur antérieur and conditionnel passé, including être verbs with agreement (elle est allée).</p></details><details><summary>Which Spanish tenses does verble cover?</summary><p>Presente, pretérito indefinido, imperfecto, futuro, condicional, presente de subjuntivo, imperfecto de subjuntivo (both -ra and -se forms), pretérito perfecto, pluscuamperfecto, futuro perfecto and condicional perfecto, with stem-changing and irregular verbs.</p></details><details><summary>Which German tenses does verble cover?</summary><p>Präsens, Präteritum, Perfekt (with haben or sein), Plusquamperfekt, Futur I and Konjunktiv II, including strong, mixed, modal and separable verbs such as aufstehen.</p></details><details><summary>How does verble help me remember?</summary><p>Anything you get wrong comes back a few questions later, and again after that, until you get it right twice in a row. You can choose tenses, pronouns, topics and an easy, medium or hard difficulty.</p></details><details><summary>Do I need to type accents?</summary><p>Number keys 1–9 type accented letters (é, è, ç, ñ, ü, ß…), there are tap-to-type accent keys on phones, and a lenient mode accepts answers without accents.</p></details><details><summary>Does verble work on my phone?</summary><p>Yes. verble works in any modern browser on iPhone, Android, Mac and Windows, with nothing to install.</p></details>
+
+  <p class="fine">verble works in any modern browser on phone or computer.</p>
+</section>
 <div class="panel" id="panel"></div>
 <div class="wall" id="wall"><div class="card">
   <div class="k" id="wallK">daily limit</div>
@@ -938,7 +1006,7 @@ function miss(quiet){
 }
 
 /* ---------- game ---------- */
-function sizeInput(){inp.style.width=Math.max(9,inp.value.length+1)+'ch'}
+function sizeInput(){inp.style.width=(inp.value.length+1)+'ch'} // underline grows with the answer
 function insert(c,b){
   if(state!=='ask'||!typingTarget())return;const s=inp.selectionStart,e=inp.selectionEnd;
   inp.value=inp.value.slice(0,s)+c+inp.value.slice(e);inp.setSelectionRange(s+1,s+1);sizeInput();click();
@@ -1075,8 +1143,9 @@ inp.addEventListener('keydown',e=>{
   if(e.key==='Backspace')click(true);else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey)click();
 });
 document.addEventListener('mousemove',()=>document.body.classList.remove('typing'));
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();else if(document.activeElement!==inp&&(e.key.length===1||e.key==='Enter'))inp.focus()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();else if(document.activeElement!==inp&&scrollY<innerHeight*.5&&(e.key.length===1||e.key==='Enter'))inp.focus()});
 document.addEventListener('click',e=>{
+  if(e.target.closest('.about')||e.target.closest('a'))return;
   if(e.target.closest('button')||e.target.closest('.panel')||e.target.closest('.wall'))return;
   closePanel();
   if(TOUCH){
@@ -1145,10 +1214,10 @@ function reward(exact,fast,wasRev){
 const LIMIT=50;
 const CHECKOUT_URL=''; // paste your Stripe / Lemon Squeezy checkout link here
 const PLANS=[
-  {id:'year',name:'yearly',price:'€14.99',sub:'€1.25 / month',tag:'save 58%'},
+  {id:'life',name:'lifetime',price:'€24.99',sub:'pay once · yours forever',tag:'best value'},
   {id:'month',name:'monthly',price:'€2.99',sub:'cancel anytime'},
 ];
-let plan='year';
+let plan='life';
 function rollDaily(){const t=dayStr();if(!cfg.daily||cfg.daily.day!==t){cfg.daily={day:t,verbs:0,words:0};save()}}
 const mk=()=>W()?'words':'verbs';
 const usedNow=()=>{rollDaily();return cfg.daily[mk()]};
@@ -1164,7 +1233,7 @@ function renderPlans(){
   PLANS.forEach(p=>{const b=document.createElement('button');b.className='plan'+(plan===p.id?' on':'');
     b.innerHTML=(p.tag?`<span class="tag">${p.tag}</span>`:'')+`<div class="n">${p.name}</div><div class="p">${p.price}</div><div class="s">${p.sub}</div>`;
     b.onclick=()=>{plan=p.id;renderPlans()};box.appendChild(b)});
-  const p=PLANS.find(x=>x.id===plan);$('cta').textContent='go unlimited · '+p.price+(plan==='year'?' / year':' / month');
+  const p=PLANS.find(x=>x.id===plan);$('cta').textContent='go unlimited · '+p.price+(plan==='life'?' once':' / month');
 }
 function showWall(){
   state='wall';setAct();inp.blur();
@@ -1177,8 +1246,9 @@ function showWall(){
 function hideWall(){$('wall').classList.remove('open')}
 $('cta').onclick=()=>{
   if(CHECKOUT_URL){window.open(CHECKOUT_URL+(CHECKOUT_URL.includes('?')?'&':'?')+'plan='+plan,'_blank');return}
-  $('wallNote').innerHTML='demo: payments aren\'t connected yet · <u style="cursor:pointer" id="preview">preview unlimited</u>';
-  $('preview').onclick=()=>{cfg.pro=true;save();updateLeft();hideWall();state='ask';next()};
+  // until a checkout link is set: honest early-access unlock
+  $('wallNote').innerHTML='payments open soon, so unlimited is free for now · <u style="cursor:pointer" id="preview">unlock free</u>';
+  $('preview').onclick=()=>{cfg.pro='early';save();updateLeft();hideWall();state='ask';toast('unlimited unlocked');next()};
 };
 $('wallSwitch').onclick=()=>{hideWall();setMode(mk()==='verbs'?'words':'verbs')};
 $('wallLater').onclick=()=>{$('wallLater').textContent='see you tomorrow ✦'};
