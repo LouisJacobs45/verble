@@ -124,6 +124,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:5}
   -webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 12px color-mix(in srgb,var(--t4) 65%,transparent));animation:shimmer 1.1s linear 2}
 .pts small{display:block;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--sub);margin-top:2px}
 .pts.prac b{opacity:.55}
+.pts.rv b{font-size:17px;color:var(--main)}.pts.rv small{color:var(--main);opacity:.8}
 @keyframes ptsRise{0%{opacity:0;transform:translate(-50%,10px) scale(.55)}16%{opacity:1;transform:translate(-50%,-6px) scale(1.2)}30%{transform:translate(-50%,-10px) scale(1)}78%{opacity:1}100%{opacity:0;transform:translate(-50%,-58px) scale(1)}}
 @keyframes shimmer{from{background-position:110% 0}to{background-position:-110% 0}}
 /* hard streaks: the room warms up */
@@ -209,6 +210,7 @@ body.hot2 .verb{text-shadow:0 0 30px color-mix(in srgb,var(--t4) 30%,transparent
 .brow .bp{font-variant-numeric:tabular-nums;color:var(--text)}
 .brow .flair{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--bg);background:var(--main);padding:2px 7px 2px 6px;border-radius:999px;margin-left:8px;vertical-align:2px}
 .brow.me{background:var(--bg);box-shadow:inset 0 0 0 1px var(--main)}
+.bnote{font-size:11px;color:var(--sub);line-height:1.5;padding:2px 12px 10px}.bnote u{cursor:pointer;color:var(--main)}
 .bempty{color:var(--sub);font-size:12px;text-align:center;padding:18px 0}
 .bjoin p{font-size:13px;color:var(--sub);line-height:1.6}
 .bjoin p b{color:var(--text);font-weight:400}
@@ -1768,7 +1770,7 @@ function submit(){
   if(DC.active)return dcSubmit();
   const u=T(inp.value,1);if(!u){shake();return}
   const A=q.ans.map(a=>[a,T(a)]);
-  if(q.golden)lastScored=false;else countUse(); // golden questions don't use up a daily question
+  if(q.golden||q.rev)lastScored=false;else countUse(); // golden and review questions don't use up a daily question
   const s=S(),exact=A.find(([,n])=>n===u),near=A.find(([,n])=>bare(n)===bare(u)),good=exact||(near&&cfg.accents==='lenient');
   s.total++;
   if(good){
@@ -1784,7 +1786,7 @@ function submit(){
     typed=inp.value;state='done';setAct();updateStats();
   }
 }
-function reveal(){if(DC.active)return dcReveal();if(!q.golden)countUse();const s=S();s.total++;s.streak=0;schedule();onResult(false,q.tier||1);coolDown();updateStats();miss(true);fb.innerHTML=q.ans[0];typed=inp.value;state='done';setAct()}
+function reveal(){if(DC.active)return dcReveal();if(!q.golden&&!q.rev)countUse();const s=S();s.total++;s.streak=0;schedule();onResult(false,q.tier||1);coolDown();updateStats();miss(true);fb.innerHTML=q.ans[0];typed=inp.value;state='done';setAct()}
 
 let typed='';
 // never lock the input (iOS closes the keyboard on readonly fields); just refuse edits while not asking
@@ -1852,6 +1854,16 @@ function tick(){
   for(const p of parts){p.x+=p.vx;p.y+=p.vy;p.vy+=.09;p.vx*=.985;p.life-=p.dec;cx.globalAlpha=Math.max(0,p.life);cx.fillStyle=p.c;cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fill()}
   cx.globalAlpha=1;if(parts.length)requestAnimationFrame(tick);else{running=false;cx.clearRect(0,0,innerWidth,innerHeight)}
 }
+// a mistake you fixed: small and fixed, so getting it right first time always pays most
+function rewardReview(){
+  const ranked=(cfg.daily[dk()]||0)<LIMIT,P_=5;
+  rollDay();prog.today++;ptsRoll();if(ranked){pts.today+=P_;lbBonus(P_)}lbEndless(P_);save();
+  row.classList.add('ok');
+  if(cfg.sound!=='off'){bell(880,0,.08);bell(1318.5,.08,.06)}
+  const r=inp.getBoundingClientRect(),el=document.createElement('div');el.className='pts rv'+(ranked?'':' prac');
+  el.innerHTML=`<b>+${P_}</b><small>cleared ✓</small>`;el.style.left=(r.left+r.width/2)+'px';el.style.top=(r.top-30)+'px';
+  document.body.appendChild(el);setTimeout(()=>el.remove(),1600);burst(10,.8,0);chaseAfterAward();
+}
 let hot=0; // correct hard/super answers in a row
 function tierSound(t,h){
   if(cfg.sound==='off')return;
@@ -1870,10 +1882,11 @@ function setHot(bump){
 }
 function coolDown(){if(hot){hot=0;setHot()}}
 function reward(){
+  if(q.rev)return rewardReview();
   const t=q.tier||1,P_=q.golden?100:TIERS[t].pts,ranked=q.golden||lastScored;
   rollDay();
   if(prog.last!==prog.day){prog.days=prog.last===dayStr(-1)?prog.days+1:1;prog.last=prog.day}
-  prog.today++;ptsRoll();if(ranked)pts.today+=P_;if(q.golden)lbBonus(P_);else lbAward(P_);
+  prog.today++;ptsRoll();if(ranked)pts.today+=P_;if(q.golden)lbBonus(P_);else lbAward(P_);lbEndless(P_);
   if(t>=3)hot++;save();
   row.classList.add('t'+t);
   tierSound(q.golden?4:t,t>=3?hot:0);floatPts(P_,q.golden?4:t,ranked);burst(q.golden?64:[0,8,14,24,42][t],q.golden?2.1:[0,.8,1,1.3,1.75][t],q.golden?4:t);
@@ -1927,7 +1940,7 @@ function dcSubmit(){
 }
 function dcReveal(){const d=dcState();d.i++;renderBar();d.res.push('r');d.time+=Math.min((performance.now()-q.t0)/1000,60);save();miss(true);fb.innerHTML=q.ans[0];typed=inp.value;state='done';setAct()}
 function dcFinish(){
-  const d=dcState();DC.active=false;d.done=true;ptsRoll();pts.today+=d.pts;lbBonus(d.pts);save();
+  const d=dcState();DC.active=false;d.done=true;ptsRoll();pts.today+=d.pts;lbBonus(d.pts);lbEndless(d.pts);save();
   renderAll();dcResults(true);
 }
 function dcText(){
@@ -2007,7 +2020,14 @@ function showWall(){
   $('wallSwitch').style.display=left>0?'':'none';$('wallSwitch').textContent=`practise ${other} instead · ${left} left`;
   $('wallNote').textContent='';renderPlans();$('wall').classList.add('open');
 }
-function hideWall(){$('wall').classList.remove('open')}
+let wallCustom=false;
+function openPlans(){ // same plans card, opened by choice rather than by hitting the limit
+  wallCustom=true;state='wall';setAct();inp.blur();
+  $('wallK').textContent='unlimited';$('wallH').textContent='Climb the endless board.';
+  $('wallP').textContent='Unlimited practice in every language. On the endless board, every answer counts.';
+  $('wallSwitch').style.display='none';$('wallLater').textContent='not now';$('wallNote').textContent='';renderPlans();$('wall').classList.add('open');
+}
+function hideWall(){$('wall').classList.remove('open');if(wallCustom){wallCustom=false;$('wallK').textContent='daily limit';$('wallLater').textContent='come back tomorrow'}}
 $('cta').onclick=()=>{
   if(CHECKOUT_URL){window.open(CHECKOUT_URL+(CHECKOUT_URL.includes('?')?'&':'?')+'plan='+plan,'_blank');return}
   // until a checkout link is set: honest early-access unlock
@@ -2015,7 +2035,7 @@ $('cta').onclick=()=>{
   $('preview').onclick=()=>{cfg.pro='early';save();updateLeft();hideWall();state='ask';toast('unlimited unlocked');next()};
 };
 $('wallSwitch').onclick=()=>{hideWall();setMode(mk()==='verbs'?'words':'verbs')};
-$('wallLater').onclick=()=>{$('wallLater').textContent='see you tomorrow ✦'};
+$('wallLater').onclick=()=>{if(wallCustom){hideWall();state='ask';setAct();if(!TOUCH)inp.focus();return}$('wallLater').textContent='see you tomorrow ✦'};
 const _us=updateStats;updateStats=function(q){_us(q);updateLeft()};
 
 /* ---------- leaderboard (optional; the site works fully without it) ---------- */
@@ -2036,6 +2056,7 @@ const utcMonday=()=>{const d=new Date();const k=(d.getUTCDay()+6)%7;d.setUTCDate
 function lbRoll(){
   const t=utcDay(),m=utcMonday(),k=cfg.lang;
   const x=lb.L[k]||(lb.L[k]={day:'',today:0,week:0,weekOf:'',total:0,pending:0});
+  if(x.endless==null){x.endless=x.total||0;x.pendingE=0} // endless = every point, practice included
   if(x.day!==t){x.day=t;x.today=0}if(x.weekOf!==m){x.weekOf=m;x.week=0}LS=x;
 }
 
@@ -2043,6 +2064,7 @@ function lbRoll(){
 function lbBonus(p){ // golden questions and the daily challenge: on the board, outside the 50
   if(!lb.id)return 0;lbRoll();LS.today+=p;LS.week+=p;LS.total+=p;LS.pending+=p;save();lbSchedule();return p;
 }
+function lbEndless(p){if(!lb.id)return;lbRoll();LS.endless+=p;LS.pendingE+=p;save();lbSchedule()}
 function lbAward(p){
   if(!lb.id||!lastScored)return 0;
   lbRoll();LS.today+=p;LS.week+=p;LS.total+=p;LS.pending+=p;save();lbSchedule();
@@ -2095,6 +2117,7 @@ async function rpcL(fn,args){
 }
 function lbSchedule(){clearTimeout(flushT);flushT=setTimeout(lbFlush,6000)}
 async function lbFlush(){
+  lbFlushE();
   if(!LB_LIVE||!lb.id||lb.id==='preview'||flushing)return;
   const k=Object.keys(lb.L).find(x=>lb.L[x].pending>0&&(!lbOldSchema||x==='fr'));if(!k)return; // send each language's points to its own board
   flushing=true;const x=lb.L[k],n=Math.min(x.pending,1500);
@@ -2102,12 +2125,21 @@ async function lbFlush(){
   catch(e){lbLastErr=e.message;if(/not allowed/.test(e.message)){lb.id=null;save()}else setTimeout(lbFlush,30000)} // offline: retry later, points are kept
   finally{flushing=false}
 }
+let flushingE=false,lbNoEndless=false;
+async function lbFlushE(){ // endless points go up separately (needs leaderboard-update-4.sql)
+  if(!LB_LIVE||!lb.id||lb.id==='preview'||flushingE||lbNoEndless)return;
+  const k=Object.keys(lb.L).find(x=>lb.L[x].pendingE>0);if(!k)return;
+  flushingE=true;const x=lb.L[k],n=Math.min(x.pendingE,1500);
+  try{await rpc('lb_add_endless',{p_id:lb.id,p_secret:lb.secret,p_points:n,p_lang:k});x.pendingE-=n;save();if(Object.values(lb.L).some(y=>y.pendingE>0))lbSchedule()}
+  catch(e){if(noFn(e))lbNoEndless=true;else setTimeout(lbFlushE,30000)}
+  finally{flushingE=false}
+}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')lbFlush()});
 addEventListener('pagehide',lbFlush);
 
 const SAMPLE=[['camille',3920],['mateo_r',3410],['lena.k',2980],['sofia',2550],['jules',2140],['noah_fr',1730],['ines',1290],['max',860],['eva',540]];
 function sampleRows(){
-  lbRoll();const scale={today:.12,week:1,all:6.5}[lbTab],mine={today:LS.today,week:LS.week,all:LS.total}[lbTab];
+  lbRoll();const scale={today:.12,week:1,all:6.5,endless:11}[lbTab],mine={today:LS.today,week:LS.week,all:LS.total,endless:LS.endless}[lbTab];
   const rows=SAMPLE.map(([n,p])=>({name:n,points:Math.round(p*scale),is_me:false}));
   if(lb.id)rows.push({name:lb.name,points:mine,is_me:true});
   rows.sort((a,b)=>b.points-a.points);let r=0,prev=null;
@@ -2117,13 +2149,20 @@ async function lbLoad(){
   lbErr='';
   if(!LB_LIVE){lbRows=sampleRows();lbRender();return}
   lbBusy=true;lbRender();
-  try{await lbFlush();lbRows=await rpcL('lb_top',{p_period:lbTab,p_id:lb.id&&lb.id!=='preview'?lb.id:null,p_lang:cfg.lang});
-    if(lbOldSchema&&cfg.lang!=='fr'){lbRows=[];lbErr="this language's board opens once the latest leaderboard update is run · your points are saved"}}
-  catch(e){lbErr=`couldn't reach the leaderboard (${esc(e.message).slice(0,80)}) · your points are saved and will sync`;lbRows=lbRows||[]}
+  const me=lb.id&&lb.id!=='preview'?lb.id:null;
+  try{await lbFlush();
+    if(lbTab==='endless'){
+      if(lbNoEndless)throw{soon:1};
+      try{lbRows=await rpc('lb_top_endless',{p_id:me,p_lang:cfg.lang})}catch(e){if(noFn(e)){lbNoEndless=true;throw{soon:1}}throw e}
+    }else{
+      lbRows=await rpcL('lb_top',{p_period:lbTab,p_id:me,p_lang:cfg.lang});
+      if(lbOldSchema&&cfg.lang!=='fr'){lbRows=[];lbErr="this language's board opens once the latest leaderboard update is run · your points are saved"}
+    }}
+  catch(e){if(e&&e.soon){lbRows=[];lbErr='the endless board opens once leaderboard-update-4 is run · your points are saved';lbBusy=false;lbRender();return}lbErr=`couldn't reach the leaderboard (${esc(e.message).slice(0,80)}) · your points are saved and will sync`;lbRows=lbRows||[]}
   lbBusy=false;lbRender();
 }
 function lbCarry(){ // points you earned today before joining count too
-  ptsRoll();lbRoll();const c=Math.max(0,pts.today-LS.today);if(c){LS.today+=c;LS.week+=c;LS.total+=c;LS.pending+=c;lbSchedule()}
+  ptsRoll();lbRoll();const c=Math.max(0,pts.today-LS.today);if(c){LS.today+=c;LS.week+=c;LS.total+=c;LS.pending+=c;LS.endless+=c;LS.pendingE+=c;lbSchedule()}
 }
 async function lbJoin(name){
   name=name.trim();const msg=$('bmsg');
@@ -2138,11 +2177,13 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 function lbRender(){
   if(!lbOpen)return;lbRoll();document.querySelector('.bhead .t').innerHTML=`leaderboard <small>${FLAG[cfg.lang]} ${L().name}</small>`;
   $('btabs').innerHTML='';
-  [['today','today'],['week','this week'],['all','all time']].forEach(([k,n])=>{const b=btn(n,lbTab===k,()=>{lbTab=k;lbRows=null;lbLoad()});$('btabs').appendChild(b)});
+  [['today','today'],['week','this week'],['all','all time'],['endless','endless']].forEach(([k,n])=>{const b=btn(n,lbTab===k,()=>{lbTab=k;lbRows=null;lbLoad()});$('btabs').appendChild(b)});
   const body=$('bbody');
   const rowsHtml=rows=>rows.map(r=>`<div class="brow${r.is_me?' me':''}${r.rank<=3?' top':''}"><span class="br">${r.rank}</span><span class="bn">${esc(r.name)}${FLAIR[String(r.name).toLowerCase()]?` <span class="flair">✦ ${FLAIR[String(r.name).toLowerCase()]}</span>`:''}${r.is_me?' <i>you</i>':''}</span><span class="bp">${Number(r.points).toLocaleString('en')}</span></div>`).join('');
+  const note=lbTab==='endless'?`<div class="bnote">every point counts here, practice included · no daily cap${cfg.pro?'':' · <u id="bup">go unlimited to keep climbing</u>'}</div>`:'';
   let list=lbBusy&&!lbRows?'<div class="bempty">loading…</div>':lbRows&&lbRows.length?rowsHtml(lbRows):'<div class="bempty">no scores yet · be the first</div>';
   if(lbErr)list=`<div class="bempty">${lbErr}</div>`+(lbRows&&lbRows.length?list:'');
+  list=note+list;
   if(!lb.id){
     body.innerHTML=`<div class="bjoin"><p>Pick a username to start earning <b>ranked points</b>. Only your first 50 verbs and 50 words each day count, so free and unlimited players compete on equal terms.</p>
       <form id="bform" class="bform" autocomplete="off"><input id="bname" maxlength="16" placeholder="username" spellcheck="false" autocapitalize="off"><button type="submit">join</button></form>
@@ -2158,6 +2199,7 @@ function lbRender(){
      <em>harder questions earn more, and verble adapts to you. Your first 50 verbs and 50 words each day go on the board.</em></div>`+
    (lb.id?`<button class="bleave" id="bleave">${leaveArm?'tap again to stop logging':'signed in as '+esc(lb.name)+' · stop logging'}</button>`:'')+
    (LB_LIVE?'':'<div class="bprev">preview · sample players, not live yet</div>');
+  const up=$('bup');if(up)up.onclick=()=>{closeBoard();openPlans()};
   const lv=$('bleave');if(lv)lv.onclick=()=>{if(!leaveArm){leaveArm=true;lbRender();return}leaveArm=false;lb.id=null;save();lbRows=null;chaseRows=null;lbLoad();updateStats(true)};
 }
 function openBoard(){lbOpen=true;leaveArm=false;closePanel();inp.blur();$('board').classList.add('open');lbRows=null;lbLoad()}
