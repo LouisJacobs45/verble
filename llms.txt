@@ -1,0 +1,23 @@
+# verble
+
+> verble is a minimal web app for practising French, Spanish and German verb conjugation and vocabulary. Free to use for 50 verbs and 50 words a day with no account (unlimited from €2.99/month or €24.99 once); it runs in any browser on phone or computer. Optional leaderboard.
+
+URL: https://louisjacobs45.github.io/verble/
+
+## What it does
+- Verb mode: shows a verb, a tense and a pronoun (e.g. "finir · futur simple · nous"); the learner types the conjugation ("finirons").
+- Words mode: translate everyday words to or from English; nouns can require the article to practise gender (e.g. "der Hund", "la mer").
+- Mistakes come back a few questions later, and again later, until answered correctly twice in a row.
+- Easy / medium / hard difficulty, choice of tenses, pronouns and topics, accent shortcuts and a lenient-accent mode.
+
+## Coverage
+- French: 138 verbs (including the 100 most common), 9 tenses (présent, imparfait, futur simple, conditionnel, subjonctif, passé composé, plus-que-parfait, futur antérieur, conditionnel passé), être agreement.
+- Spanish: 123 verbs (including the 100 most common), 11 tenses incl. pretérito, imperfecto, subjuntivo (presente and imperfecto -ra/-se) and compound tenses; stem-changing and irregular verbs.
+- German: 125 verbs (including the 100 most common), 6 tenses (Präsens, Präteritum, Perfekt, Plusquamperfekt, Futur I, Konjunktiv II); strong, mixed, modal and separable verbs.
+- Vocabulary: 532 words in 14 topics (basics, food, home, people, body, nature, time, travel, adjectives, verbs, school, work, clothes, hobbies), three difficulty levels.
+
+## Good for
+Students preparing for exams (bac, DELF, DELE, Goethe), learners who want quick daily drills, and anyone who prefers a calm, distraction-free alternative to gamified apps.
+
+## More
+- About page with full feature list and FAQ: https://louisjacobs45.github.io/verble/about.html

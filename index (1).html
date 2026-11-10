@@ -1,0 +1,1764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>verble</title>
+<meta name="description" content="verble is a free, minimal web app for practising French, Spanish and German verb conjugation and vocabulary. Type the answer, hear a soft chime, and mistakes come back until you know them. No account needed.">
+<link rel="canonical" href="https://louisjacobs45.github.io/verble/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#15171c">
+<meta name="application-name" content="verble">
+<meta name="keywords" content="French verb conjugation practice, Spanish conjugation trainer, German verb practice, conjugaison, vocabulary trainer, passé composé, subjonctif, pretérito, Perfekt, language learning">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2315171c'/%3E%3Ctext x='29' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' fill='%23e8e4da' text-anchor='middle'%3Ev%3C/text%3E%3Ccircle cx='47' cy='43' r='4' fill='%23f2a57c'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="verble">
+<meta property="og:title" content="verble — calm, minimal verb & vocab practice">
+<meta property="og:description" content="Free French, Spanish and German conjugation and vocabulary trainer. Type, chime, repeat.">
+<meta property="og:url" content="https://louisjacobs45.github.io/verble/">
+<meta property="og:image" content="https://louisjacobs45.github.io/verble/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="verble — calm, minimal verb & vocab practice">
+<meta name="twitter:description" content="Free French, Spanish and German conjugation and vocabulary trainer.">
+<meta name="twitter:image" content="https://louisjacobs45.github.io/verble/og.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "verble", "url": "https://louisjacobs45.github.io/verble/", "description": "verble is a free, minimal web app for practising French, Spanish and German verb conjugation and vocabulary. Type the answer, hear a soft chime, and mistakes come back until you know them. No account needed.", "applicationCategory": "EducationalApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "inLanguage": "en", "isAccessibleForFree": true, "image": "https://louisjacobs45.github.io/verble/og.png", "educationalUse": "practice", "learningResourceType": "drill and practice", "teaches": ["French verb conjugation", "Spanish verb conjugation", "German verb conjugation", "French vocabulary", "Spanish vocabulary", "German vocabulary"], "about": [{"@type": "Language", "name": "French"}, {"@type": "Language", "name": "Spanish"}, {"@type": "Language", "name": "German"}], "featureList": ["Verb conjugation drills across 9+ tenses per language", "Vocabulary mode with 500+ words in 14 topics", "Mistakes resurface until learned (spaced review)", "Easy, medium and hard difficulty", "Accent shortcuts and lenient accent mode", "No account required"], "offers": [{"@type": "Offer", "price": "0", "priceCurrency": "EUR", "name": "Free (50 verbs + 50 words per day)"}, {"@type": "Offer", "price": "2.99", "priceCurrency": "EUR", "name": "Unlimited monthly"}, {"@type": "Offer", "price": "24.99", "priceCurrency": "EUR", "name": "Unlimited lifetime"}]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#15171c;--surface:#1c1f25;--line:#2b2f37;--sub:#5f6573;--text:#e8e4da;--main:#f2a57c;--err:#e2727a}
+[data-theme=linen]{--bg:#f3f0e8;--surface:#ebe7dd;--line:#dbd5c8;--sub:#a29b8c;--text:#2c2a26;--main:#2f6e5b;--err:#c2513d}
+[data-theme=moss]{--bg:#171c19;--surface:#1e2420;--line:#2b332e;--sub:#617266;--text:#e3e8de;--main:#b7d68c;--err:#e48a76}
+[data-theme=dusk]{--bg:#1f1d2b;--surface:#262434;--line:#35314a;--sub:#6a6487;--text:#e7e2f4;--main:#c7a8f4;--err:#f08aa0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',ui-monospace,monospace;min-height:100vh;transition:background .5s,color .5s;-webkit-font-smoothing:antialiased}
+::selection{background:var(--main);color:var(--bg)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.wrap{max-width:1040px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:26px 28px 22px}
+
+header{display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;align-items:center;gap:18px}
+.logo{font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;letter-spacing:.2px;line-height:1;user-select:none;padding:0}
+.logo i{font-style:normal;color:var(--main)}
+.langs{display:flex;gap:4px;font-size:12px;letter-spacing:.06em}
+.langs button{color:var(--sub);padding:6px 10px;position:relative;transition:color .2s}
+.langs button:hover{color:var(--text)}
+.langs button.on{color:var(--text)}
+.langs button.on::after{content:'';position:absolute;left:50%;bottom:0;width:4px;height:4px;border-radius:50%;background:var(--main);transform:translateX(-50%)}
+
+main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 0 24px}
+.stage{display:flex;flex-direction:column;align-items:center;width:100%;transition:opacity .18s ease,transform .18s ease}
+.stage.out{opacity:0;transform:translateY(6px)}
+.kicker .again{color:var(--text);opacity:.7}
+.kicker{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--main);min-height:14px}
+.verb{font-family:'Instrument Serif',serif;font-size:clamp(46px,8vw,72px);line-height:1.05;margin-top:12px;text-align:center}
+.gloss{font-size:13px;color:var(--sub);margin-top:8px;min-height:17px;text-align:center}
+.row{display:flex;justify-content:center;align-items:baseline;gap:.55ch;margin-top:52px;font-size:clamp(21px,3.4vw,29px);max-width:100%}
+.pron{color:var(--sub);white-space:nowrap}
+#ans{font:inherit;color:var(--text);background:none;border:0;outline:0;caret-color:var(--main);width:2ch;min-width:2ch;max-width:80vw;
+  padding:0 0 8px;border-bottom:1px solid var(--line);transition:color .2s,border-color .25s,width .12s ease}
+#ans:focus{border-bottom-color:var(--sub)}
+.row.ok #ans{color:var(--main);border-bottom-color:var(--main)}
+.row.bad #ans{color:var(--err);border-bottom-color:var(--err)}
+.shake{animation:shake .32s ease}
+@keyframes shake{20%{transform:translateX(-5px)}45%{transform:translateX(4px)}70%{transform:translateX(-2px)}100%{transform:none}}
+.feedback{min-height:26px;margin-top:20px;font-size:clamp(15px,2.3vw,18px);color:var(--sub);text-align:center}
+.feedback .d{color:var(--text);text-decoration:underline;text-decoration-color:var(--main);text-underline-offset:5px}
+.feedback .tag{font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-left:12px}
+
+.act{margin-top:14px;font-size:12px;letter-spacing:.08em;color:var(--sub);padding:8px 16px;border:1px solid var(--line);border-radius:999px;
+  visibility:hidden;transition:color .15s,border-color .15s;-webkit-tap-highlight-color:transparent}
+@media (hover:hover){.act:hover{color:var(--text);border-color:var(--sub)}}
+.act.show{visibility:visible}
+@media (hover:none){.act.touch{visibility:visible}}
+.keys button,.act,.langs button,.chips button,.gear,.logo{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+/* ---- reward layer ---- */
+.xpbar{position:fixed;top:0;left:0;right:0;height:3px;z-index:4}
+.xpbar i{display:block;height:100%;width:0;background:var(--main);box-shadow:0 0 14px var(--main);transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.xpbar.up i{animation:barflash 1s ease}
+@keyframes barflash{0%,100%{opacity:1}30%{opacity:.25}60%{opacity:1;filter:brightness(1.6)}}
+.lv{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);user-select:none;transition:color .3s}
+.lv b{font-weight:400;color:var(--text)}
+.lv.up{color:var(--main)}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:5}
+.float{position:fixed;pointer-events:none;z-index:6;white-space:nowrap;text-align:center;transform:translateX(-50%);animation:rise 1.1s ease-out forwards}
+.float b{display:block;font-size:17px;font-weight:500;color:var(--main)}
+.float small{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--sub);margin-top:2px}
+.float.soft b{color:var(--sub);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:400}
+@keyframes rise{0%{opacity:0;transform:translate(-50%,8px) scale(.85)}15%{opacity:1;transform:translate(-50%,0) scale(1.1)}30%{transform:translate(-50%,-6px) scale(1)}100%{opacity:0;transform:translate(-50%,-44px)}}
+.row.ok #ans{animation:okpop .4s ease}
+@keyframes okpop{35%{transform:scale(1.06);text-shadow:0 0 20px var(--main)}}
+.toast{position:fixed;top:78px;left:50%;transform:translate(-50%,-8px);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--main);
+  border:1px solid var(--main);border-radius:999px;padding:7px 16px;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:6;background:var(--bg)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.combo.off,.ctx.off,.left.off{display:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.kh{font-size:12px;color:var(--sub);padding:5px 11px}.kh b{color:var(--text);font-weight:400}
+.chips a{font-size:12px;padding:5px 11px;border-radius:999px;color:var(--sub);text-decoration:none}.chips a:hover{color:var(--text)}
+.combo b{color:var(--main)!important}
+.goal{display:inline-flex;align-items:center;gap:6px}
+.goal svg{display:block}
+#ring{transition:stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1)}
+.goal.done b{color:var(--main)}
+/* ---- leaderboard ---- */
+.fbtns{justify-self:end;display:flex;gap:18px}
+.board{position:fixed;inset:0;z-index:7;display:flex;align-items:center;justify-content:center;padding:20px;
+  background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .25s}
+.board.open{opacity:1;pointer-events:auto}
+.bcard{width:min(480px,100%);max-height:min(720px,calc(100vh - 40px));display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);
+  border-radius:20px;padding:22px 22px 16px;transform:translateY(8px);transition:transform .25s}
+.board.open .bcard{transform:none}
+.bhead{display:flex;justify-content:space-between;align-items:baseline}
+.bhead .t{font-family:'Instrument Serif',serif;font-size:32px;line-height:1}
+.bhead button{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--sub);padding:4px}
+.bhead button:hover{color:var(--text)}
+.tabs{display:flex;gap:4px;margin:14px 0 12px}
+.tabs button{font-size:12px;padding:5px 12px;border-radius:999px;border:1px solid transparent;color:var(--sub);transition:color .15s,border-color .15s}
+.tabs button:hover{color:var(--text)}
+.tabs button.on{color:var(--text);border-color:var(--line);background:var(--bg)}
+#bbody{overflow:auto;min-height:120px;margin:0 -6px;padding:0 6px}
+.blist{display:flex;flex-direction:column;gap:2px}
+.blist.dim{opacity:.55;margin-top:14px}
+.brow{display:grid;grid-template-columns:34px 1fr auto;align-items:baseline;padding:9px 12px;border-radius:10px;font-size:14px;transition:background .2s}
+.brow .br{color:var(--sub);font-size:12px}
+.brow.top .br{color:var(--main)}
+.brow .bn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow .bn i{font-style:normal;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--main);margin-left:8px}
+.brow .bp{font-variant-numeric:tabular-nums;color:var(--text)}
+.brow.me{background:var(--bg);box-shadow:inset 0 0 0 1px var(--main)}
+.bempty{color:var(--sub);font-size:12px;text-align:center;padding:18px 0}
+.bjoin p{font-size:13px;color:var(--sub);line-height:1.6}
+.bjoin p b{color:var(--text);font-weight:400}
+.bform{display:flex;gap:8px;margin-top:14px}
+.bform input{flex:1;font:inherit;font-size:15px;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:0;caret-color:var(--main)}
+.bform input:focus{border-color:var(--sub)}
+.bform button{background:var(--main);color:var(--bg);border-radius:10px;padding:0 18px;font-size:13px;letter-spacing:.06em}
+.bmsg{font-size:11px;color:var(--main);min-height:16px;margin-top:6px}
+#bfoot{border-top:1px solid var(--line);margin-top:12px;padding-top:10px;font-size:11px;color:var(--sub)}
+.bstat{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.bstat b{color:var(--text);font-weight:400}
+.bhow summary{cursor:pointer;list-style:none;padding:4px 0}
+.bhow summary::-webkit-details-marker{display:none}
+.bhow summary:hover{color:var(--text)}
+.bhow ul{list-style:none;display:grid;gap:3px;padding:4px 0 6px;line-height:1.5}
+.bhow li::before{content:'·';color:var(--main);margin-right:8px}
+.bhow b{color:var(--text);font-weight:400}
+.bleave{font-size:11px;color:var(--sub);padding:6px 0}
+.bleave:hover{color:var(--text)}
+.bprev{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--main);opacity:.8;margin-top:4px}
+/* ---- daily limit / paywall ---- */
+.left{font-size:11px;color:var(--sub)}
+.left b{font-weight:400;color:var(--text)}
+.left.low b{color:var(--main)}
+.wall{position:fixed;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;padding:20px;
+  background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .3s}
+.wall.open{opacity:1;pointer-events:auto}
+.card{width:min(440px,100%);background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:30px 26px 22px;text-align:center;transform:translateY(8px);transition:transform .3s}
+.wall.open .card{transform:none}
+.card .k{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--main)}
+.card h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:38px;line-height:1.05;margin:10px 0 8px}
+.card p{font-size:13px;color:var(--sub);line-height:1.6}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:22px 0 14px}
+.plan{border:1px solid var(--line);border-radius:14px;padding:14px 10px 12px;text-align:center;position:relative;transition:border-color .15s}
+.plan.on{border-color:var(--main)}
+.plan .tag{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:var(--main);color:var(--bg);padding:3px 8px;border-radius:999px;white-space:nowrap}
+.plan .n{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
+.plan .p{font-family:'Instrument Serif',serif;font-size:30px;color:var(--text);margin-top:4px}
+.plan .s{font-size:11px;color:var(--sub);margin-top:2px}
+.cta{width:100%;background:var(--main);color:var(--bg);border-radius:12px;padding:13px;font-size:13px;letter-spacing:.06em;transition:filter .15s}
+.cta:hover{filter:brightness(1.08)}
+.alt{display:flex;flex-direction:column;gap:2px;margin-top:12px;font-size:12px;color:var(--sub)}
+.alt button{padding:6px;color:var(--sub)}.alt button:hover{color:var(--text)}
+.alt .note{font-size:11px;color:var(--main);min-height:16px}
+.perks{font-size:12px;color:var(--sub);margin-top:4px;line-height:1.8}
+.perks b{color:var(--text);font-weight:400}
+.keys{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-top:46px}
+.keys button{border:1px solid var(--line);border-radius:8px;min-width:38px;padding:6px 8px 5px;color:var(--text);font-size:15px;position:relative;transition:border-color .15s,color .15s}
+.keys button sup{position:absolute;top:2px;left:5px;font-size:8px;color:var(--sub)}
+.keys button.flash{border-color:var(--main);color:var(--main)}
+@media (hover:hover){.keys button:hover{border-color:var(--main);color:var(--main)}}
+
+footer{display:grid;grid-template-columns:1fr auto;align-items:center;font-size:12px;color:var(--sub);gap:16px}
+.stats{display:flex;gap:18px;user-select:none}
+.stats b{color:var(--text);font-weight:400;margin-right:5px;display:inline-block;transition:transform .2s,color .2s}
+.stats b.pop{transform:scale(1.2);color:var(--main)}
+.hints{display:flex;gap:16px;font-size:11px;transition:opacity .35s}
+.hints span b{font-weight:400;color:var(--text)}
+.gear{justify-self:end;color:var(--sub);padding:6px 2px;letter-spacing:.06em;transition:color .2s,opacity .35s}
+.gear:hover,.gear.on{color:var(--text)}
+body.typing .hints,body.typing .gear,body.typing .langs{opacity:.12}
+
+.panel{position:fixed;left:50%;bottom:62px;transform:translate(-50%,10px);width:min(760px,calc(100vw - 32px));background:var(--surface);
+  border:1px solid var(--line);border-radius:16px;padding:18px 20px;display:grid;gap:10px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s,background .5s;z-index:5}
+.panel.open{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+.prow{display:grid;grid-template-columns:84px 1fr;align-items:baseline;gap:10px}
+.prow>span{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--sub)}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chips button{font-size:12px;padding:5px 11px;border-radius:999px;border:1px solid transparent;color:var(--sub);transition:color .15s,border-color .15s}
+.chips button:hover{color:var(--text)}
+.chips button.on{color:var(--text);border-color:var(--line);background:var(--bg)}
+@media (max-width:600px){.lv{display:none}.brand{gap:12px}.langs{gap:0}.langs button{padding:6px 7px}.keys{gap:5px}.keys button{min-width:32px;padding:6px 6px 5px}}
+@media (max-width:700px){
+  footer{grid-template-columns:1fr auto}
+  .stats{gap:12px}.prow{grid-template-columns:1fr}.wrap{padding:20px 18px}
+}
+
+/* ---- about / FAQ (readable by people, search engines and AI) ---- */
+.about{max-width:680px;margin:0 auto;padding:90px 28px 70px;color:var(--sub);font-size:14px;line-height:1.75;border-top:1px solid var(--line)}
+.about h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(30px,5vw,40px);line-height:1.1;color:var(--text);margin-bottom:14px}
+.about h2{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--main);font-weight:400;margin:38px 0 10px}
+.about p{margin-bottom:10px}
+.about strong{color:var(--text);font-weight:400}
+.about ul{list-style:none;display:grid;gap:4px}
+.about li::before{content:'·';color:var(--main);margin-right:10px}
+.about details{border-bottom:1px solid var(--line);padding:12px 0}
+.about summary{cursor:pointer;color:var(--text);list-style:none;display:flex;justify-content:space-between;gap:16px}
+.about summary::-webkit-details-marker{display:none}
+.about summary::after{content:'+';color:var(--sub);transition:transform .2s}
+.about details[open] summary::after{transform:rotate(45deg)}
+.about details p{margin:8px 0 2px}
+.about .fine{margin-top:40px;font-size:11px;color:var(--sub);opacity:.8}
+.scrollhint{color:var(--sub);font-size:11px}
+.scrollhint:hover{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="xpbar" id="xpbar"><i id="xpfill"></i></div>
+<canvas id="fx"></canvas>
+<div class="toast" id="toast"></div>
+<h1 class="sr">verble: French, Spanish &amp; German verb conjugation and vocabulary practice</h1>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <button class="logo" id="logo" title="switch mode">verble<i>.</i></button>
+      <nav class="langs" id="modes"></nav>
+      <span class="lv" id="lv">lv <b id="lvn">1</b></span>
+    </div>
+    <nav class="langs" id="langs"></nav>
+  </header>
+
+  <main>
+    <div class="stage" id="stage">
+      <div class="kicker" id="tense">présent</div>
+      <div class="verb" id="verb">parler</div>
+      <div class="gloss" id="gloss">to speak</div>
+      <form class="row" id="row" autocomplete="off" novalidate>
+        <span class="pron" id="pron"></span>
+        <input id="ans" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="go" aria-label="your answer">
+      </form>
+      <div class="feedback" id="fb"></div>
+      <button class="act" id="act" type="button"></button>
+    </div>
+    <div class="keys" id="keys"></div>
+  </main>
+
+  <footer>
+    <div class="stats">
+      <span><b id="sStreak">0</b>streak</span>
+      <span class="goal" id="goal" title="daily goal"><svg width="16" height="16" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="var(--line)" stroke-width="5"/><circle id="ring" cx="18" cy="18" r="14" fill="none" stroke="var(--main)" stroke-width="5" stroke-linecap="round" stroke-dasharray="87.96" stroke-dashoffset="87.96" transform="rotate(-90 18 18)"/></svg><span><b id="sGoal">0</b>/30</span></span>
+      <span class="combo off" id="comboWrap"><b id="sCombo">×1</b>combo</span>
+      <span class="ctx" id="revWrap" title="mistakes waiting to come back"><b id="sRev">0</b>to review</span>
+      <span class="left" id="left"><b id="sLeft">50</b> left</span>
+    </div>
+    <div class="fbtns"><button class="gear" id="lbBtn">leaderboard</button><button class="gear" id="gear">settings</button></div>
+  </footer>
+</div>
+
+<div class="panel" id="panel"></div>
+<div class="board" id="board" aria-label="leaderboard"><div class="bcard">
+  <div class="bhead"><span class="t">leaderboard</span><button id="bclose">esc</button></div>
+  <div class="tabs" id="btabs"></div>
+  <div id="bbody"></div>
+  <div id="bfoot"></div>
+</div></div>
+<div class="wall" id="wall"><div class="card">
+  <div class="k" id="wallK">daily limit</div>
+  <h2 id="wallH">That's 50 for today.</h2>
+  <p id="wallP">Nice work. Your free questions come back at midnight.</p>
+  <div class="plans" id="plans"></div>
+  <div class="perks"><b>unlimited</b> verbs &amp; words · all languages · keeps your streaks going</div>
+  <button class="cta" id="cta" style="margin-top:16px">go unlimited</button>
+  <div class="alt">
+    <span class="note" id="wallNote"></span>
+    <button id="wallSwitch"></button>
+    <button id="wallLater">come back tomorrow</button>
+  </div>
+</div></div>
+
+<script>
+/*ENGINE*/
+const lastRep=(s,a,b)=>{const i=s.lastIndexOf(a);return i<0?s:s.slice(0,i)+b+s.slice(i+a.length)};
+const alts=s=>s.split('|');
+const pick1=a=>a[Math.floor(Math.random()*a.length)];
+
+/* ================= FRENCH ================= */
+const FR=(()=>{
+const IMP=['ais','ais','ait','ions','iez','aient'],FUT=['ai','as','a','ons','ez','ont'],SUBJ=['e','es','e','ions','iez','ent'];
+const IRR={
+ 'être':{g:'to be',pres:'suis es est sommes êtes sont',imp:'ét',fut:'ser',subj:'sois sois soit soyons soyez soient',pp:'été'},
+ 'avoir':{g:'to have',pres:'ai as a avons avez ont',fut:'aur',subj:'aie aies ait ayons ayez aient',pp:'eu'},
+ 'aller':{g:'to go',pres:'vais vas va allons allez vont',fut:'ir',subj:'aille ailles aille allions alliez aillent',pp:'allé',aux:1},
+ 'faire':{g:'to do, to make',pres:'fais fais fait faisons faites font',fut:'fer',subj:'fasse fasses fasse fassions fassiez fassent',pp:'fait'},
+ 'pouvoir':{g:'to be able to',pres:'peux|puis peux peut pouvons pouvez peuvent',fut:'pourr',subj:'puisse puisses puisse puissions puissiez puissent',pp:'pu'},
+ 'vouloir':{g:'to want',pres:'veux veux veut voulons voulez veulent',fut:'voudr',subj:'veuille veuilles veuille voulions vouliez veuillent',pp:'voulu'},
+ 'devoir':{g:'to have to, to owe',pres:'dois dois doit devons devez doivent',fut:'devr',pp:'dû'},
+ 'savoir':{g:'to know',pres:'sais sais sait savons savez savent',fut:'saur',subj:'sache saches sache sachions sachiez sachent',pp:'su'},
+ 'venir':{g:'to come',pres:'viens viens vient venons venez viennent',fut:'viendr',pp:'venu',aux:1},
+ 'tenir':{g:'to hold',pres:'tiens tiens tient tenons tenez tiennent',fut:'tiendr',pp:'tenu'},
+ 'prendre':{g:'to take',pres:'prends prends prend prenons prenez prennent',pp:'pris'},
+ 'mettre':{g:'to put',pres:'mets mets met mettons mettez mettent',pp:'mis'},
+ 'dire':{g:'to say',pres:'dis dis dit disons dites disent',pp:'dit'},
+ 'voir':{g:'to see',pres:'vois vois voit voyons voyez voient',fut:'verr',pp:'vu'},
+ 'partir':{g:'to leave',pres:'pars pars part partons partez partent',pp:'parti',aux:1},
+ 'sortir':{g:'to go out',pres:'sors sors sort sortons sortez sortent',pp:'sorti',aux:1},
+ 'dormir':{g:'to sleep',pres:'dors dors dort dormons dormez dorment',pp:'dormi'},
+ 'sentir':{g:'to feel, to smell',pres:'sens sens sent sentons sentez sentent',pp:'senti'},
+ 'croire':{g:'to believe',pres:'crois crois croit croyons croyez croient',pp:'cru'},
+ 'boire':{g:'to drink',pres:'bois bois boit buvons buvez boivent',pp:'bu'},
+ 'lire':{g:'to read',pres:'lis lis lit lisons lisez lisent',pp:'lu'},
+ 'écrire':{g:'to write',pres:'écris écris écrit écrivons écrivez écrivent',pp:'écrit'},
+ 'connaître':{g:'to know (be familiar with)',pres:'connais connais connaît connaissons connaissez connaissent',pp:'connu',rect:1},
+ 'naître':{g:'to be born',pres:'nais nais naît naissons naissez naissent',pp:'né',aux:1,rect:1},
+ 'vivre':{g:'to live',pres:'vis vis vit vivons vivez vivent',pp:'vécu'},
+ 'recevoir':{g:'to receive',pres:'reçois reçois reçoit recevons recevez reçoivent',fut:'recevr',pp:'reçu'},
+ 'ouvrir':{g:'to open',pres:'ouvre ouvres ouvre ouvrons ouvrez ouvrent',pp:'ouvert'},
+ 'offrir':{g:'to offer',pres:'offre offres offre offrons offrez offrent',pp:'offert'},
+ 'courir':{g:'to run',pres:'cours cours court courons courez courent',fut:'courr',pp:'couru'},
+ 'mourir':{g:'to die',pres:'meurs meurs meurt mourons mourez meurent',fut:'mourr',pp:'mort',aux:1},
+ 'suivre':{g:'to follow',pres:'suis suis suit suivons suivez suivent',pp:'suivi'},
+ 'conduire':{g:'to drive',pres:'conduis conduis conduit conduisons conduisez conduisent',pp:'conduit'},
+};
+function derive(base,prefix,extra){
+  const b=IRR[base],px=s=>s.split(' ').map(t=>t.split('|').map(x=>prefix+x).join('|')).join(' ');
+  const o={pres:px(b.pres),pp:prefix+b.pp};
+  if(b.fut)o.fut=prefix+b.fut;if(b.imp)o.imp=prefix+b.imp;if(b.subj)o.subj=px(b.subj);
+  return Object.assign(o,extra);
+}
+Object.assign(IRR,{
+ 'devenir':derive('venir','de',{g:'to become',aux:1}),'revenir':derive('venir','re',{g:'to come back',aux:1}),
+ 'obtenir':derive('tenir','ob',{g:'to obtain',aux:0}),'comprendre':derive('prendre','com',{g:'to understand'}),
+ 'apprendre':derive('prendre','ap',{g:'to learn'}),'permettre':derive('mettre','per',{g:'to allow'}),
+});
+Object.assign(IRR,{
+ 'falloir':{g:'to be necessary (il faut)',pres:'- - faut - - -',imp:'fall',fut:'faudr',subj:'- - faille - - -',pp:'fallu',only3:1},
+ 'paraître':{g:'to seem, to appear',pres:'parais parais paraît paraissons paraissez paraissent',pp:'paru',rect:1},
+ 'servir':{g:'to serve',pres:'sers sers sert servons servez servent',pp:'servi'},
+ 'sourire':{g:'to smile',pres:'souris souris sourit sourions souriez sourient',pp:'souri'},
+ 'rire':{g:'to laugh',pres:'ris ris rit rions riez rient',pp:'ri'},
+ 'produire':{g:'to produce',pres:'produis produis produit produisons produisez produisent',pp:'produit'},
+ 'battre':{g:'to beat',pres:'bats bats bat battons battez battent',pp:'battu'},
+ 'couvrir':{g:'to cover',pres:'couvre couvres couvre couvrons couvrez couvrent',pp:'couvert'},
+ 'souffrir':{g:'to suffer',pres:'souffre souffres souffre souffrons souffrez souffrent',pp:'souffert'},
+ 'craindre':{g:'to fear',pres:'crains crains craint craignons craignez craignent',pp:'craint'},
+ 'plaire':{g:'to please',pres:'plais plais plaît plaisons plaisez plaisent',pp:'plu',rect:1},
+});
+Object.assign(IRR,{
+ 'reconnaître':derive('connaître','re',{g:'to recognise',rect:1}),
+ 'reprendre':derive('prendre','re',{g:'to take back, to resume'}),
+ 'remettre':derive('mettre','re',{g:'to put back, to hand in'}),
+ 'découvrir':derive('couvrir','dé',{g:'to discover'}),
+});
+const REG=[
+ ['parler','to speak','er'],['aimer','to love, to like','er'],['travailler','to work','er'],['chanter','to sing','er'],
+ ['regarder','to watch','er'],['écouter','to listen','er'],['donner','to give','er'],['trouver','to find','er'],
+ ['penser','to think','er'],['demander','to ask','er'],['jouer','to play','er'],['oublier','to forget','er'],
+ ['étudier','to study','er'],['arriver','to arrive','er','',1],['rester','to stay','er','',1],['entrer','to enter','er','',1],
+ ['tomber','to fall','er','',1],['monter','to go up','er','',1],['rentrer','to go home','er','',1],
+ ['manger','to eat','er','ger'],['nager','to swim','er','ger'],['voyager','to travel','er','ger'],['changer','to change','er','ger'],
+ ['commencer','to begin','er','cer'],['lancer','to throw','er','cer'],['placer','to place','er','cer'],
+ ['acheter','to buy','er','eg'],['lever','to raise','er','eg'],['promener','to walk (someone)','er','eg'],
+ ['préférer','to prefer','er','ea'],['espérer','to hope','er','ea'],['répéter','to repeat','er','ea'],
+ ['appeler','to call','er','dbl'],['jeter','to throw away','er','dbl'],
+ ['payer','to pay','er','yer'],['essayer','to try','er','yer'],['nettoyer','to clean','er','yer'],
+ ['employer','to use, to employ','er','yer'],['envoyer','to send','er','yer',0,'enverr'],
+ ['finir','to finish','ir'],['choisir','to choose','ir'],['réussir','to succeed','ir'],
+ ['grandir','to grow up','ir'],['réfléchir','to reflect','ir'],['obéir','to obey','ir'],
+ ['vendre','to sell','re'],['attendre','to wait','re'],['répondre','to answer','re'],
+ ['entendre','to hear','re'],['perdre','to lose','re'],['descendre','to go down','re','',1],
+ ['sembler','to seem','er'],['laisser','to leave, to let','er'],['passer','to pass, to spend (time)','er'],['chercher','to look for','er'],
+ ['porter','to carry, to wear','er'],['montrer','to show','er'],['garder','to keep','er'],['tourner','to turn','er'],['quitter','to leave (a place)','er'],
+ ['retrouver','to find again, to meet','er'],['continuer','to continue','er'],['compter','to count','er'],['présenter','to present, to introduce','er'],
+ ['aider','to help','er'],['pousser','to push','er'],['apporter','to bring','er'],['occuper','to occupy','er'],['expliquer','to explain','er'],
+ ['marcher','to walk','er'],['fermer','to close','er'],['gagner','to win, to earn','er'],['arrêter','to stop','er'],['raconter','to tell (a story)','er'],
+ ['tirer','to pull','er'],['exister','to exist','er'],['proposer','to suggest','er'],['préparer','to prepare','er'],['décider','to decide','er'],
+ ['accepter','to accept','er'],['rêver','to dream','er'],['rappeler','to remind, to call back','er','dbl'],['mener','to lead','er','eg'],
+ ['agir','to act','ir'],['rendre','to give back','re'],
+];
+const BOTH=new Set(['passer','monter','descendre','sortir','rentrer']);
+const verbs=[
+ ...REG.map(([inf,g,cls,t,aux,fut])=>({inf,g,cls,t:t||'',aux:!!aux,fut,irr:false,both:BOTH.has(inf)})),
+ ...Object.entries(IRR).map(([inf,d])=>({inf,g:d.g,cls:'irr',aux:!!d.aux,d,irr:true,both:BOTH.has(inf),only3:!!d.only3})),
+];
+function build(v){
+  const F={};
+  if(v.cls==='er'){
+    const st=v.inf.slice(0,-2),t=v.t;let strong=[st];
+    if(t==='eg')strong=[lastRep(st,'e','è')];
+    if(t==='ea')strong=[lastRep(st,'é','è')];
+    if(t==='dbl')strong=[st+st.slice(-1)];
+    if(t==='yer'){const s=st.slice(0,-1)+'i';strong=st.endsWith('ay')?[s,st]:[s]}
+    const soft=e=>/^[ao]/.test(e)?(t==='ger'?st+'e':t==='cer'?st.slice(0,-1)+'ç':st):st;
+    const S=(a,e)=>a.map(s=>s+e);
+    F.pres=[S(strong,'e'),S(strong,'es'),S(strong,'e'),[soft('ons')+'ons'],[st+'ez'],S(strong,'ent')];
+    F.imp=IMP.map(e=>[soft(e)+e]);
+    F.subj=[S(strong,'e'),S(strong,'es'),S(strong,'e'),[st+'ions'],[st+'iez'],S(strong,'ent')];
+    F.fut=v.fut?[v.fut]:['eg','dbl','yer'].includes(t)?S(strong,'er'):t==='ea'?[v.inf,strong[0]+'er']:[v.inf];
+    F.pp=st+'é';
+  }else if(v.cls==='ir'){
+    const st=v.inf.slice(0,-2);
+    F.pres=['is','is','it','issons','issez','issent'].map(e=>[st+e]);
+    F.imp=IMP.map(e=>[st+'iss'+e]);F.subj=SUBJ.map(e=>[st+'iss'+e]);F.fut=[v.inf];F.pp=st+'i';
+  }else if(v.cls==='re'){
+    const st=v.inf.slice(0,-2);
+    F.pres=['s','s','','ons','ez','ent'].map(e=>[st+e]);
+    F.imp=IMP.map(e=>[st+e]);F.subj=SUBJ.map(e=>[st+e]);F.fut=[v.inf.slice(0,-1)];F.pp=st+'u';
+  }else{
+    const d=v.d,p=d.pres.split(' ');F.pres=p.map(alts);
+    const nous=alts(p[3])[0],ils=alts(p[5])[0],imp=d.imp||nous.slice(0,-3);
+    F.imp=IMP.map(e=>[imp+e]);
+    if(d.subj)F.subj=d.subj.split(' ').map(alts);
+    else{const s1=ils.slice(0,-3),s2=nous.slice(0,-3);F.subj=SUBJ.map((e,i)=>[(i===3||i===4?s2:s1)+e])}
+    F.fut=[d.fut||(v.inf.endsWith('re')?v.inf.slice(0,-1):v.inf)];F.pp=d.pp;
+  }
+  return F;
+}
+const cache=new Map(),forms=v=>{if(!cache.has(v.inf))cache.set(v.inf,build(v));return cache.get(v.inf)};
+const byInf=i=>verbs.find(v=>v.inf===i);
+function simple(v,k,pi){
+  const F=forms(v);
+  if(k==='fut')return F.fut.map(s=>s+FUT[pi]);
+  if(k==='cond')return F.fut.map(s=>s+IMP[pi]);
+  return F[k][pi];
+}
+function agree(pp,pi,fem,etre){
+  if(!etre)return[pp];const pl=pp.endsWith('s')?pp:pp+'s';
+  return[[pp,pp+'e'],[pp,pp+'e'],fem?[pp+'e']:[pp],[pl,pp+'es'],[pl,pp,pp+'e',pp+'es'],fem?[pp+'es']:[pl]][pi];
+}
+const COMP={pc:'pres',pqp:'imp',fa:'fut',cp:'cond'};
+function answers(v,k,pi,fem){
+  let out;
+  if(COMP[k]){
+    const mk=etre=>{const a=simple(byInf(etre?'être':'avoir'),COMP[k],pi),pps=agree(forms(v).pp,pi,fem,etre);return a.flatMap(x=>pps.map(p=>x+' '+p))};
+    out=mk(v.aux);if(v.both)out=out.concat(mk(!v.aux));
+  }
+  else out=simple(v,k,pi).slice();
+  if(v.d&&v.d.rect)out=[...out,...out.map(a=>a.replace(/î(?=t)/g,'i'))];
+  return[...new Set(out)];
+}
+function pronoun(k,pi,fem,first){
+  let p=['je','tu',fem?'elle':'il','nous','vous',fem?'elles':'ils'][pi];
+  if(pi===0&&/^[aeiouhéèêâîôûy]/.test(first))p="j'";
+  if(k==='subj')p=(/^[ie]/.test(p)?"qu'":'que ')+p;
+  return p;
+}
+return{
+  name:'français',short:'fr',verbs,answers,pronoun,
+  gender:pi=>(pi===2||pi===5)&&Math.random()<.5,
+  note:(v,k)=>COMP[k]&&v.aux?'être':'',
+  tenses:[['pres','présent','présent'],['imp','imparfait','imparfait'],['fut','futur','futur simple'],['cond','conditionnel','conditionnel présent'],
+    ['subj','subjonctif','subjonctif présent'],['pc','passé composé','passé composé'],['pqp','plus-que-parfait','plus-que-parfait'],
+    ['fa','futur antérieur','futur antérieur'],['cp','cond. passé','conditionnel passé']],
+  defTenses:['pres','imp','fut','cond','subj','pc'],
+  prons:['je','tu','il','nous','vous','ils'],
+  keys:['é','è','ê','ç','à','î','û','ô','œ'],
+  arts:/^(le |la |les |l'|un |une )/,
+  strip:/^((que |qu')?(je |j'|tu |il |elle |on |nous |vous |ils |elles ))/,
+};
+})();
+
+/* ================= SPANISH ================= */
+const ES=(()=>{
+const PR={ar:['o','as','a','amos','áis','an'],er:['o','es','e','emos','éis','en'],ir:['o','es','e','imos','ís','en']};
+const PT={ar:['é','aste','ó','amos','asteis','aron'],er:['í','iste','ió','imos','isteis','ieron']};PT.ir=PT.er;
+const IM={ar:['aba','abas','aba','ábamos','abais','aban'],er:['ía','ías','ía','íamos','íais','ían']};IM.ir=IM.er;
+const SB={ar:['e','es','e','emos','éis','en'],er:['a','as','a','amos','áis','an']};SB.ir=SB.er;
+const FU=['é','ás','á','emos','éis','án'],CO=['ía','ías','ía','íamos','íais','ían'];
+const sp=s=>s.split(' ');
+const IRR={
+ ser:{g:'to be (permanent)',pres:'soy eres es somos sois son',pret:'fui fuiste fue fuimos fuisteis fueron',imp:'era eras era éramos erais eran',subj:'sea seas sea seamos seáis sean',pp:'sido'},
+ estar:{g:'to be (state, location)',pres:'estoy estás está estamos estáis están',pret:'estuve estuviste estuvo estuvimos estuvisteis estuvieron',subj:'esté estés esté estemos estéis estén'},
+ ir:{g:'to go',pres:'voy vas va vamos vais van',pret:'fui fuiste fue fuimos fuisteis fueron',imp:'iba ibas iba íbamos ibais iban',subj:'vaya vayas vaya vayamos vayáis vayan'},
+ tener:{g:'to have',pres:'tengo tienes tiene tenemos tenéis tienen',pret:'tuve tuviste tuvo tuvimos tuvisteis tuvieron',fut:'tendr'},
+ hacer:{g:'to do, to make',pres:'hago haces hace hacemos hacéis hacen',pret:'hice hiciste hizo hicimos hicisteis hicieron',fut:'har',pp:'hecho'},
+ poder:{g:'to be able to',pres:'puedo puedes puede podemos podéis pueden',pret:'pude pudiste pudo pudimos pudisteis pudieron',fut:'podr',subj:'pueda puedas pueda podamos podáis puedan'},
+ querer:{g:'to want, to love',pres:'quiero quieres quiere queremos queréis quieren',pret:'quise quisiste quiso quisimos quisisteis quisieron',fut:'querr',subj:'quiera quieras quiera queramos queráis quieran'},
+ decir:{g:'to say',pres:'digo dices dice decimos decís dicen',pret:'dije dijiste dijo dijimos dijisteis dijeron',fut:'dir',pp:'dicho'},
+ venir:{g:'to come',pres:'vengo vienes viene venimos venís vienen',pret:'vine viniste vino vinimos vinisteis vinieron',fut:'vendr'},
+ poner:{g:'to put',pres:'pongo pones pone ponemos ponéis ponen',pret:'puse pusiste puso pusimos pusisteis pusieron',fut:'pondr',pp:'puesto'},
+ salir:{g:'to go out, to leave',pres:'salgo sales sale salimos salís salen',fut:'saldr'},
+ saber:{g:'to know',pres:'sé sabes sabe sabemos sabéis saben',pret:'supe supiste supo supimos supisteis supieron',fut:'sabr',subj:'sepa sepas sepa sepamos sepáis sepan'},
+ dar:{g:'to give',pres:'doy das da damos dais dan',pret:'di diste dio dimos disteis dieron',subj:'dé des dé demos deis den'},
+ ver:{g:'to see',pres:'veo ves ve vemos veis ven',pret:'vi viste vio vimos visteis vieron',imp:'veía veías veía veíamos veíais veían',pp:'visto'},
+ conocer:{g:'to know (be familiar with)',pres:'conozco conoces conoce conocemos conocéis conocen'},
+ traer:{g:'to bring',pres:'traigo traes trae traemos traéis traen',pret:'traje trajiste trajo trajimos trajisteis trajeron',pp:'traído'},
+ 'oír':{g:'to hear',pres:'oigo oyes oye oímos oís oyen',pret:'oí oíste oyó oímos oísteis oyeron',fut:'oir',pp:'oído'},
+ leer:{g:'to read',pret:'leí leíste leyó leímos leísteis leyeron',pp:'leído'},
+ haber:{g:'to have (auxiliary)',pres:'he has ha hemos habéis han',pret:'hube hubiste hubo hubimos hubisteis hubieron',fut:'habr',subj:'haya hayas haya hayamos hayáis hayan',pp:'habido'},
+ creer:{g:'to believe',pret:'creí creíste creyó creímos creísteis creyeron',pp:'creído'},
+ caer:{g:'to fall',pres:'caigo caes cae caemos caéis caen',pret:'caí caíste cayó caímos caísteis cayeron',pp:'caído'},
+ seguir:{g:'to follow, to continue',pres:'sigo sigues sigue seguimos seguís siguen',pret:'seguí seguiste siguió seguimos seguisteis siguieron',subj:'siga sigas siga sigamos sigáis sigan'},
+ conseguir:{g:'to get, to achieve',pres:'consigo consigues consigue conseguimos conseguís consiguen',pret:'conseguí conseguiste consiguió conseguimos conseguisteis consiguieron',subj:'consiga consigas consiga consigamos consigáis consigan'},
+ parecer:{g:'to seem',pres:'parezco pareces parece parecemos parecéis parecen'},
+ aparecer:{g:'to appear',pres:'aparezco apareces aparece aparecemos aparecéis aparecen'},
+ ofrecer:{g:'to offer',pres:'ofrezco ofreces ofrece ofrecemos ofrecéis ofrecen'},
+ nacer:{g:'to be born',pres:'nazco naces nace nacemos nacéis nacen'},
+ reconocer:{g:'to recognise',pres:'reconozco reconoces reconoce reconocemos reconocéis reconocen'},
+ producir:{g:'to produce',pres:'produzco produces produce producimos producís producen',pret:'produje produjiste produjo produjimos produjisteis produjeron'},
+ conducir:{g:'to drive',pres:'conduzco conduces conduce conducimos conducís conducen',pret:'conduje condujiste condujo condujimos condujisteis condujeron'},
+ mantener:{g:'to maintain, to keep',pres:'mantengo mantienes mantiene mantenemos mantenéis mantienen',pret:'mantuve mantuviste mantuvo mantuvimos mantuvisteis mantuvieron',fut:'mantendr'},
+ suponer:{g:'to suppose',pres:'supongo supones supone suponemos suponéis suponen',pret:'supuse supusiste supuso supusimos supusisteis supusieron',fut:'supondr',pp:'supuesto'},
+ dirigir:{g:'to direct, to lead',pres:'dirijo diriges dirige dirigimos dirigís dirigen'},
+ valer:{g:'to be worth',pres:'valgo vales vale valemos valéis valen',fut:'valdr'},
+ continuar:{g:'to continue',pres:'continúo continúas continúa continuamos continuáis continúan',subj:'continúe continúes continúe continuemos continuéis continúen'},
+};
+const REG=[ // inf, gloss, stem change, pp
+ ['hablar','to speak'],['trabajar','to work'],['estudiar','to study'],['escuchar','to listen'],['mirar','to look at'],
+ ['tomar','to take, to drink'],['llamar','to call'],['cantar','to sing'],['bailar','to dance'],['viajar','to travel'],
+ ['comprar','to buy'],['necesitar','to need'],['ayudar','to help'],['llevar','to carry, to wear'],
+ ['buscar','to look for'],['tocar','to touch, to play'],['llegar','to arrive'],['pagar','to pay'],
+ ['empezar','to begin','ie'],['jugar','to play','ue'],['pensar','to think','ie'],['cerrar','to close','ie'],
+ ['encontrar','to find','ue'],['contar','to count, to tell','ue'],['recordar','to remember','ue'],
+ ['comer','to eat'],['beber','to drink'],['aprender','to learn'],['comprender','to understand'],['vender','to sell'],['correr','to run'],
+ ['entender','to understand','ie'],['perder','to lose','ie'],['volver','to return','ue','vuelto'],['mover','to move','ue'],
+ ['vivir','to live'],['escribir','to write','','escrito'],['abrir','to open','','abierto'],['recibir','to receive'],['decidir','to decide'],['subir','to go up'],
+ ['sentir','to feel','ie'],['preferir','to prefer','ie'],['dormir','to sleep','ue'],['morir','to die','ue','muerto'],
+ ['pedir','to ask for','i'],['repetir','to repeat','i'],['servir','to serve','i'],
+ ['pasar','to pass, to happen'],['deber','to have to, to owe'],['quedar','to remain, to stay'],['dejar','to leave, to let'],['tratar','to try, to treat'],
+ ['existir','to exist'],['ocurrir','to happen'],['terminar','to finish'],['permitir','to allow'],['resultar','to turn out'],['cambiar','to change'],
+ ['presentar','to present'],['crear','to create'],['considerar','to consider'],['acabar','to finish'],['ganar','to win, to earn'],['formar','to form'],
+ ['partir','to leave, to split'],['aceptar','to accept'],['lograr','to achieve'],['preguntar','to ask'],['gustar','to please (to like)'],
+ ['cumplir','to fulfil'],['levantar','to lift'],['intentar','to try'],['usar','to use'],['olvidar','to forget'],['ocupar','to occupy'],
+ ['suceder','to happen'],['esperar','to wait, to hope'],['enseñar','to teach'],
+ ['sacar','to take out'],['explicar','to explain'],['realizar','to carry out'],['alcanzar','to reach'],['utilizar','to use'],
+ ['comenzar','to begin','ie'],['mostrar','to show','ue'],['convertir','to convert','ie'],['descubrir','to discover','','descubierto'],
+];
+const verbs=[
+ ...REG.map(([inf,g,ch,pp])=>({inf,g,ch:ch||'',pp,irr:!!ch})),
+ ...Object.entries(IRR).map(([inf,o])=>({inf,g:o.g,ch:'',o,irr:true})),
+];
+const boot=(st,ch)=>ch==='ie'?lastRep(st,'e','ie'):ch==='i'?lastRep(st,'e','i'):ch==='ue'?(st.includes('o')?lastRep(st,'o','ue'):lastRep(st,'u','ue')):st;
+const second=(st,ch)=>ch==='ue'?lastRep(st,'o','u'):ch?lastRep(st,'e','i'):st;
+const beforeE=s=>s.replace(/c$/,'qu').replace(/g$/,'gu').replace(/z$/,'c');
+const accLast=s=>s.replace(/a$/,'á').replace(/e$/,'é');
+function build(v){
+  const o=v.o||{},cls=v.inf.slice(-2).replace('í','i'),st=v.inf.slice(0,-2),ch=v.ch,ir=cls==='ir',F={};
+  const strongP=i=>[0,1,2,5].includes(i);
+  F.pres=o.pres?sp(o.pres):PR[cls].map((e,i)=>(strongP(i)?boot(st,ch):st)+e);
+  F.pret=o.pret?sp(o.pret):PT[cls].map((e,i)=>{let s=st;if(ir&&ch&&(i===2||i===5))s=second(st,ch);if(i===0&&cls==='ar')s=beforeE(st);return s+e});
+  F.imp=o.imp?sp(o.imp):IM[cls].map(e=>st+e);
+  const fs=o.fut||v.inf;F.fut=FU.map(e=>fs+e);F.cond=CO.map(e=>fs+e);
+  if(o.subj)F.subj=sp(o.subj);
+  else if(o.pres){const y=F.pres[0].slice(0,-1);F.subj=SB[cls].map(e=>y+e)}
+  else F.subj=SB[cls].map((e,i)=>{let s=strongP(i)?boot(st,ch):(ir&&ch?second(st,ch):st);if(cls==='ar')s=beforeE(s);return s+e});
+  const b=F.pret[5].slice(0,-3);
+  F.isubj=['ra','ras','ra','ramos','rais','ran'].map((e,i)=>{const s=i===3?accLast(b):b;return[s+e,s+e.replace('ra','se')]});
+  F.pp=o.pp||v.pp||st+(cls==='ar'?'ado':'ido');
+  return F;
+}
+const cache=new Map(),forms=v=>{if(!cache.has(v.inf))cache.set(v.inf,build(v));return cache.get(v.inf)};
+const HABER={pres:sp('he has ha hemos habéis han'),imp:sp('había habías había habíamos habíais habían'),fut:FU.map(e=>'habr'+e),cond:CO.map(e=>'habr'+e)};
+const COMP={perf:'pres',plusc:'imp',futp:'fut',condp:'cond'};
+function answers(v,k,pi){
+  const F=forms(v);
+  if(COMP[k])return[HABER[COMP[k]][pi]+' '+F.pp];
+  const f=F[k][pi];return Array.isArray(f)?f.slice():[f];
+}
+function pronoun(k,pi,fem){
+  const p=['yo','tú',fem?'ella':'él',fem?'nosotras':'nosotros',fem?'vosotras':'vosotros',fem?'ellas':'ellos'][pi];
+  return(k==='subj'||k==='isubj'?'que ':'')+p;
+}
+return{
+  name:'español',short:'es',verbs,answers,pronoun,
+  gender:pi=>pi>=2&&Math.random()<.5,note:()=>'',
+  tenses:[['pres','presente','presente'],['pret','pretérito','pretérito indefinido'],['imp','imperfecto','pretérito imperfecto'],
+    ['fut','futuro','futuro simple'],['cond','condicional','condicional simple'],['subj','subjuntivo','presente de subjuntivo'],
+    ['isubj','imp. subjuntivo','imperfecto de subjuntivo'],['perf','perfecto','pretérito perfecto'],
+    ['plusc','pluscuamperfecto','pluscuamperfecto'],['futp','futuro perfecto','futuro perfecto'],['condp','cond. perfecto','condicional perfecto']],
+  defTenses:['pres','pret','imp','fut','cond','subj','perf'],
+  prons:['yo','tú','él','nosotros','vosotros','ellos'],
+  keys:['á','é','í','ó','ú','ñ','ü'],
+  arts:/^(el |la |los |las |un |una )/,
+  strip:/^((que )?(yo |tú |tu |él |el |ella |usted |nosotros |nosotras |vosotros |vosotras |ellos |ellas |ustedes ))/,
+};
+})();
+
+/* ================= GERMAN ================= */
+const DE=(()=>{
+const sp=s=>s.split(' ').map(alts);
+const X={ // fully or partly explicit
+ sein:{g:'to be',pres:'bin bist ist sind seid sind',prt:'war warst war waren wart waren',pp:'gewesen',aux:'s',k2l:'wäre wärst|wärest wäre wären wärt|wäret wären'},
+ haben:{g:'to have',pres:'habe hast hat haben habt haben',ptw:'hat',pp:'gehabt',k2w:'hät'},
+ werden:{g:'to become',pres:'werde wirst wird werden werdet werden',prt:'wurde wurdest wurde wurden wurdet wurden',pp:'geworden',aux:'s',k2l:'würde würdest würde würden würdet würden'},
+ wissen:{g:'to know (a fact)',pres:'weiß weißt weiß wissen wisst wissen',ptw:'wuss',pp:'gewusst',k2w:'wüss'},
+ 'können':{g:'can, to be able to',pres:'kann kannst kann können könnt können',ptw:'konn',pp:'gekonnt',k2w:'könn'},
+ 'müssen':{g:'must, to have to',pres:'muss musst muss müssen müsst müssen',ptw:'muss',pp:'gemusst',k2w:'müss'},
+ wollen:{g:'to want',pres:'will willst will wollen wollt wollen',ptw:'woll',pp:'gewollt',k2w:'woll'},
+ sollen:{g:'should, to be supposed to',pres:'soll sollst soll sollen sollt sollen',ptw:'soll',pp:'gesollt',k2w:'soll'},
+ 'dürfen':{g:'may, to be allowed to',pres:'darf darfst darf dürfen dürft dürfen',ptw:'durf',pp:'gedurft',k2w:'dürf'},
+ 'mögen':{g:'to like',pres:'mag magst mag mögen mögt mögen',ptw:'moch',pp:'gemocht',k2w:'möch'},
+ tun:{g:'to do',pres:'tue tust tut tun tut tun',pt:'tat',pp:'getan',k2:'tät',noPref:1},
+ bringen:{g:'to bring',ptw:'brach',pp:'gebracht',k2w:'bräch',noPref:1},
+ denken:{g:'to think',ptw:'dach',pp:'gedacht',k2w:'däch',noPref:1},
+ kennen:{g:'to know (be familiar with)',ptw:'kann',pp:'gekannt',noPref:1},
+ nennen:{g:'to name, to call',ptw:'nann',pp:'genannt'},
+ erkennen:{g:'to recognise',ptw:'erkann',pp:'erkannt'},
+ handeln:{g:'to act, to trade',pres:'handle|handele handelst handelt handeln handelt handeln',ptw:'handel',pp:'gehandelt'},
+ entwickeln:{g:'to develop',pres:'entwickle|entwickele entwickelst entwickelt entwickeln entwickelt entwickeln',ptw:'entwickel',pp:'entwickelt'},
+ erinnern:{g:'to remind',pres:'erinnere|erinnre erinnerst erinnert erinnern erinnert erinnern',ptw:'erinner',pp:'erinnert'},
+};
+const STRONG=[ // inf, gloss, du/er stem, präteritum, partizip, aux, konj. II stem
+ ['fahren','to drive, to travel','fähr','fuhr','gefahren','s','führ'],['sprechen','to speak','sprich','sprach','gesprochen','h','spräch'],
+ ['sehen','to see','sieh','sah','gesehen','h','säh'],['lesen','to read','lies','las','gelesen','h','läs'],
+ ['nehmen','to take','nimm','nahm','genommen','h','nähm'],['geben','to give','gib','gab','gegeben','h','gäb'],
+ ['essen','to eat','iss','aß','gegessen','h','äß'],['helfen','to help','hilf','half','geholfen','h',''],
+ ['treffen','to meet','triff','traf','getroffen','h','träf'],['laufen','to run, to walk','läuf','lief','gelaufen','s','lief'],
+ ['schlafen','to sleep','schläf','schlief','geschlafen','h','schlief'],['kommen','to come','','kam','gekommen','s','käm'],
+ ['gehen','to go','','ging','gegangen','s','ging'],['bleiben','to stay','','blieb','geblieben','s','blieb'],
+ ['schreiben','to write','','schrieb','geschrieben','h','schrieb'],['trinken','to drink','','trank','getrunken','h','tränk'],
+ ['finden','to find','','fand','gefunden','h','fänd'],['singen','to sing','','sang','gesungen','h','säng'],
+ ['schwimmen','to swim','','schwamm','geschwommen','s',''],['stehen','to stand','','stand','gestanden','h',''],
+ ['liegen','to lie (be lying)','','lag','gelegen','h','läg'],['rufen','to call, to shout','','rief','gerufen','h',''],
+ ['beginnen','to begin','','begann','begonnen','h',''],['verlieren','to lose','','verlor','verloren','h',''],
+ ['vergessen','to forget','vergiss','vergaß','vergessen','h',''],['halten','to hold, to stop','hält','hielt','gehalten','h','hielt'],
+ ['fallen','to fall','fäll','fiel','gefallen','s',''],['tragen','to carry, to wear','träg','trug','getragen','h',''],
+ ['fliegen','to fly','','flog','geflogen','s',''],['ziehen','to pull, to move','','zog','gezogen','h',''],
+ ['lassen','to let, to leave','läss','ließ','gelassen','h','ließ'],['heißen','to be called','','hieß','geheißen','h',''],
+ ['gelten','to be valid, to count as','gilt','galt','gegolten','h',''],['bestehen','to exist, to pass (an exam)','','bestand','bestanden','h',''],
+ ['verstehen','to understand','','verstand','verstanden','h',''],['bekommen','to get, to receive','','bekam','bekommen','h','bekäm'],
+ ['entsprechen','to correspond to','entsprich','entsprach','entsprochen','h',''],['sitzen','to sit','','saß','gesessen','h','säß'],
+ ['scheinen','to seem, to shine','','schien','geschienen','h',''],['entstehen','to arise','','entstand','entstanden','s',''],
+ ['erhalten','to receive','erhält','erhielt','erhalten','h',''],['erscheinen','to appear','','erschien','erschienen','s',''],
+ ['fangen','to catch','fäng','fing','gefangen','h',''],['betreffen','to concern','betriff','betraf','betroffen','h',''],
+ ['vergehen','to pass (time)','','verging','vergangen','s',''],['gewinnen','to win','','gewann','gewonnen','h',''],
+ ['schließen','to close','','schloss','geschlossen','h',''],['bieten','to offer','','bot','geboten','h',''],
+ ['ergeben','to result in','ergib','ergab','ergeben','h',''],['verbinden','to connect','','verband','verbunden','h',''],
+ ['vergleichen','to compare','','verglich','verglichen','h',''],
+];
+const WEAK=[['machen','to do, to make'],['spielen','to play'],['lernen','to learn'],['kaufen','to buy'],['wohnen','to live (reside)'],
+ ['sagen','to say'],['fragen','to ask'],['hören','to hear'],['brauchen','to need'],['arbeiten','to work'],['warten','to wait'],
+ ['kochen','to cook'],['reisen','to travel','s'],['tanzen','to dance'],['öffnen','to open'],['studieren','to study'],
+ ['besuchen','to visit'],['erzählen','to tell'],['bezahlen','to pay'],['zeigen','to show'],['glauben','to believe'],
+ ['lieben','to love'],['leben','to live'],['suchen','to look for'],['antworten','to answer'],['kosten','to cost'],
+ ['meinen','to mean, to think'],['führen','to lead'],['stellen','to put (upright)'],['folgen','to follow','s'],['setzen','to put, to set'],
+ ['versuchen','to try'],['erklären','to explain'],['gehören','to belong'],['legen','to lay, to put'],['erreichen','to reach'],
+ ['schaffen','to manage, to create'],['reden','to talk'],['bilden','to form'],['erwarten','to expect'],['fühlen','to feel'],
+ ['interessieren','to interest'],['fehlen','to be missing'],['bedeuten','to mean']];
+const SEP=[['aufstehen','to get up','auf','stehen','s'],['anrufen','to call (phone)','an','rufen','h'],['einkaufen','to go shopping','ein','kaufen','h'],
+ ['mitkommen','to come along','mit','kommen','s'],['fernsehen','to watch TV','fern','sehen','h'],['ankommen','to arrive','an','kommen','s'],
+ ['aussehen','to look (appear)','aus','sehen','h'],['anfangen','to begin','an','fangen','h'],['anbieten','to offer','an','bieten','h'],
+ ['ansehen','to look at','an','sehen','h'],['darstellen','to represent','dar','stellen','h']];
+
+const base={};
+WEAK.forEach(([inf,g,aux])=>base[inf]={inf,g,type:'weak',aux:aux||'h'});
+STRONG.forEach(([inf,g,ds,pt,pp,aux,k2])=>base[inf]={inf,g,type:'strong',ds,pt,pp,aux,k2});
+Object.entries(X).forEach(([inf,d])=>base[inf]=Object.assign({inf,type:'x',aux:'h'},d));
+const PREFER=new Set(['sein','haben','werden','wissen','können','müssen','wollen','sollen','dürfen','mögen']);
+const verbs=[
+ ...Object.values(base).map(v=>Object.assign(v,{irr:v.type!=='weak'})),
+ ...SEP.map(([inf,g,sep,b,aux])=>({inf,g,sep,base:b,aux,irr:base[b].type!=='weak'})),
+];
+const needE=s=>/([td]|[^aeiouäöülrmnh][mn])$/.test(s),sib=s=>/[sßzx]$/.test(s);
+function build(v){
+  const F={},inf=v.inf,st=inf.slice(0,-2),E=needE(st);
+  // present
+  if(v.pres)F.pres=sp(v.pres);
+  else{
+    const ds=v.ds||st,ch=ds!==st;
+    const du=ch?(sib(ds)?ds+'t':ds+'st'):st+(E?'est':sib(st)?'t':'st');
+    const er=ch?(/t$/.test(ds)?ds:ds+'t'):st+(E?'et':'t');
+    F.pres=[[st+'e'],[du],[er],[inf],[st+(E?'et':'t')],[inf]];
+  }
+  // präteritum
+  if(v.prt)F.prt=sp(v.prt);
+  else if(v.pt){
+    const p=v.pt,td=/[td]$/.test(p),s=/[sßz]$/.test(p);
+    F.prt=[[p],td?[p+'est',p+'st']:s?[p+'est',p+'t']:[p+'st'],[p],[p+'en'],[p+(td?'et':'t')],[p+'en']];
+  }else{
+    const p=(v.ptw||st)+(E&&!v.ptw?'ete':'te');
+    F.prt=['','st','','n','t','n'].map(e=>[p+e]);
+  }
+  // partizip
+  if(v.pp)F.pp=v.pp;
+  else{const noGe=/ieren$/.test(inf)||/^(be|ver|er|ent|emp|ge|zer|miss)/.test(inf);F.pp=(noGe?'':'ge')+st+(E?'et':'t')}
+  // konjunktiv II synthetic
+  if(v.k2l)F.k2s=sp(v.k2l);
+  else if(v.k2w)F.k2s=['','st','','n','t','n'].map(e=>[v.k2w+'te'+e]);
+  else if(v.k2)F.k2s=[[v.k2+'e'],[v.k2+'est',v.k2+'st'],[v.k2+'e'],[v.k2+'en'],[v.k2+'et',v.k2+'t'],[v.k2+'en']];
+  else if(v.type==='weak')F.k2s=F.prt;
+  return F;
+}
+const cache=new Map();
+function forms(v){
+  if(cache.has(v.inf))return cache.get(v.inf);
+  let F;
+  if(v.sep){
+    const B=forms(base[v.base]),tail=a=>a.map(f=>f.map(x=>x+' '+v.sep));
+    F={pres:tail(B.pres),prt:tail(B.prt),pp:v.sep+B.pp,k2s:B.k2s&&tail(B.k2s)};
+  }else F=build(v);
+  cache.set(v.inf,F);return F;
+}
+const WERDE=sp('werde wirst wird werden werdet werden'),WUERDE=sp('würde würdest würde würden würdet würden');
+function answers(v,k,pi){
+  const F=forms(v);
+  if(k==='praes')return F.pres[pi].slice();
+  if(k==='praet')return F.prt[pi].slice();
+  if(k==='fut')return[WERDE[pi][0]+' '+v.inf];
+  if(k==='perf'||k==='plusq'){
+    const A=forms(base[v.aux==='s'?'sein':'haben'])[k==='perf'?'pres':'prt'][pi];
+    return A.map(a=>a+' '+F.pp);
+  }
+  if(k==='k2'){
+    const w=WUERDE[pi][0]+' '+v.inf,s=F.k2s?F.k2s[pi]:[];
+    return[...new Set(PREFER.has(v.inf)?[...s,w]:[w,...s])];
+  }
+}
+function pronoun(k,pi,g){return['ich','du',['er','sie','es'][g||0],'wir','ihr','sie'][pi]}
+return{
+  name:'deutsch',short:'de',verbs,answers,pronoun,
+  gender:pi=>pi===2?Math.floor(Math.random()*3):0,
+  note:(v,k)=>(k==='perf'||k==='plusq')&&v.aux==='s'?'sein':'',
+  tenses:[['praes','Präsens','Präsens'],['praet','Präteritum','Präteritum'],['perf','Perfekt','Perfekt'],
+    ['plusq','Plusquamperfekt','Plusquamperfekt'],['fut','Futur I','Futur I'],['k2','Konjunktiv II','Konjunktiv II']],
+  defTenses:['praes','praet','perf','fut'],
+  prons:['ich','du','er','wir','ihr','sie'],
+  keys:['ä','ö','ü','ß'],
+  arts:/^(der |die |das |ein |eine )/,
+  strip:/^((ich|du|er|sie|es|wir|ihr) )/,
+};
+})();
+const LANG={fr:FR,es:ES,de:DE};
+
+/* ================= VOCABULARY ================= */
+// english ; français ; español ; deutsch   (| = accepted alternatives, first is shown; ~2 medium, ~3 hard, default easy)
+const VOCAB_RAW={
+basics:`hello|hi;bonjour;hola;hallo
+goodbye|bye;au revoir;adiós;tschüss|auf wiedersehen
+thank you|thanks;merci;gracias;danke
+please;s'il vous plaît|s'il te plaît;por favor;bitte
+yes;oui;sí;ja
+no;non;no;nein
+sorry|excuse me;pardon|désolé;perdón|lo siento;entschuldigung
+today;aujourd'hui;hoy;heute
+tomorrow;demain;mañana;morgen
+yesterday;hier;ayer;gestern
+always;toujours;siempre;immer
+never;jamais;nunca;nie|niemals
+now;maintenant;ahora;jetzt
+here;ici;aquí;hier
+very;très;muy;sehr
+but;mais;pero;aber
+with;avec;con;mit
+often;souvent;a menudo;oft~2
+sometimes;parfois|quelquefois;a veces;manchmal~2
+because;parce que;porque;weil~2
+without;sans;sin;ohne~2
+already;déjà;ya;schon|bereits~2
+still|yet;encore|toujours;todavía|aún;noch~2
+almost|nearly;presque;casi;fast~2
+enough;assez;bastante|suficiente;genug~2
+together;ensemble;juntos;zusammen~2
+maybe|perhaps;peut-être;quizás|tal vez;vielleicht~2
+everywhere;partout;en todas partes|por todas partes;überall~2
+however;cependant|pourtant;sin embargo;jedoch|allerdings~3
+nevertheless;néanmoins;no obstante;trotzdem|dennoch~3
+although|even though;bien que|quoique;aunque;obwohl~3
+meanwhile;pendant ce temps|entre-temps;mientras tanto;inzwischen|unterdessen~3
+suddenly;soudain|tout à coup;de repente;plötzlich~3
+hardly|barely;à peine;apenas;kaum~3
+otherwise;sinon|autrement;si no|de lo contrario;sonst|ansonsten~3`,
+food:`bread;le pain;el pan;das Brot
+water;l'eau;el agua;das Wasser
+cheese;le fromage;el queso;der Käse
+apple;la pomme;la manzana;der Apfel
+milk;le lait;la leche;die Milch
+coffee;le café;el café;der Kaffee
+wine;le vin;el vino;der Wein
+beer;la bière;la cerveza;das Bier
+egg;l'œuf;el huevo;das Ei
+meat;la viande;la carne;das Fleisch
+fish;le poisson;el pescado;der Fisch
+chicken;le poulet;el pollo;das Hähnchen|das Huhn
+fruit;le fruit;la fruta;das Obst|die Frucht
+salt;le sel;la sal;das Salz
+rice;le riz;el arroz;der Reis
+vegetable|vegetables;le légume;la verdura;das Gemüse~2
+sugar;le sucre;el azúcar;der Zucker~2
+potato;la pomme de terre;la patata|la papa;die Kartoffel~2
+breakfast;le petit-déjeuner|le petit déjeuner;el desayuno;das Frühstück~2
+lunch;le déjeuner;el almuerzo|la comida;das Mittagessen~2
+dinner;le dîner;la cena;das Abendessen~2
+butter;le beurre;la mantequilla;die Butter~2
+strawberry;la fraise;la fresa;die Erdbeere~2
+onion;l'oignon;la cebolla;die Zwiebel~2
+garlic;l'ail;el ajo;der Knoblauch~3
+flour;la farine;la harina;das Mehl~3
+mushroom;le champignon;el champiñón|la seta;der Pilz~3
+spoon;la cuillère;la cuchara;der Löffel~3
+knife;le couteau;el cuchillo;das Messer~3
+fork;la fourchette;el tenedor;die Gabel~3`,
+home:`house;la maison;la casa;das Haus
+room;la chambre|la pièce;la habitación;das Zimmer
+kitchen;la cuisine;la cocina;die Küche
+door;la porte;la puerta;die Tür
+window;la fenêtre;la ventana;das Fenster
+table;la table;la mesa;der Tisch
+chair;la chaise;la silla;der Stuhl
+bed;le lit;la cama;das Bett
+book;le livre;el libro;das Buch
+phone;le téléphone;el teléfono;das Telefon|das Handy
+city|town;la ville;la ciudad;die Stadt
+key;la clé|la clef;la llave;der Schlüssel~2
+computer;l'ordinateur;el ordenador|la computadora;der Computer~2
+street|road;la rue;la calle;die Straße~2
+shop|store;le magasin;la tienda;das Geschäft|der Laden~2
+floor;le sol;el suelo;der Boden~2
+wall;le mur;la pared;die Wand~2
+garden;le jardin;el jardín;der Garten~2
+neighbour|neighbor;le voisin|la voisine;el vecino|la vecina;der Nachbar|die Nachbarin~2
+ceiling;le plafond;el techo;die Decke~3
+drawer;le tiroir;el cajón;die Schublade~3
+staircase|stairs;l'escalier;la escalera;die Treppe~3
+rent;le loyer;el alquiler;die Miete~3
+pillow;l'oreiller;la almohada;das Kissen~3
+landlord;le propriétaire;el casero|el propietario;der Vermieter~3`,
+people:`man;l'homme;el hombre;der Mann
+woman;la femme;la mujer;die Frau
+child|kid;l'enfant;el niño|la niña;das Kind
+friend;l'ami|l'amie;el amigo|la amiga;der Freund|die Freundin
+mother|mum|mom;la mère;la madre;die Mutter
+father|dad;le père;el padre;der Vater
+brother;le frère;el hermano;der Bruder
+sister;la sœur;la hermana;die Schwester
+family;la famille;la familia;die Familie
+teacher;le professeur|le prof;el profesor|la profesora;der Lehrer|die Lehrerin~2
+doctor;le médecin;el médico|la médica;der Arzt|die Ärztin~2
+student;l'étudiant|l'étudiante;el estudiante|la estudiante;der Student|die Studentin~2
+grandmother|grandma;la grand-mère;la abuela;die Großmutter|die Oma~2
+husband;le mari;el marido|el esposo;der Ehemann|der Mann~2
+wife;l'épouse|la femme;la esposa|la mujer;die Ehefrau|die Frau~2
+boss;le patron|la patronne|le chef;el jefe|la jefa;der Chef|die Chefin~2
+nephew;le neveu;el sobrino;der Neffe~3
+cousin;le cousin|la cousine;el primo|la prima;der Cousin|die Cousine~3
+colleague|coworker;le collègue|la collègue;el colega|la colega;der Kollege|die Kollegin~3
+stranger;l'inconnu|l'inconnue;el desconocido|la desconocida;der Fremde|die Fremde~3
+lawyer;l'avocat|l'avocate;el abogado|la abogada;der Anwalt|die Anwältin~3`,
+body:`head;la tête;la cabeza;der Kopf
+hand;la main;la mano;die Hand
+eye;l'œil;el ojo;das Auge
+mouth;la bouche;la boca;der Mund
+foot;le pied;el pie;der Fuß
+arm;le bras;el brazo;der Arm
+heart;le cœur;el corazón;das Herz~2
+hair;les cheveux;el pelo;die Haare|das Haar~2
+knee;le genou;la rodilla;das Knie~2
+back;le dos;la espalda;der Rücken~2
+tooth;la dent;el diente;der Zahn~2
+nose;le nez;la nariz;die Nase~2
+shoulder;l'épaule;el hombro;die Schulter~3
+elbow;le coude;el codo;der Ellbogen~3
+neck;le cou;el cuello;der Hals~3
+skin;la peau;la piel;die Haut~3
+chin;le menton;la barbilla;das Kinn~3`,
+nature:`sun;le soleil;el sol;die Sonne
+moon;la lune;la luna;der Mond
+sea;la mer;el mar;das Meer|die See
+tree;l'arbre;el árbol;der Baum
+flower;la fleur;la flor;die Blume
+rain;la pluie;la lluvia;der Regen
+snow;la neige;la nieve;der Schnee
+sky;le ciel;el cielo;der Himmel
+dog;le chien;el perro;der Hund
+cat;le chat;el gato;die Katze
+beach;la plage;la playa;der Strand
+mountain;la montagne;la montaña;der Berg~2
+bird;l'oiseau;el pájaro;der Vogel~2
+horse;le cheval;el caballo;das Pferd~2
+river;la rivière|le fleuve;el río;der Fluss~2
+cloud;le nuage;la nube;die Wolke~2
+wind;le vent;el viento;der Wind~2
+forest;la forêt;el bosque;der Wald~2
+lightning;l'éclair;el relámpago|el rayo;der Blitz~3
+wave;la vague;la ola;die Welle~3
+squirrel;l'écureuil;la ardilla;das Eichhörnchen~3
+leaf;la feuille;la hoja;das Blatt~3
+cliff;la falaise;el acantilado;die Klippe~3
+earthquake;le tremblement de terre|le séisme;el terremoto;das Erdbeben~3`,
+time:`day;le jour;el día;der Tag
+night;la nuit;la noche;die Nacht
+week;la semaine;la semana;die Woche
+month;le mois;el mes;der Monat
+year;l'année|l'an;el año;das Jahr
+morning;le matin;la mañana;der Morgen
+evening;le soir;la tarde|la noche;der Abend
+time;le temps;el tiempo;die Zeit
+monday;lundi;el lunes;der Montag
+friday;vendredi;el viernes;der Freitag
+hour;l'heure;la hora;die Stunde~2
+summer;l'été;el verano;der Sommer~2
+winter;l'hiver;el invierno;der Winter~2
+wednesday;mercredi;el miércoles;der Mittwoch~2
+spring;le printemps;la primavera;der Frühling~2
+autumn|fall;l'automne;el otoño;der Herbst~2
+weekend;le week-end;el fin de semana;das Wochenende~2
+birthday;l'anniversaire;el cumpleaños;der Geburtstag~2
+century;le siècle;el siglo;das Jahrhundert~3
+dawn|sunrise;l'aube;el amanecer|el alba;die Morgendämmerung|der Sonnenaufgang~3
+deadline;la date limite|l'échéance;la fecha límite|el plazo;die Frist|der Termin~3
+leap year;l'année bissextile;el año bisiesto;das Schaltjahr~3
+fortnight|two weeks;quinze jours|la quinzaine;dos semanas|la quincena;zwei Wochen|vierzehn Tage~3`,
+travel:`train;le train;el tren;der Zug
+car;la voiture;el coche|el carro;das Auto
+plane|airplane|aeroplane;l'avion;el avión;das Flugzeug
+money;l'argent;el dinero;das Geld
+hotel;l'hôtel;el hotel;das Hotel
+bike|bicycle;le vélo;la bicicleta;das Fahrrad
+train station|station;la gare;la estación;der Bahnhof~2
+airport;l'aéroport;el aeropuerto;der Flughafen~2
+ticket;le billet;el billete|el boleto;die Fahrkarte|das Ticket~2
+suitcase;la valise;la maleta;der Koffer~2
+map;la carte;el mapa;die Karte|die Landkarte~2
+passport;le passeport;el pasaporte;der Reisepass|der Pass~2
+luggage|baggage;les bagages;el equipaje;das Gepäck~3
+delay;le retard;el retraso;die Verspätung~3
+border;la frontière;la frontera;die Grenze~3
+customs;la douane;la aduana;der Zoll~3
+platform;le quai;el andén;der Bahnsteig|das Gleis~3
+seatbelt;la ceinture de sécurité;el cinturón de seguridad;der Sicherheitsgurt|der Gurt~3`,
+adjectives:`big|large|tall;grand;grande;groß
+small|little;petit;pequeño;klein
+good;bon;bueno;gut
+bad;mauvais;malo;schlecht
+beautiful|pretty;beau|joli;bonito|hermoso;schön
+new;nouveau;nuevo;neu
+old;vieux;viejo;alt
+young;jeune;joven;jung
+happy;heureux|content;feliz|contento;glücklich|froh
+sad;triste;triste;traurig
+hot;chaud;caliente;heiß
+cold;froid;frío;kalt
+fast|quick;rapide;rápido;schnell
+easy;facile;fácil;leicht|einfach
+tired;fatigué;cansado;müde~2
+slow;lent;lento;langsam~2
+difficult|hard;difficile;difícil;schwierig|schwer~2
+expensive;cher;caro;teuer~2
+cheap;bon marché;barato;billig|günstig~2
+important;important;importante;wichtig~2
+angry;en colère|fâché;enfadado|enojado;wütend|böse~2
+strong;fort;fuerte;stark~2
+weak;faible;débil;schwach~2
+empty;vide;vacío;leer~2
+full;plein;lleno;voll~2
+dangerous;dangereux;peligroso;gefährlich~2
+proud;fier;orgulloso;stolz~3
+jealous;jaloux;celoso;eifersüchtig~3
+lazy;paresseux;perezoso|vago;faul~3
+stubborn;têtu;terco|testarudo;stur~3
+shy;timide;tímido;schüchtern~3
+reliable;fiable;fiable;zuverlässig~3`,
+verbs:`to eat;manger;comer;essen
+to drink;boire;beber;trinken
+to sleep;dormir;dormir;schlafen
+to speak|to talk;parler;hablar;sprechen
+to go;aller;ir;gehen
+to come;venir;venir;kommen
+to see;voir;ver;sehen
+to know;savoir|connaître;saber|conocer;wissen|kennen
+to want;vouloir;querer;wollen
+to do|to make;faire;hacer;machen|tun
+to read;lire;leer;lesen
+to write;écrire;escribir;schreiben
+to work;travailler;trabajar;arbeiten
+to buy;acheter;comprar;kaufen
+to find;trouver;encontrar;finden
+to learn;apprendre;aprender;lernen~2
+to understand;comprendre;entender|comprender;verstehen~2
+to open;ouvrir;abrir;öffnen~2
+to close;fermer;cerrar;schließen|zumachen~2
+to wait;attendre;esperar;warten~2
+to forget;oublier;olvidar;vergessen~2
+to remember;se souvenir|se rappeler;recordar|acordarse;sich erinnern|erinnern~2
+to try;essayer;intentar|probar;versuchen|probieren~2
+to choose;choisir;elegir|escoger;wählen|aussuchen~2
+to help;aider;ayudar;helfen~2
+to borrow;emprunter;pedir prestado;leihen|ausleihen~3
+to complain;se plaindre;quejarse;sich beschweren|beschweren~3
+to achieve;atteindre|réaliser;lograr|conseguir;erreichen|schaffen~3
+to avoid;éviter;evitar;vermeiden~3
+to improve;améliorer;mejorar;verbessern~3
+to pretend;faire semblant;fingir;so tun als ob|vortäuschen~3
+to develop;développer;desarrollar;entwickeln~3`};
+// ---- extra vocabulary (merged into VOCAB_RAW; same format) ----
+const VOCAB_EXTRA={
+basics:`where;où;dónde;wo
+what;quoi|que;qué;was
+why;pourquoi;por qué;warum
+when;quand;cuándo;wann
+who;qui;quién;wer
+how;comment;cómo;wie
+and;et;y;und
+or;ou;o;oder
+also|too;aussi;también;auch
+only;seulement;solo|solamente|sólo;nur~2
+again;à nouveau|encore|de nouveau;otra vez|de nuevo;wieder|noch einmal~2
+soon;bientôt;pronto;bald~2
+later;plus tard;más tarde|luego;später~2
+there;là|là-bas;allí|ahí;dort|da~2
+whereas;tandis que|alors que;mientras que;während|wohingegen~3
+unless;à moins que;a menos que;es sei denn~3
+therefore;donc|par conséquent;por lo tanto|por eso;deshalb|daher|also~3
+indeed;en effet;en efecto|de hecho;tatsächlich|in der Tat~3
+despite|in spite of;malgré;a pesar de;trotz~3`,
+food:`tea;le thé;el té;der Tee
+orange;l'orange;la naranja;die Orange
+banana;la banane;el plátano|la banana;die Banane
+tomato;la tomate;el tomate;die Tomate
+soup;la soupe;la sopa;die Suppe
+cake;le gâteau;el pastel|la tarta;der Kuchen|die Torte
+glass;le verre;el vaso;das Glas
+juice;le jus;el zumo|el jugo;der Saft~2
+pear;la poire;la pera;die Birne~2
+carrot;la carotte;la zanahoria;die Karotte|die Möhre~2
+pepper;le poivre;la pimienta;der Pfeffer~2
+oil;l'huile;el aceite;das Öl~2
+honey;le miel;la miel;der Honig~2
+ham;le jambon;el jamón;der Schinken~2
+cherry;la cerise;la cereza;die Kirsche~2
+lemon;le citron;el limón;die Zitrone~2
+plate;l'assiette;el plato;der Teller~2
+vinegar;le vinaigre;el vinagre;der Essig~3
+spinach;les épinards;las espinacas;der Spinat~3
+peach;la pêche;el melocotón|el durazno;der Pfirsich~3
+cucumber;le concombre;el pepino;die Gurke~3`,
+home:`bathroom;la salle de bain|la salle de bains;el baño|el cuarto de baño;das Badezimmer|das Bad
+sofa|couch;le canapé;el sofá;das Sofa
+lamp;la lampe;la lámpara;die Lampe
+television|tv;la télévision|la télé;la televisión|la tele;der Fernseher
+fridge|refrigerator;le frigo|le réfrigérateur;la nevera|el frigorífico|el refrigerador;der Kühlschrank~2
+clock;l'horloge;el reloj;die Uhr~2
+roof;le toit;el tejado;das Dach~2
+shower;la douche;la ducha;die Dusche~2
+cupboard|closet|wardrobe;le placard|l'armoire;el armario;der Schrank~2
+mirror;le miroir;el espejo;der Spiegel~2
+towel;la serviette;la toalla;das Handtuch~2
+apartment|flat;l'appartement;el piso|el apartamento;die Wohnung~2
+oven;le four;el horno;der Ofen|der Backofen~2
+dishwasher;le lave-vaisselle;el lavavajillas|el lavaplatos;die Spülmaschine|der Geschirrspüler~3
+washing machine;la machine à laver|le lave-linge;la lavadora;die Waschmaschine~3
+doorbell;la sonnette;el timbre;die Klingel~3
+attic;le grenier;el desván|el ático;der Dachboden~3
+blanket;la couverture;la manta;die Decke~3
+sink;l'évier|le lavabo;el fregadero|el lavabo;die Spüle|das Waschbecken~3`,
+people:`boy;le garçon;el chico|el niño;der Junge
+girl;la jeune fille|la fille;la chica|la niña;das Mädchen
+baby;le bébé;el bebé;das Baby
+son;le fils;el hijo;der Sohn
+daughter;la fille;la hija;die Tochter
+parents;les parents;los padres;die Eltern
+grandfather|grandpa;le grand-père;el abuelo;der Großvater|der Opa~2
+uncle;l'oncle;el tío;der Onkel~2
+aunt;la tante;la tía;die Tante~2
+niece;la nièce;la sobrina;die Nichte~3
+mother-in-law;la belle-mère;la suegra;die Schwiegermutter~3
+twin;le jumeau|la jumelle;el gemelo|la gemela;der Zwilling~3
+fiancé|fiance|fiancée;le fiancé|la fiancée;el prometido|la prometida;der Verlobte|die Verlobte~3
+widow;la veuve;la viuda;die Witwe~3`,
+body:`leg;la jambe;la pierna;das Bein
+ear;l'oreille;la oreja;das Ohr
+face;le visage;la cara;das Gesicht
+finger;le doigt;el dedo;der Finger
+stomach|belly;le ventre|l'estomac;el estómago|la barriga;der Bauch|der Magen~2
+blood;le sang;la sangre;das Blut~2
+bone;l'os;el hueso;der Knochen~2
+lip;la lèvre;el labio;die Lippe~2
+thumb;le pouce;el pulgar;der Daumen~2
+wrist;le poignet;la muñeca;das Handgelenk~3
+ankle;la cheville;el tobillo;der Knöchel~3
+eyebrow;le sourcil;la ceja;die Augenbraue~3
+lung;le poumon;el pulmón;die Lunge~3
+liver;le foie;el hígado;die Leber~3`,
+nature:`star;l'étoile;la estrella;der Stern
+lake;le lac;el lago;der See
+animal;l'animal;el animal;das Tier
+cow;la vache;la vaca;die Kuh
+grass;l'herbe;la hierba;das Gras~2
+island;l'île;la isla;die Insel~2
+desert;le désert;el desierto;die Wüste~2
+storm;la tempête|l'orage;la tormenta;der Sturm|das Gewitter~2
+sheep;le mouton;la oveja;das Schaf~2
+pig;le cochon;el cerdo;das Schwein~2
+mouse;la souris;el ratón;die Maus~2
+fog|mist;le brouillard;la niebla;der Nebel~2
+valley;la vallée;el valle;das Tal~3
+bee;l'abeille;la abeja;die Biene~3
+butterfly;le papillon;la mariposa;der Schmetterling~3
+frog;la grenouille;la rana;der Frosch~3
+owl;le hibou|la chouette;el búho;die Eule~3
+volcano;le volcan;el volcán;der Vulkan~3
+hedgehog;le hérisson;el erizo;der Igel~3`,
+time:`minute;la minute;el minuto;die Minute
+afternoon;l'après-midi;la tarde;der Nachmittag
+saturday;samedi;el sábado;der Samstag
+sunday;dimanche;el domingo;der Sonntag
+tuesday;mardi;el martes;der Dienstag~2
+thursday;jeudi;el jueves;der Donnerstag~2
+noon|midday;midi;el mediodía;der Mittag~2
+midnight;minuit;la medianoche;die Mitternacht~2
+january;janvier;enero;der Januar~2
+july;juillet;julio;der Juli~2
+december;décembre;diciembre;der Dezember~2
+calendar;le calendrier;el calendario;der Kalender~2
+early;tôt;temprano;früh~2
+late;tard;tarde;spät~2
+decade;la décennie;la década;das Jahrzehnt~3
+schedule|timetable;l'emploi du temps|l'horaire;el horario;der Zeitplan|der Stundenplan~3
+the day after tomorrow;après-demain;pasado mañana;übermorgen~3
+the day before yesterday;avant-hier;anteayer|antes de ayer;vorgestern~3`,
+travel:`bus;le bus;el autobús;der Bus
+boat|ship;le bateau;el barco;das Schiff|das Boot
+holiday|holidays|vacation;les vacances;las vacaciones;der Urlaub|die Ferien
+country;le pays;el país;das Land
+taxi;le taxi;el taxi;das Taxi
+trip|journey;le voyage;el viaje;die Reise~2
+tourist;le touriste|la touriste;el turista|la turista;der Tourist|die Touristin~2
+reservation|booking;la réservation;la reserva;die Reservierung|die Buchung~2
+subway|metro|underground|tube;le métro;el metro;die U-Bahn~2
+tent;la tente;la tienda de campaña;das Zelt~2
+abroad;à l'étranger;en el extranjero;im Ausland~2
+departure;le départ;la salida;die Abfahrt|der Abflug~2
+arrival;l'arrivée;la llegada;die Ankunft~2
+backpack|rucksack;le sac à dos;la mochila;der Rucksack~2
+jet lag;le décalage horaire;el jet lag|el desfase horario;der Jetlag~3
+souvenir;le souvenir;el recuerdo|el souvenir;das Andenken|das Souvenir~3
+campsite;le camping;el camping;der Campingplatz~3
+traffic jam;l'embouteillage|le bouchon;el atasco;der Stau~3
+roundabout;le rond-point;la rotonda|la glorieta;der Kreisverkehr~3
+toll;le péage;el peaje;die Maut~3`,
+adjectives:`long;long;largo;lang
+short;court;corto;kurz
+nice|kind;gentil;amable|simpático;nett|freundlich
+clean;propre;limpio;sauber~2
+dirty;sale;sucio;schmutzig~2
+rich;riche;rico;reich~2
+poor;pauvre;pobre;arm~2
+quiet|calm;calme|tranquille;tranquilo;ruhig~2
+loud|noisy;bruyant;ruidoso;laut~2
+heavy;lourd;pesado;schwer~2
+light;léger;ligero;leicht~2
+sweet;sucré|doux;dulce;süß~2
+salty;salé;salado;salzig~2
+funny;drôle|marrant;gracioso|divertido;lustig|witzig~2
+curious;curieux;curioso;neugierig~2
+brave;courageux;valiente;mutig~2
+honest;honnête;honesto|sincero;ehrlich~2
+worried;inquiet;preocupado;besorgt~2
+surprised;surpris;sorprendido;überrascht~2
+wise;sage;sabio;weise~3
+generous;généreux;generoso;großzügig~3
+clumsy;maladroit;torpe;ungeschickt~3
+polite;poli;educado|cortés;höflich~3
+rude;impoli|grossier;grosero|maleducado;unhöflich~3`,
+verbs:`to give;donner;dar;geben
+to take;prendre;tomar|coger;nehmen
+to live;vivre|habiter;vivir;leben|wohnen
+to play;jouer;jugar;spielen
+to sing;chanter;cantar;singen
+to run;courir;correr;laufen|rennen
+to love;aimer;amar|querer;lieben
+to have;avoir;tener;haben
+to be;être;ser|estar;sein
+to say;dire;decir;sagen
+to ask;demander;preguntar|pedir;fragen
+to look for|to search;chercher;buscar;suchen~2
+to listen;écouter;escuchar;hören|zuhören~2
+to travel;voyager;viajar;reisen~2
+to cook;cuisiner;cocinar;kochen~2
+to pay;payer;pagar;bezahlen|zahlen~2
+to sell;vendre;vender;verkaufen~2
+to swim;nager;nadar;schwimmen~2
+to answer|to reply;répondre;responder|contestar;antworten~2
+to finish|to end;finir|terminer;terminar|acabar;beenden|enden~2
+to begin|to start;commencer;empezar|comenzar;beginnen|anfangen~2
+to lose;perdre;perder;verlieren~2
+to win;gagner;ganar;gewinnen~2
+to fall;tomber;caer|caerse;fallen~2
+to share;partager;compartir;teilen~3
+to deserve;mériter;merecer;verdienen~3
+to warn;avertir|prévenir;advertir|avisar;warnen~3
+to forgive;pardonner;perdonar;vergeben|verzeihen~3
+to hide;cacher;esconder|ocultar;verstecken~3
+to rent;louer;alquilar;mieten~3
+to doubt;douter;dudar;zweifeln~3
+to persuade|to convince;convaincre|persuader;convencer|persuadir;überzeugen~3`,
+school:`school;l'école;la escuela|el colegio;die Schule
+pen;le stylo;el bolígrafo|el boli;der Kugelschreiber|der Stift
+pencil;le crayon;el lápiz;der Bleistift
+lesson|class;le cours|la leçon;la clase|la lección;der Unterricht|die Stunde
+paper;le papier;el papel;das Papier
+exam|test;l'examen;el examen;die Prüfung~2
+homework;les devoirs;los deberes|la tarea;die Hausaufgaben~2
+university;l'université|la fac;la universidad;die Universität|die Uni~2
+notebook;le cahier;el cuaderno;das Heft~2
+library;la bibliothèque;la biblioteca;die Bibliothek~2
+classroom;la salle de classe;el aula;das Klassenzimmer~2
+grade|mark;la note;la nota;die Note~2
+degree|diploma;le diplôme;el título;der Abschluss|das Diplom~3
+scholarship;la bourse;la beca;das Stipendium~3
+lecture;le cours magistral;la clase magistral;die Vorlesung~3
+eraser|rubber;la gomme;la goma de borrar|la goma;der Radiergummi~3
+ruler;la règle;la regla;das Lineal~3
+semester|term;le semestre;el semestre;das Semester~3`,
+work:`work|job;le travail;el trabajo;die Arbeit
+office;le bureau;la oficina;das Büro
+desk;le bureau;el escritorio;der Schreibtisch
+meeting;la réunion;la reunión;die Besprechung|das Meeting~2
+company|firm|business;l'entreprise|la société;la empresa;die Firma|das Unternehmen~2
+salary|wages;le salaire;el sueldo|el salario;das Gehalt|der Lohn~2
+customer|client;le client|la cliente;el cliente|la clienta;der Kunde|die Kundin~2
+job interview|interview;l'entretien;la entrevista;das Vorstellungsgespräch~2
+email|e-mail;l'e-mail|le mail|le courriel;el correo electrónico|el correo|el email;die E-Mail~2
+contract;le contrat;el contrato;der Vertrag~2
+unemployment;le chômage;el desempleo|el paro;die Arbeitslosigkeit~3
+resignation;la démission;la dimisión|la renuncia;die Kündigung~3
+promotion;la promotion;el ascenso;die Beförderung~3
+skill;la compétence;la habilidad;die Fähigkeit~3
+internship;le stage;las prácticas|la pasantía;das Praktikum~3
+retirement;la retraite;la jubilación;der Ruhestand|die Rente~3`,
+clothes:`shirt;la chemise;la camisa;das Hemd
+shoe|shoes;la chaussure;el zapato;der Schuh
+dress;la robe;el vestido;das Kleid
+hat;le chapeau;el sombrero;der Hut
+coat;le manteau;el abrigo;der Mantel
+trousers|pants;le pantalon;el pantalón|los pantalones;die Hose
+skirt;la jupe;la falda;der Rock~2
+sock|socks;la chaussette;el calcetín;die Socke~2
+t-shirt|tshirt|tee shirt;le t-shirt|le tee-shirt;la camiseta;das T-Shirt~2
+jacket;la veste|le blouson;la chaqueta;die Jacke~2
+sweater|jumper|pullover;le pull|le pull-over;el jersey|el suéter;der Pullover|der Pulli~2
+bag|handbag;le sac;el bolso|la bolsa;die Tasche~2
+watch;la montre;el reloj;die Uhr~2
+umbrella;le parapluie;el paraguas;der Regenschirm~2
+belt;la ceinture;el cinturón;der Gürtel~3
+scarf;l'écharpe;la bufanda;der Schal~3
+glove|gloves;le gant;el guante;der Handschuh~3
+button;le bouton;el botón;der Knopf~3
+earring|earrings;la boucle d'oreille;el pendiente|el arete;der Ohrring~3
+swimsuit|swimming costume;le maillot de bain;el bañador|el traje de baño;der Badeanzug~3
+pocket;la poche;el bolsillo;die Tasche~3`,
+hobbies:`music;la musique;la música;die Musik
+film|movie;le film;la película;der Film
+game;le jeu;el juego;das Spiel
+football|soccer;le football|le foot;el fútbol;der Fußball
+song;la chanson;la canción;das Lied
+photo|picture|photograph;la photo;la foto;das Foto
+painting;la peinture;la pintura;die Malerei|das Gemälde~2
+guitar;la guitare;la guitarra;die Gitarre~2
+piano;le piano;el piano;das Klavier~2
+cinema|movie theater;le cinéma;el cine;das Kino~2
+museum;le musée;el museo;das Museum~2
+concert;le concert;el concierto;das Konzert~2
+party;la fête;la fiesta;die Party|das Fest|die Feier~2
+hiking;la randonnée;el senderismo;das Wandern~3
+gardening;le jardinage;la jardinería;die Gartenarbeit~3
+chess;les échecs;el ajedrez;das Schach~3
+knitting;le tricot;el punto;das Stricken~3
+board game;le jeu de société;el juego de mesa;das Brettspiel~3
+novel;le roman;la novela;der Roman~3
+fishing;la pêche;la pesca;das Angeln~3`};
+for(const [c,t] of Object.entries(VOCAB_EXTRA))VOCAB_RAW[c]=(VOCAB_RAW[c]?VOCAB_RAW[c]+'\n':'')+t;
+const VOCAB=[];
+for(const [cat,txt] of Object.entries(VOCAB_RAW))txt.split('\n').forEach(l=>{
+  const m=l.match(/~([23])$/),lvl=m?+m[1]:1;if(m)l=l.slice(0,-2);
+  const[en,fr,es,de]=l.split(';').map(alts);VOCAB.push({cat,lvl,en,fr,es,de});
+});
+const CATS=Object.keys(VOCAB_RAW);
+/*END*/
+
+/* ---------- state & config ---------- */
+const $=id=>document.getElementById(id);
+const KEY='verble.v1';
+let cfg={lang:'fr',mode:'verbs',per:{},set:'all',accents:'strict',sound:'all',theme:'ink',best:{},
+  words:{dir:'to-en',cats:CATS.slice(),articles:'required'},diff:{verbs:'medium',words:'easy'}};
+try{const s=JSON.parse(localStorage.getItem(KEY));if(s)cfg=Object.assign(cfg,s)}catch(e){}
+for(const [k,L] of Object.entries(LANG)){
+  const p=cfg.per[k]||{};const valid=L.tenses.map(t=>t[0]);
+  p.tenses=(p.tenses||L.defTenses).filter(t=>valid.includes(t));if(!p.tenses.length)p.tenses=L.defTenses.slice();
+  p.pron=(p.pron&&p.pron.length?p.pron:[0,1,2,3,4,5]);cfg.per[k]=p;
+}
+if(!LANG[cfg.lang])cfg.lang='fr';
+if(!['verbs','words'].includes(cfg.mode))cfg.mode='verbs';
+const DIFFS=['easy','medium','hard'];
+cfg.review=cfg.review||{};cfg.qn=cfg.qn||{};
+if(cfg.set&&cfg.set!=='all'&&!cfg.diff._m){cfg.diff.verbs=cfg.set==='regular'?'easy':'hard'}cfg.diff._m=1;
+for(const m of ['verbs','words'])if(!DIFFS.includes(cfg.diff[m]))cfg.diff[m]=m==='verbs'?'medium':'easy';
+cfg.words.cats=(cfg.words.cats||[]).filter(c=>CATS.includes(c));
+if(!cfg.words.v2){cfg.words.cats=[...new Set([...cfg.words.cats,'school','work','clothes','hobbies'])];cfg.words.v2=1}if(!cfg.words.cats.length)cfg.words.cats=CATS.slice();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(cfg))}catch(e){}};
+const L=()=>LANG[cfg.lang],P=()=>cfg.per[cfg.lang],W=()=>cfg.mode==='words';
+const statKey=()=>cfg.lang+(W()?':w':'');
+const typingTarget=()=>!W()||cfg.words.dir==='from-en';
+
+const inp=$('ans'),row=$('row'),fb=$('fb'),stage=$('stage'),panel=$('panel');
+let state='ask',q=null,last='';
+const session={};const S=()=>session[statKey()]||(session[statKey()]={ok:0,total:0,streak:0});
+
+/* ---------- UI builders ---------- */
+function btn(label,on,fn){
+  const b=document.createElement('button');b.textContent=label;if(on)b.className='on';
+  b.onmousedown=e=>e.preventDefault();b.onclick=fn;return b;
+}
+function setMode(m){if(cfg.mode===m)return;cfg.mode=m;save();renderAll();next()}
+function renderTop(){
+  const n=$('langs');n.innerHTML='';
+  const narrow=innerWidth<600;
+  Object.entries(LANG).forEach(([k,l])=>n.appendChild(btn(narrow?l.short:l.name,cfg.lang===k,()=>{if(cfg.lang!==k){cfg.lang=k;save();renderAll();next()}})));
+  const m=$('modes');m.innerHTML='';
+  [['verbs','verbs'],['words','words']].forEach(([k,n])=>m.appendChild(btn(n,cfg.mode===k,()=>setMode(k))));
+}
+function renderKeys(){
+  const box=$('keys');box.innerHTML='';box.style.visibility=typingTarget()?'':'hidden';
+  L().keys.forEach((c,i)=>{const b=btn('',0,()=>{inp.focus();insert(c,b)});b.innerHTML=`<sup>${i+1}</sup>${c}`;
+    b.addEventListener('touchend',e=>{e.preventDefault();inp.focus();insert(c,b)});box.appendChild(b)});
+}
+function renderPanel(){
+  panel.innerHTML='';
+  const rowEl=(label,items)=>{const r=document.createElement('div');r.className='prow';r.innerHTML=`<span>${label}</span>`;
+    const c=document.createElement('div');c.className='chips';items.forEach(i=>c.appendChild(i));r.appendChild(c);panel.appendChild(r)};
+  const upd=(fn,renew)=>()=>{fn();save();renderPanel();renderKeys();if(renew&&state!=='lock')next()};
+  const toggle=(arr,x)=>{const i=arr.indexOf(x);if(i>=0){if(arr.length>1)arr.splice(i,1)}else arr.push(x)};
+  const dk=W()?'words':'verbs';
+  rowEl('difficulty',DIFFS.map(k=>btn(k,cfg.diff[dk]===k,upd(()=>cfg.diff[dk]=k,1))));
+  if(W()){
+    const s=L().short,w=cfg.words;
+    rowEl('direction',[['to-en',`${s} → en`],['from-en',`en → ${s}`]].map(([k,n])=>btn(n,w.dir===k,upd(()=>w.dir=k,1))));
+    rowEl('topics',CATS.map(c=>btn(c,w.cats.includes(c),upd(()=>toggle(w.cats,c),1))));
+    rowEl('articles',[['required','required'],['optional','optional']].map(([k,n])=>btn(n,w.articles===k,upd(()=>w.articles=k))));
+  }else{
+    rowEl('tenses',L().tenses.map(([k,s])=>btn(s,P().tenses.includes(k),upd(()=>toggle(P().tenses,k),1))));
+    rowEl('pronouns',L().prons.map((n,i)=>btn(n,P().pron.includes(i),upd(()=>toggle(P().pron,i),1))));
+  }
+  rowEl('accents',[['strict','strict'],['lenient','lenient']].map(([k,n])=>btn(n,cfg.accents===k,upd(()=>cfg.accents=k))));
+  rowEl('sound',[['all','keys + chimes'],['chimes','chimes only'],['off','off']].map(([k,n])=>btn(n,cfg.sound===k,upd(()=>{cfg.sound=k;if(k!=='off')chime()}))));
+  rowEl('theme',['ink','linen','moss','dusk'].map(k=>btn(k,cfg.theme===k,upd(()=>{cfg.theme=k;document.documentElement.dataset.theme=k}))));
+  if(!TOUCH)rowEl('keys',[['enter','check / next'],['tab','reveal'],['1–9','accents'],['esc','close']].map(([k,t])=>{const e=document.createElement('span');e.className='kh';e.innerHTML=`<b>${k}</b> ${t}`;return e}));
+  {const a=document.createElement('a');a.href='about.html';a.textContent='about verble ↗';rowEl('more',[a])}
+}
+function renderAll(){document.documentElement.dataset.theme=cfg.theme;renderTop();renderKeys();renderPanel();updateStats(true)}
+
+$('logo').onmousedown=e=>e.preventDefault();
+$('logo').onclick=()=>setMode(W()?'verbs':'words');
+$('gear').onmousedown=e=>e.preventDefault();
+$('gear').onclick=()=>{panel.classList.toggle('open');$('gear').classList.toggle('on');if(TOUCH&&panel.classList.contains('open'))inp.blur()};
+const closePanel=()=>{panel.classList.remove('open');$('gear').classList.remove('on')};
+
+/* ---------- sound ---------- */
+let AC,master,rev,noise;
+function audio(){
+  if(cfg.sound==='off')return null;
+  if(!AC){
+    try{
+      AC=new(window.AudioContext||window.webkitAudioContext)();
+      const comp=AC.createDynamicsCompressor();comp.connect(AC.destination);
+      master=AC.createGain();master.gain.value=.55;master.connect(comp);
+      rev=AC.createConvolver();const len=AC.sampleRate*2.6,ir=AC.createBuffer(2,len,AC.sampleRate);
+      for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3.4)}
+      rev.buffer=ir;const wet=AC.createGain();wet.gain.value=.32;rev.connect(wet);wet.connect(comp);
+      noise=AC.createBuffer(1,AC.sampleRate*.08,AC.sampleRate);const nd=noise.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;
+    }catch(e){AC=null;return null}
+  }
+  if(AC.state==='suspended')AC.resume();return AC;
+}
+function env(g,t,peak,a,d){g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+d)}
+function click(back){
+  if(cfg.sound!=='all')return;const a=audio();if(!a)return;const t=a.currentTime;
+  const s=a.createBufferSource();s.buffer=noise;const f=a.createBiquadFilter();f.type='lowpass';f.frequency.value=(back?1100:1700)+Math.random()*400;
+  const g=a.createGain();env(g,t,.14,.002,.035);s.connect(f);f.connect(g);g.connect(master);s.start(t);s.stop(t+.07);
+  const o=a.createOscillator();o.type='sine';o.frequency.setValueAtTime((back?110:150)+Math.random()*25,t);o.frequency.exponentialRampToValueAtTime(65,t+.05);
+  const g2=a.createGain();env(g2,t,.1,.002,.05);o.connect(g2);g2.connect(master);o.start(t);o.stop(t+.08);
+}
+function bell(freq,delay,vol){
+  const a=audio();if(!a)return;const t=a.currentTime+delay;
+  [[1,1],[2,.2],[3.01,.05]].forEach(([m,v])=>{const o=a.createOscillator();o.type='sine';o.frequency.value=freq*m;
+    const g=a.createGain();env(g,t,vol*v,.01,m===1?1.4:.6);o.connect(g);g.connect(master);g.connect(rev);o.start(t);o.stop(t+1.6)});
+}
+const chime=()=>{bell(587.33,0,.11);bell(880,.09,.08)};
+const milestone=()=>[440,554.37,659.25,880,1108.7].forEach((f,i)=>bell(f,i*.09,.07));
+function miss(quiet){
+  const a=audio();if(!a)return;const t=a.currentTime;
+  const o=a.createOscillator();o.type='triangle';o.frequency.setValueAtTime(220,t);o.frequency.exponentialRampToValueAtTime(174,t+.22);
+  const f=a.createBiquadFilter();f.type='lowpass';f.frequency.value=700;const g=a.createGain();env(g,t,quiet?.07:.13,.012,.45);
+  o.connect(f);f.connect(g);g.connect(master);g.connect(rev);o.start(t);o.stop(t+.6);
+}
+
+/* ---------- game ---------- */
+function sizeInput(){inp.style.width=(inp.value.length+1)+'ch'} // underline grows with the answer
+function insert(c,b){
+  if(state!=='ask'||!typingTarget())return;const s=inp.selectionStart,e=inp.selectionEnd;
+  inp.value=inp.value.slice(0,s)+c+inp.value.slice(e);inp.setSelectionRange(s+1,s+1);sizeInput();click();
+  b=b||$('keys').children[L().keys.indexOf(c)];if(b){b.classList.add('flash');setTimeout(()=>b.classList.remove('flash'),180)}
+}
+function pickVerb(){
+  const l=L(),p=P();
+  const d=cfg.diff.verbs;
+  let pool=l.verbs.filter(v=>d==='medium'||(d==='hard')===v.irr);
+  if(!pool.length)pool=l.verbs;
+  if(pool.length>1)pool=pool.filter(v=>v.inf!==last);
+  if(!p.pron.includes(2))pool=pool.filter(v=>!v.only3);
+  const v=pick1(pool),pi=v.only3?2:pick1(p.pron);
+  buildVerb({inf:v.inf,k:pick1(p.tenses),pi,g:v.only3?false:l.gender(pi)});
+}
+function buildVerb(sp){
+  const l=L(),v=l.verbs.find(x=>x.inf===sp.inf);if(!v)return false;
+  const {k,pi,g}=sp,ans=l.answers(v,k,pi,g),t=l.tenses.find(x=>x[0]===k),n=l.note(v,k);
+  q={ans,spec:sp,kicker:t[2],prompt:v.inf,gloss:v.g+(n?'  ·  '+n:''),pron:l.pronoun(k,pi,g,ans[0])};return true;
+}
+function pickWord(){
+  const lk=cfg.lang,w=cfg.words,toEn=w.dir==='to-en';
+  const lv=DIFFS.indexOf(cfg.diff.words)+1;
+  let pool=VOCAB.filter(x=>w.cats.includes(x.cat)&&x.lvl===lv);
+  if(!pool.length)pool=VOCAB.filter(x=>w.cats.includes(x.cat));
+  if(pool.length>1)pool=pool.filter(x=>x.en[0]!==last);
+  buildWord({en:pick1(pool).en[0]});
+}
+function buildWord(sp){
+  const lk=cfg.lang,w=cfg.words,toEn=w.dir==='to-en',x=VOCAB.find(y=>y.en[0]===sp.en);if(!x)return false;
+  const prompt=toEn?x[lk][0]:x.en[0];
+  // words that look the same (la fille = girl/daughter, die Decke = ceiling/blanket) accept every meaning
+  const same=VOCAB.filter(y=>y!==x&&(toEn?y[lk].includes(prompt):y.en.includes(prompt)));
+  const ans=[...new Set([...(toEn?x.en:x[lk]),...same.flatMap(y=>toEn?y.en:y[lk])])],art=!toEn&&w.articles==='required'&&ans.some(a=>L().arts.test(a.toLowerCase()));
+  q={ans,word:true,toEn,kicker:x.cat+(art?'  ·  with article':''),prompt,
+    gloss:toEn?'into english':'into '+L().name,pron:'',spec:sp};return true;
+}
+const specId=sp=>sp.inf?[sp.inf,sp.k,sp.pi,sp.g].join(':'):sp.en;
+function validSpec(sp){
+  if(W()){const x=VOCAB.find(y=>y.en[0]===sp.en);return !!x&&cfg.words.cats.includes(x.cat)}
+  return P().tenses.includes(sp.k)&&P().pron.includes(sp.pi);
+}
+function pick(){
+  const key=statKey(),n=cfg.qn[key]=(cfg.qn[key]||0)+1,R=cfg.review[key]||(cfg.review[key]=[]);
+  const due=R.filter(r=>r.due<=n&&validSpec(r.spec)&&specId(r.spec)!==last).sort((a,b)=>a.due-b.due);
+  if(!(due.length&&(W()?buildWord(due[0].spec):buildVerb(due[0].spec))))W()?pickWord():pickVerb();
+  else q.rev=due[0];
+  last=W()?q.spec.en:q.spec.inf;save();
+}
+function schedule(){
+  const key=statKey(),R=cfg.review[key]||(cfg.review[key]=[]),id=specId(q.spec);
+  let r=q.rev||R.find(x=>specId(x.spec)===id);
+  if(!r){r={spec:q.spec};R.push(r);if(R.length>60)R.shift()}
+  r.hits=0;r.due=cfg.qn[key]+3+Math.floor(Math.random()*3);save();
+}
+function reviewed(){
+  if(!q.rev)return;const key=statKey(),R=cfg.review[key];
+  q.rev.hits=(q.rev.hits||0)+1;
+  if(q.rev.hits>=2){const i=R.indexOf(q.rev);if(i>=0)R.splice(i,1)}
+  else q.rev.due=cfg.qn[key]+8+Math.floor(Math.random()*5);
+  save();
+}
+function show(){
+  $('tense').innerHTML=(q.rev?'<span class="again">↺ again</span>  ·  ':'')+q.kicker;$('verb').textContent=q.prompt;$('gloss').textContent=q.gloss;
+  $('pron').textContent=q.pron;$('pron').style.display=q.pron?'':'none';row.style.gap=q.pron.endsWith("'")?'.05ch':'';
+  inp.value='';sizeInput();row.classList.remove('ok','bad');fb.innerHTML='';state='ask';setAct();q.t0=performance.now();
+}
+function setAct(){
+  const a=$('act');a.className='act';
+  if(state==='done'){a.textContent='next  →';a.classList.add('show')}
+  else if(state==='ask'){a.textContent='reveal';a.classList.add('touch')}
+  else a.textContent='';
+}
+function act(){if(state==='ask')submit();else if(state==='done')next()}
+const TOUCH=matchMedia('(hover: none)').matches;
+function next(){if(limited()){showWall();return}hideWall();
+  const keep=!TOUCH||document.activeElement===inp; // on phones, only keep the keyboard if it was already open
+  state='lock';setAct();stage.classList.add('out');setTimeout(()=>{pick();show();stage.classList.remove('out');if(keep)inp.focus()},180)}
+
+const bare=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ß/g,'ss').replace(/œ/g,'oe').replace(/æ/g,'ae');
+const clean=s=>s.toLowerCase().replace(/[’‘`´]/g,"'").replace(/\s+/g,' ').trim();
+// transform applied to both the typed answer and the accepted answers
+function T(s,isUser){
+  s=clean(s);
+  if(!q.word)return isUser?s.replace(L().strip,''):s;
+  if(q.toEn)return s.replace(/^(to |the |a |an )/,'');
+  return cfg.words.articles==='optional'?s.replace(L().arts,''):s;
+}
+const diff=(c,u)=>[...c].map((ch,i)=>ch.toLowerCase()===u[i]?ch:`<span class="d">${ch}</span>`).join('');
+function pop(id,v){const el=$(id);el.textContent=v;el.classList.add('pop');setTimeout(()=>el.classList.remove('pop'),200)}
+function updateStats(quiet){
+  const s=S(),k=statKey();(quiet?(id,v)=>$(id).textContent=v:pop)('sStreak',s.streak);
+  if(s.streak>(cfg.best[k]||0)){cfg.best[k]=s.streak;save()}
+  const m=mult(s.streak);$('sCombo').textContent='×'+m;$('comboWrap').classList.toggle('off',m<=1);
+  rollDay();$('sGoal').textContent=prog.today;$('goal').title=`daily goal · ${prog.today}/30 today`+(prog.days>1?` · ${prog.days} days in a row`:'');
+  $('ring').style.strokeDashoffset=87.96*(1-Math.min(1,prog.today/GOAL));$('goal').classList.toggle('done',prog.today>=GOAL);
+  const li=lvl(prog.xp);$('lvn').textContent=li.l;$('xpfill').style.width=(li.into/li.need*100)+'%';
+  const rv=(cfg.review[k]||[]).length;$('sRev').textContent=rv;$('revWrap').classList.toggle('off',!rv);
+}
+function shake(){row.classList.remove('shake');void row.offsetWidth;row.classList.add('shake')}
+function submit(){
+  const u=T(inp.value,1);if(!u){shake();return}
+  const A=q.ans.map(a=>[a,T(a)]);
+  countUse();
+  const s=S(),exact=A.find(([,n])=>n===u),near=A.find(([,n])=>bare(n)===bare(u)),good=exact||(near&&cfg.accents==='lenient');
+  s.total++;
+  if(good){
+    s.ok++;s.streak++;row.classList.add('ok');reviewed();
+    if(!exact)fb.innerHTML=diff(near[0],clean(inp.value))+'<span class="tag">accents</span>';
+    reward(!!exact,performance.now()-q.t0<4500,!!q.rev);updateStats();state='lock';setAct();setTimeout(next,exact?560:1150);
+  }else{
+    if(s.streak>=5)floatAt('combo reset','',true);s.streak=0;row.classList.add('bad');shake();miss();schedule();
+    const target=(near||A[0])[0];
+    let tag=near?'watch the accents':'';
+    if(!near&&q.word&&!q.toEn&&A.some(([,n])=>n.replace(L().arts,'')===u))tag='article';
+    fb.innerHTML=diff(target,clean(inp.value))+(tag?`<span class="tag">${tag}</span>`:'');
+    typed=inp.value;state='done';setAct();updateStats();
+  }
+}
+function reveal(){countUse();const s=S();s.total++;s.streak=0;schedule();updateStats();miss(true);fb.innerHTML=q.ans[0];typed=inp.value;state='done';setAct()}
+
+let typed='';
+// never lock the input (iOS closes the keyboard on readonly fields); just refuse edits while not asking
+inp.addEventListener('beforeinput',e=>{if(state!=='ask')e.preventDefault()});
+inp.addEventListener('input',()=>{if(state!=='ask'&&state!=='lock')inp.value=typed;sizeInput()});
+// iOS "Go"/Return key reliably fires a form submit even when keydown is odd
+row.addEventListener('submit',e=>{e.preventDefault();act()});
+const keep=el=>{el.addEventListener('mousedown',e=>e.preventDefault());el.addEventListener('touchend',e=>{e.preventDefault();inp.focus();el.click()})};
+keep($('act'));
+$('act').onclick=()=>{inp.focus();if(state==='ask')reveal();else act()};
+inp.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closePanel();return}
+  document.body.classList.add('typing');
+  if(e.key==='Enter'){e.preventDefault();act();return}
+  if(e.key==='Tab'){e.preventDefault();if(state==='ask')reveal();else if(state==='done')next();return}
+  if(state!=='ask'){if(e.key.length===1||e.key==='Backspace')e.preventDefault();return}
+  if(typingTarget()&&/^[1-9]$/.test(e.key)&&!e.ctrlKey&&!e.metaKey){e.preventDefault();const c=L().keys[+e.key-1];if(c)insert(c);return}
+  if(e.key==='Backspace')click(true);else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey)click();
+});
+document.addEventListener('mousemove',()=>document.body.classList.remove('typing'));
+document.addEventListener('keydown',e=>{if(lbOpen)return;if(e.key==='Escape')closePanel();else if(document.activeElement!==inp&&scrollY<innerHeight*.5&&(e.key.length===1||e.key==='Enter'))inp.focus()});
+document.addEventListener('click',e=>{
+  if(e.target.closest('.about')||e.target.closest('a'))return;
+  if(e.target.closest('button')||e.target.closest('.panel')||e.target.closest('.wall')||e.target.closest('.board'))return;
+  closePanel();
+  if(TOUCH){
+    // phones: only the word / answer area opens the keyboard; tapping elsewhere closes it
+    if(e.target.closest('.stage')){inp.focus();if(state==='done'&&e.target!==inp)next()}
+    else inp.blur();
+    return;
+  }
+  inp.focus();if(state==='done'&&e.target.closest('main')&&e.target!==inp)next();
+});
+
+/* ---------- reward layer ---------- */
+const GOAL=30;
+const prog=cfg.prog||(cfg.prog={xp:0,day:'',today:0,days:0,last:''});
+const dayStr=(o=0)=>{const d=new Date();d.setDate(d.getDate()+o);return d.toLocaleDateString('en-CA')};
+function rollDay(){const t=dayStr();if(prog.day!==t){prog.day=t;prog.today=0;if(prog.last!==dayStr(-1)&&prog.last!==t)prog.days=0;save()}}
+function lvl(xp){let l=1,need=100;while(xp>=need){xp-=need;l++;need=100+40*(l-1)}return{l,into:xp,need}}
+const mult=st=>Math.min(3,1+Math.floor(st/5)*.5);
+const SCALE=[523.25,587.33,659.25,783.99,880,1046.5,1174.66,1318.51,1567.98,1760];
+function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),1800)}
+function floatAt(big,small,soft){
+  const r=inp.getBoundingClientRect(),el=document.createElement('div');el.className='float'+(soft?' soft':'');
+  el.innerHTML=`<b>${big}</b>${small?`<small>${small}</small>`:''}`;
+  el.style.left=(r.left+r.width/2)+'px';el.style.top=(r.top-34)+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),1200);
+}
+// particles
+const cv=$('fx'),cx=cv.getContext&&cv.getContext('2d');let parts=[],running=false;
+function fit(){const d=window.devicePixelRatio||1;cv.width=innerWidth*d;cv.height=innerHeight*d;cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px';if(cx)cx.setTransform(d,0,0,d,0,0)}
+fit();addEventListener('resize',fit);
+function burst(n,spread){
+  if(!cx)return;const r=inp.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2;
+  const col=getComputedStyle(document.documentElement).getPropertyValue('--main').trim(),col2=getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
+  for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,sp=(1.5+Math.random()*3.5)*spread;
+    parts.push({x:x+(Math.random()-.5)*r.width*.6,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,life:1,dec:.018+Math.random()*.02,r:1.2+Math.random()*2.2,c:Math.random()<.8?col:col2})}
+  if(!running){running=true;requestAnimationFrame(tick)}
+}
+function tick(){
+  cx.clearRect(0,0,innerWidth,innerHeight);
+  parts=parts.filter(p=>p.life>0);
+  for(const p of parts){p.x+=p.vx;p.y+=p.vy;p.vy+=.09;p.vx*=.985;p.life-=p.dec;cx.globalAlpha=Math.max(0,p.life);cx.fillStyle=p.c;cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fill()}
+  cx.globalAlpha=1;if(parts.length)requestAnimationFrame(tick);else{running=false;cx.clearRect(0,0,innerWidth,innerHeight)}
+}
+function reward(exact,fast,wasRev){
+  const s=S(),m=mult(s.streak),gain=Math.round((10+(fast?5:0)+(wasRev?5:0))*m);
+  rollDay();
+  if(prog.last!==prog.day){prog.days=prog.last===dayStr(-1)?prog.days+1:1;prog.last=prog.day}
+  const before=lvl(prog.xp).l;prog.xp+=gain;prog.today++;const after=lvl(prog.xp).l;save();
+  // sound: each answer in a streak climbs the scale; every 5th lands on a chord
+  const n=SCALE[Math.min(s.streak-1,SCALE.length-1)];
+  if(s.streak%5===0){[1,1.25,1.5,2].forEach((r,i)=>bell(n*r/2,i*.06,.07))}
+  else{bell(n,0,.1);bell(n*1.5,.07,.045)}
+  // visuals
+  const lp=lbAward(exact,fast,wasRev,s.streak);
+  const tags=[wasRev?'cleared':'',fast?'quick':'',m>1?'×'+m:'',lp?'★ '+lp+' ranked':''].filter(Boolean).join(' · ');
+  floatAt('+'+gain,tags);
+  burst(s.streak%5===0?26:12+Math.min(s.streak,10),s.streak%5===0?1.4:1);
+  if(s.streak%5===0&&s.streak)toast(s.streak+' in a row');
+  if(after>before){
+    setTimeout(()=>{[392,523.25,659.25,783.99,1046.5].forEach((f,i)=>bell(f,i*.08,.08));burst(40,1.8);toast('level '+after);
+      $('xpbar').classList.remove('up');void $('xpbar').offsetWidth;$('xpbar').classList.add('up');
+      $('lv').classList.add('up');setTimeout(()=>$('lv').classList.remove('up'),1600)},350);
+  }
+  if(prog.today===GOAL)setTimeout(()=>{toast('daily goal done');milestone();burst(30,1.5)},after>before?1300:400);
+}
+
+/* ---------- daily limit + plans ---------- */
+const LIMIT=50;
+const CHECKOUT_URL=''; // paste your Stripe / Lemon Squeezy checkout link here
+const PLANS=[
+  {id:'life',name:'lifetime',price:'€24.99',sub:'pay once · yours forever',tag:'best value'},
+  {id:'month',name:'monthly',price:'€2.99',sub:'cancel anytime'},
+];
+let plan='life';
+function rollDaily(){const t=dayStr();if(!cfg.daily||cfg.daily.day!==t){cfg.daily={day:t,verbs:0,words:0};save()}}
+const mk=()=>W()?'words':'verbs';
+const usedNow=()=>{rollDaily();return cfg.daily[mk()]};
+const limited=()=>!cfg.pro&&usedNow()>=LIMIT;
+function countUse(){rollDaily();lastScored=(cfg.daily[mk()]||0)<LIMIT;cfg.daily[mk()]++;save();updateLeft()}
+function updateLeft(){
+  const el=$('left');if(cfg.pro){el.classList.add('off');return}
+  const n=Math.max(0,LIMIT-usedNow());$('sLeft').textContent=n;el.classList.toggle('low',n<=10);el.classList.toggle('off',n>10); // only appears near the limit
+  el.querySelector('b').nextSibling.textContent=' '+(W()?'word':'verb')+(n===1?'':'s')+' left today';
+}
+function renderPlans(){
+  const box=$('plans');box.innerHTML='';
+  PLANS.forEach(p=>{const b=document.createElement('button');b.className='plan'+(plan===p.id?' on':'');
+    b.innerHTML=(p.tag?`<span class="tag">${p.tag}</span>`:'')+`<div class="n">${p.name}</div><div class="p">${p.price}</div><div class="s">${p.sub}</div>`;
+    b.onclick=()=>{plan=p.id;renderPlans()};box.appendChild(b)});
+  const p=PLANS.find(x=>x.id===plan);$('cta').textContent='go unlimited · '+p.price+(plan==='life'?' once':' / month');
+}
+function showWall(){
+  state='wall';setAct();inp.blur();
+  const m=mk(),other=m==='verbs'?'words':'verbs',left=LIMIT-(cfg.daily[other]||0);
+  $('wallH').textContent=`That's ${LIMIT} ${m} for today.`;
+  $('wallP').textContent=`${S().ok} right this session${prog.days>1?' · '+prog.days+' days in a row':''}. Your free ${m} come back at midnight.`;
+  $('wallSwitch').style.display=left>0?'':'none';$('wallSwitch').textContent=`practise ${other} instead · ${left} left`;
+  $('wallNote').textContent='';renderPlans();$('wall').classList.add('open');
+}
+function hideWall(){$('wall').classList.remove('open')}
+$('cta').onclick=()=>{
+  if(CHECKOUT_URL){window.open(CHECKOUT_URL+(CHECKOUT_URL.includes('?')?'&':'?')+'plan='+plan,'_blank');return}
+  // until a checkout link is set: honest early-access unlock
+  $('wallNote').innerHTML='payments open soon, so unlimited is free for now · <u style="cursor:pointer" id="preview">unlock free</u>';
+  $('preview').onclick=()=>{cfg.pro='early';save();updateLeft();hideWall();state='ask';toast('unlimited unlocked');next()};
+};
+$('wallSwitch').onclick=()=>{hideWall();setMode(mk()==='verbs'?'words':'verbs')};
+$('wallLater').onclick=()=>{$('wallLater').textContent='see you tomorrow ✦'};
+const _us=updateStats;updateStats=function(q){_us(q);updateLeft()};
+
+/* ---------- leaderboard (optional; the site works fully without it) ---------- */
+const SUPABASE_URL='https://sjlpsxenjqzvrxolkybb.supabase.co';   // e.g. https://abcdefgh.supabase.co
+const SUPABASE_KEY='sb_publishable_rXWdiJkVJjVk5jCigtgZCA_jvGUMcH_';   // the project's "anon public" key
+const LB_LIVE=!!(SUPABASE_URL&&SUPABASE_KEY);
+const lb=Object.assign({id:null,name:'',secret:'',pending:0,day:'',today:0,week:0,weekOf:'',total:0},cfg.lb||{});
+cfg.lb=lb;
+if(LB_LIVE&&lb.id==='preview'){lb.id=null;lb.pending=0} // preview joins don't carry over to the live board
+let lastScored=false,lbOpen=false,lbTab='week',lbRows=null,lbErr='',lbBusy=false,leaveArm=false;
+
+const utcDay=()=>new Date().toISOString().slice(0,10);
+const utcMonday=()=>{const d=new Date();const k=(d.getUTCDay()+6)%7;d.setUTCDate(d.getUTCDate()-k);return d.toISOString().slice(0,10)};
+function lbRoll(){const t=utcDay(),m=utcMonday();if(lb.day!==t){lb.day=t;lb.today=0}if(lb.weekOf!==m){lb.weekOf=m;lb.week=0}}
+
+// ranked points: only the first 50 verbs + 50 words each day, only once you've joined
+function lbPoints(exact,fast,wasRev,streak){
+  const base={easy:10,medium:15,hard:20}[cfg.diff[mk()]]||15;
+  let p=base+(fast?5:0)+(wasRev?5:0);
+  p*=Math.min(1.5,1+Math.floor(streak/5)*.1);
+  if(!exact||cfg.accents==='lenient')p*=.8;
+  return Math.round(p);
+}
+function lbAward(exact,fast,wasRev,streak){
+  if(!lb.id||!lastScored)return 0;
+  const p=lbPoints(exact,fast,wasRev,streak);lbRoll();
+  lb.today+=p;lb.week+=p;lb.total+=p;lb.pending+=p;save();lbSchedule();
+  return p;
+}
+
+async function rpc(fn,args){
+  const r=await fetch(SUPABASE_URL.replace(/\/$/,'')+'/rest/v1/rpc/'+fn,{method:'POST',keepalive:true,
+    headers:Object.assign({'apikey':SUPABASE_KEY,'Content-Type':'application/json'},SUPABASE_KEY.startsWith('sb_')?{}:{'Authorization':'Bearer '+SUPABASE_KEY}),body:JSON.stringify(args)});
+  const j=await r.json().catch(()=>null);
+  if(!r.ok)throw new Error((j&&(j.message||j.hint))||('error '+r.status));
+  return j;
+}
+let flushT=null,flushing=false;
+function lbSchedule(){clearTimeout(flushT);flushT=setTimeout(lbFlush,6000)}
+async function lbFlush(){
+  if(!LB_LIVE||!lb.id||lb.id==='preview'||!lb.pending||flushing)return;
+  flushing=true;const n=Math.min(lb.pending,1500);
+  try{await rpc('lb_add',{p_id:lb.id,p_secret:lb.secret,p_points:n});lb.pending-=n;save();if(lb.pending)lbSchedule()}
+  catch(e){if(/not allowed/.test(e.message)){lb.id=null;save()}else setTimeout(lbFlush,30000)} // offline: retry later, points are kept
+  finally{flushing=false}
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')lbFlush()});
+addEventListener('pagehide',lbFlush);
+
+const SAMPLE=[['camille',3920],['mateo_r',3410],['lena.k',2980],['sofia',2550],['jules',2140],['noah_fr',1730],['ines',1290],['max',860],['eva',540]];
+function sampleRows(){
+  const scale={today:.12,week:1,all:6.5}[lbTab],mine={today:lb.today,week:lb.week,all:lb.total}[lbTab];
+  const rows=SAMPLE.map(([n,p])=>({name:n,points:Math.round(p*scale),is_me:false}));
+  if(lb.id)rows.push({name:lb.name,points:mine,is_me:true});
+  rows.sort((a,b)=>b.points-a.points);let r=0,prev=null;
+  rows.forEach((x,i)=>{if(x.points!==prev){r=i+1;prev=x.points}x.rank=r});return rows;
+}
+async function lbLoad(){
+  lbErr='';
+  if(!LB_LIVE){lbRows=sampleRows();lbRender();return}
+  lbBusy=true;lbRender();
+  try{await lbFlush();lbRows=await rpc('lb_top',{p_period:lbTab,p_id:lb.id&&lb.id!=='preview'?lb.id:null})}
+  catch(e){lbErr="couldn't reach the leaderboard · your points are saved and will sync";lbRows=lbRows||[]}
+  lbBusy=false;lbRender();
+}
+async function lbJoin(name){
+  name=name.trim();const msg=$('bmsg');
+  if(!/^[A-Za-z0-9_.-]{3,16}$/.test(name)){msg.textContent='3–16 letters, numbers, _ . or -';return}
+  const sec=[...crypto.getRandomValues(new Uint8Array(20))].map(b=>b.toString(16).padStart(2,'0')).join('');
+  if(!LB_LIVE){Object.assign(lb,{id:'preview',name,secret:sec});save();toast('joined as '+name);lbLoad();return}
+  msg.textContent='joining…';
+  try{const id=await rpc('lb_join',{p_name:name,p_secret:sec});Object.assign(lb,{id,name,secret:sec,pending:0});lbRoll();save();toast('joined as '+name);lbLoad()}
+  catch(e){msg.textContent=/taken/.test(e.message)?'that name is taken':/invalid name/.test(e.message)?'3–16 letters, numbers, _ . or -':"couldn't connect, try again"}
+}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function lbRender(){
+  if(!lbOpen)return;lbRoll();
+  $('btabs').innerHTML='';
+  [['today','today'],['week','this week'],['all','all time']].forEach(([k,n])=>{const b=btn(n,lbTab===k,()=>{lbTab=k;lbRows=null;lbLoad()});$('btabs').appendChild(b)});
+  const body=$('bbody');
+  const rowsHtml=rows=>rows.map(r=>`<div class="brow${r.is_me?' me':''}${r.rank<=3?' top':''}"><span class="br">${r.rank}</span><span class="bn">${esc(r.name)}${r.is_me?' <i>you</i>':''}</span><span class="bp">${Number(r.points).toLocaleString('en')}</span></div>`).join('');
+  let list=lbBusy&&!lbRows?'<div class="bempty">loading…</div>':lbRows&&lbRows.length?rowsHtml(lbRows):'<div class="bempty">no scores yet · be the first</div>';
+  if(lbErr)list=`<div class="bempty">${lbErr}</div>`+(lbRows&&lbRows.length?list:'');
+  if(!lb.id){
+    body.innerHTML=`<div class="bjoin"><p>Pick a username to start earning <b>ranked points</b>. Only your first 50 verbs and 50 words each day count, so free and unlimited players compete on equal terms.</p>
+      <form id="bform" class="bform" autocomplete="off"><input id="bname" maxlength="16" placeholder="username" spellcheck="false" autocapitalize="off"><button type="submit">join</button></form>
+      <div class="bmsg" id="bmsg"></div></div><div class="blist dim">${list}</div>`;
+    $('bform').onsubmit=e=>{e.preventDefault();lbJoin($('bname').value)};
+    setTimeout(()=>{const n=$('bname');if(n&&!TOUCH)n.focus()},50);
+  }else body.innerHTML=`<div class="blist">${list}</div>`;
+  rollDaily();
+  const left=m=>Math.max(0,LIMIT-(cfg.daily[m]||0));
+  $('bfoot').innerHTML=(lb.id?`<div class="bstat"><span><b>${lb.today.toLocaleString('en')}</b> pts today</span><span><b>${left('verbs')}</b> ranked verbs left</span><span><b>${left('words')}</b> ranked words left</span></div>`:'')+
+   `<details class="bhow"><summary>how points work</summary><ul>
+     <li>correct answer: <b>10</b> easy · <b>15</b> medium · <b>20</b> hard</li>
+     <li><b>+5</b> answering within 4.5 s · <b>+5</b> clearing a past mistake</li>
+     <li>streak bonus up to <b>×1.5</b> (+10% every 5 in a row)</li>
+     <li>lenient accents or an accent slip: <b>×0.8</b></li>
+     <li>only your first 50 verbs + 50 words each day are ranked; practice after that still earns XP</li>
+     <li>today resets at midnight UTC · the week resets on Monday</li></ul></details>`+
+   (lb.id?`<button class="bleave" id="bleave">${leaveArm?'tap again to stop logging':'signed in as '+esc(lb.name)+' · stop logging'}</button>`:'')+
+   (LB_LIVE?'':'<div class="bprev">preview · sample players, not live yet</div>');
+  const lv=$('bleave');if(lv)lv.onclick=()=>{if(!leaveArm){leaveArm=true;lbRender();return}leaveArm=false;lb.id=null;save();lbRows=null;lbLoad()};
+}
+function openBoard(){lbOpen=true;leaveArm=false;closePanel();inp.blur();$('board').classList.add('open');lbRows=null;lbLoad()}
+function closeBoard(){lbOpen=false;$('board').classList.remove('open');if(!TOUCH&&state==='ask')inp.focus()}
+$('lbBtn').onmousedown=e=>e.preventDefault();
+$('lbBtn').onclick=()=>lbOpen?closeBoard():openBoard();
+$('bclose').onclick=closeBoard;
+$('board').addEventListener('click',e=>{if(e.target.id==='board')closeBoard()});
+document.addEventListener('keydown',e=>{if(lbOpen&&e.key==='Escape')closeBoard()},true);
+lbRoll();setTimeout(lbFlush,2000);
+
+addEventListener('resize',()=>{clearTimeout(window._rt);window._rt=setTimeout(renderTop,150)});
+renderAll();if(limited())showWall();else{pick();show();if(!TOUCH)inp.focus()}
+</script>
+</body>
+</html>
