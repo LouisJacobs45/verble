@@ -58,7 +58,7 @@ main{flex:1;display:flex;flex-direction:column;align-items:center;justify-conten
 .row{display:flex;justify-content:center;align-items:baseline;gap:.55ch;margin-top:52px;font-size:clamp(21px,3.4vw,29px);max-width:100%}
 .pron{color:var(--sub);white-space:nowrap}
 #ans{font:inherit;color:var(--text);background:none;border:0;outline:0;caret-color:var(--main);width:1.6ch;min-width:1.6ch;max-width:80vw;box-sizing:content-box;
-  padding:0 0 8px;border-bottom:1px solid var(--line);transition:color .2s,border-color .25s,width .12s ease}
+  padding:0 0 8px;border-bottom:1px solid var(--line);transition:color .2s,border-color .25s}
 #ans:focus{border-bottom-color:var(--sub)}
 .row.ok #ans{color:var(--main);border-bottom-color:var(--main)}
 .row.bad #ans{color:var(--err);border-bottom-color:var(--err)}
@@ -1633,7 +1633,7 @@ function miss(quiet){
 }
 
 /* ---------- game ---------- */
-function sizeInput(){const n=[...inp.value].length;inp.style.width=n?`calc(${n}ch + 3px)`:'1.6ch'} // underline ends exactly where the text does
+function sizeInput(){const n=[...inp.value].length;inp.style.width=n?`calc(${n}ch + 3px)`:'1.6ch';if(inp.scrollWidth<=inp.clientWidth+1)inp.scrollLeft=0} // underline ends exactly where the text does
 function insert(c,b){
   if(state!=='ask'||!typingTarget())return;const s=inp.selectionStart,e=inp.selectionEnd;
   inp.value=inp.value.slice(0,s)+c+inp.value.slice(e);inp.setSelectionRange(s+1,s+1);sizeInput();click();
