@@ -191,6 +191,7 @@ body.hot2 .verb{text-shadow:0 0 30px color-mix(in srgb,var(--t4) 30%,transparent
 .board.open .bcard{transform:none}
 .bhead{display:flex;justify-content:space-between;align-items:baseline}
 .bhead .t{font-family:'Instrument Serif',serif;font-size:32px;line-height:1}
+.bhead .t small{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--sub);margin-left:6px;vertical-align:middle}
 .bhead button{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--sub);padding:4px}
 .bhead button:hover{color:var(--text)}
 .tabs{display:flex;gap:4px;margin:14px 0 12px}
@@ -1551,7 +1552,7 @@ function setMode(m){if(DC.active){DC.active=false;closeDc()}else if(cfg.mode===m
 function renderTop(){
   const n=$('langs');n.innerHTML='';
   const narrow=innerWidth<600;
-  Object.entries(LANG).forEach(([k,l])=>n.appendChild(btn(narrow?l.short:l.name,cfg.lang===k,()=>{if(cfg.lang!==k){cfg.lang=k;save();renderAll();next()}})));
+  Object.entries(LANG).forEach(([k,l])=>n.appendChild(btn(narrow?l.short:l.name,cfg.lang===k,()=>{if(cfg.lang!==k){cfg.lang=k;save();if(typeof chaseRows!=='undefined'){chaseRows=null;lastRank=null;$('chase').dataset.rank=''}renderAll();next();chaseLoad(true)}})));
   const m=$('modes');m.innerHTML='';
   [['verbs','verbs'],['words','words']].forEach(([k,n])=>m.appendChild(btn(n,!DC.active&&cfg.mode===k,()=>setMode(k))));
   const db=btn('daily',DC.active,openDaily);if(!dcState().done)db.classList.add('new');m.appendChild(db);
@@ -1695,12 +1696,12 @@ function pick(){
   pickNormal();
   // golden question: ~1 in 20 while today's ranked questions remain, max 5 per mode per day
   const g=goldState();
-  if(!q.rev&&(cfg.daily[mk()]||0)<LIMIT&&g[mk()]<5&&Math.random()<1/20){
+  if(!q.rev&&(cfg.daily[dk()]||0)<LIMIT&&(g[dk()]||0)<5&&Math.random()<1/20){
     forceTier=Math.max(3,Math.min(4,Math.round(skill()+.5)));W()?pickWord():pickVerb();forceTier=0;
-    q.golden=true;g[mk()]++;save();
+    q.golden=true;g[dk()]=(g[dk()]||0)+1;save();
   }
 }
-function goldState(){const t=new Date().toISOString().slice(0,10);if(!cfg.gold||cfg.gold.day!==t)cfg.gold={day:t,verbs:0,words:0};return cfg.gold}
+function goldState(){const t=new Date().toISOString().slice(0,10);if(!cfg.gold||cfg.gold.day!==t)cfg.gold={day:t};return cfg.gold}
 function pickNormal(){
   const key=statKey(),n=cfg.qn[key]=(cfg.qn[key]||0)+1,R=cfg.review[key]||(cfg.review[key]=[]);
   const due=R.filter(r=>r.due<=n&&validSpec(r.spec)&&specId(r.spec)!==last).sort((a,b)=>a.due-b.due);
@@ -1755,7 +1756,7 @@ function updateStats(quiet){
   const s=S(),k=statKey();(quiet?(id,v)=>$(id).textContent=v:pop)('sStreak',s.streak);
   if(s.streak>(cfg.best[k]||0)){cfg.best[k]=s.streak;save()}
   // ring = today's free/ranked questions in this mode (same 50 as the top bar and the free limit)
-  rollDay();rollDaily();const used=cfg.daily[mk()]||0;
+  rollDay();rollDaily();const used=cfg.daily[dk()]||0;
   $('sGoal').textContent=used;$('goalOf').textContent=used>=LIMIT?' today':'/'+LIMIT;
   $('goal').title=`${Math.min(used,LIMIT)}/${LIMIT} ${mk()} today`+(prog.days>1?` · ${prog.days} days in a row`:'');
   $('ring').style.strokeDashoffset=87.96*(1-Math.min(1,used/LIMIT));$('goal').classList.toggle('done',used>=LIMIT);
@@ -1820,8 +1821,12 @@ document.addEventListener('click',e=>{
 
 /* ---------- reward layer ---------- */
 const prog=cfg.prog||(cfg.prog={day:'',today:0,days:0,last:''});
-const pts=cfg.pts||(cfg.pts={day:'',today:0}); // today's points that count (first 50 + 50), same day boundary as the leaderboard
-function ptsRoll(){const t=new Date().toISOString().slice(0,10);if(pts.day!==t){pts.day=t;pts.today=0}}
+let pts=null; // today's points that count, per language, same (UTC) day boundary as the leaderboard
+function ptsRoll(){
+  const t=new Date().toISOString().slice(0,10);
+  if(!cfg.pts||'today' in cfg.pts)cfg.pts={}; // older single-total format
+  const k=cfg.lang;if(!cfg.pts[k]||cfg.pts[k].day!==t)cfg.pts[k]={day:t,today:0};pts=cfg.pts[k];
+}
 const dayStr=(o=0)=>{const d=new Date();d.setDate(d.getDate()+o);return d.toLocaleDateString('en-CA')};
 function rollDay(){const t=dayStr();if(prog.day!==t){prog.day=t;prog.today=0;if(prog.last!==dayStr(-1)&&prog.last!==t)prog.days=0;save()}}
 function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),1800)}
@@ -1966,14 +1971,18 @@ const PLANS=[
   {id:'month',name:'monthly',price:'€2.99',sub:'cancel anytime'},
 ];
 let plan='life';
-function rollDaily(){const t=dayStr();if(!cfg.daily||cfg.daily.day!==t){cfg.daily={day:t,verbs:0,words:0};save()}}
+function rollDaily(){const t=dayStr();
+  if(cfg.daily&&cfg.daily.day===t&&('verbs' in cfg.daily||'words' in cfg.daily)){ // older shared counts → this language
+    for(const m of ['verbs','words'])if(m in cfg.daily){cfg.daily[cfg.lang+':'+m]=Math.max(cfg.daily[cfg.lang+':'+m]||0,cfg.daily[m]);delete cfg.daily[m]}save()}
+  if(!cfg.daily||cfg.daily.day!==t){cfg.daily={day:t};save()}}
+const dk=m=>cfg.lang+':'+(m||mk()); // daily counts are kept per language and mode
 const mk=()=>W()?'words':'verbs';
-const usedNow=()=>{rollDaily();return cfg.daily[mk()]};
+const usedNow=()=>{rollDaily();return cfg.daily[dk()]||0};
 const limited=()=>!cfg.pro&&usedNow()>=LIMIT;
-function countUse(){rollDaily();lastScored=(cfg.daily[mk()]||0)<LIMIT;cfg.daily[mk()]++;save();updateLeft();renderBar();updateStats(true);
-  if(cfg.pro&&cfg.daily[mk()]===LIMIT)setTimeout(()=>toast(`today's ranked ${mk()} done · keep practising`),900)}
+function countUse(){rollDaily();lastScored=(cfg.daily[dk()]||0)<LIMIT;cfg.daily[dk()]=(cfg.daily[dk()]||0)+1;save();updateLeft();renderBar();updateStats(true);
+  if(cfg.pro&&cfg.daily[dk()]===LIMIT)setTimeout(()=>toast(`today's ranked ${mk()} done · keep practising`),900)}
 function renderBar(){
-  rollDaily();const used=Math.min(LIMIT,cfg.daily[mk()]||0),full=used>=LIMIT;
+  rollDaily();const used=Math.min(LIMIT,cfg.daily[dk()]||0),full=used>=LIMIT;
   $('xpfill').style.width=(used/LIMIT*100)+'%';$('xpbar').classList.toggle('full',full);
   $('xpbar').title=full?`today's ranked ${mk()} are done`:`${used}/${LIMIT} ranked ${mk()} today`;
 }
@@ -1991,7 +2000,7 @@ function renderPlans(){
 }
 function showWall(){
   state='wall';setAct();inp.blur();
-  const m=mk(),other=m==='verbs'?'words':'verbs',left=LIMIT-(cfg.daily[other]||0);
+  const m=mk(),other=m==='verbs'?'words':'verbs',left=LIMIT-(cfg.daily[dk(other)]||0);
   $('wallH').textContent=`That's ${LIMIT} ${m} for today.`;
   $('wallP').textContent=`${S().ok} right this session${prog.days>1?' · '+prog.days+' days in a row':''}. Your free ${m} come back at midnight.`;
   $('wallSwitch').style.display=left>0?'':'none';$('wallSwitch').textContent=`practise ${other} instead · ${left} left`;
@@ -2012,23 +2021,30 @@ const _us=updateStats;updateStats=function(q){_us(q);updateLeft()};
 const SUPABASE_URL='https://sjlpsxenjqzvrxolkybb.supabase.co';   // e.g. https://abcdefgh.supabase.co
 const SUPABASE_KEY='sb_publishable_rXWdiJkVJjVk5jCigtgZCA_jvGUMcH_';   // the project's "anon public" key
 const LB_LIVE=!!(SUPABASE_URL&&SUPABASE_KEY);
-const lb=Object.assign({id:null,name:'',secret:'',pending:0,day:'',today:0,week:0,weekOf:'',total:0},cfg.lb||{});
+const lb=Object.assign({id:null,name:'',secret:''},cfg.lb||{});
 cfg.lb=lb;
-if(LB_LIVE&&lb.id==='preview'){lb.id=null;lb.pending=0} // preview joins don't carry over to the live board
+if(!lb.L){lb.L={};if('today' in lb){lb.L.fr={day:lb.day||'',today:lb.today||0,week:lb.week||0,weekOf:lb.weekOf||'',total:lb.total||0,pending:lb.pending||0}}
+  ['day','today','week','weekOf','total','pending'].forEach(k=>delete lb[k])} // scores now live per language in lb.L
+let LS=null; // this language's scores
+if(LB_LIVE&&lb.id==='preview'){lb.id=null;lb.L={}} // preview joins don't carry over to the live board
 const FLAIR={nancy:'owner'}; // username (lowercase) → badge. Names are unique, so nobody else can take these.
 let lastScored=false,lbOpen=false,lbTab='week',lbRows=null,lbErr='',lbBusy=false,leaveArm=false;
 
 const utcDay=()=>new Date().toISOString().slice(0,10);
 const utcMonday=()=>{const d=new Date();const k=(d.getUTCDay()+6)%7;d.setUTCDate(d.getUTCDate()-k);return d.toISOString().slice(0,10)};
-function lbRoll(){const t=utcDay(),m=utcMonday();if(lb.day!==t){lb.day=t;lb.today=0}if(lb.weekOf!==m){lb.weekOf=m;lb.week=0}}
+function lbRoll(){
+  const t=utcDay(),m=utcMonday(),k=cfg.lang;
+  const x=lb.L[k]||(lb.L[k]={day:'',today:0,week:0,weekOf:'',total:0,pending:0});
+  if(x.day!==t){x.day=t;x.today=0}if(x.weekOf!==m){x.weekOf=m;x.week=0}LS=x;
+}
 
 // ranked points: only the first 50 verbs + 50 words each day, only once you've joined
 function lbBonus(p){ // golden questions and the daily challenge: on the board, outside the 50
-  if(!lb.id)return 0;lbRoll();lb.today+=p;lb.week+=p;lb.total+=p;lb.pending+=p;save();lbSchedule();return p;
+  if(!lb.id)return 0;lbRoll();LS.today+=p;LS.week+=p;LS.total+=p;LS.pending+=p;save();lbSchedule();return p;
 }
 function lbAward(p){
   if(!lb.id||!lastScored)return 0;
-  lbRoll();lb.today+=p;lb.week+=p;lb.total+=p;lb.pending+=p;save();lbSchedule();
+  lbRoll();LS.today+=p;LS.week+=p;LS.total+=p;LS.pending+=p;save();lbSchedule();
   return p;
 }
 // rank chase: who's just above you today
@@ -2036,11 +2052,11 @@ let chaseRows=null,chaseT=0,lastRank=null;
 async function chaseLoad(force){
   if(!lb.id)return;if(!force&&Date.now()-chaseT<45000)return;chaseT=Date.now();
   if(!LB_LIVE){const keep=lbTab;lbTab='today';chaseRows=sampleRows();lbTab=keep}
-  else{try{await lbFlush();chaseRows=await rpc('lb_top',{p_period:'today',p_id:lb.id})}catch(e){}}
+  else{try{await lbFlush();chaseRows=await rpc('lb_top',{p_period:'today',p_id:lb.id,p_lang:cfg.lang})}catch(e){}}
   renderChase();
 }
 function chaseInfo(){
-  lbRoll();const mine=lb.today,others=(chaseRows||[]).filter(r=>!r.is_me),ahead=others.filter(r=>Number(r.points)>mine);
+  lbRoll();const mine=LS.today,others=(chaseRows||[]).filter(r=>!r.is_me),ahead=others.filter(r=>Number(r.points)>mine);
   return{mine,rank:ahead.length+1,above:ahead.sort((a,b)=>a.points-b.points)[0]};
 }
 function renderChase(){
@@ -2053,7 +2069,7 @@ function renderChase(){
 }
 function chaseAfterAward(){
   if(!lb.id||!chaseRows)return;
-  const me=chaseRows.find(r=>r.is_me);if(me)me.points=lb.today;else chaseRows.push({name:lb.name,points:lb.today,is_me:true});
+  lbRoll();const me=chaseRows.find(r=>r.is_me);if(me)me.points=LS.today;else chaseRows.push({name:lb.name,points:LS.today,is_me:true});
   const c=chaseInfo();
   if(lastRank!==null&&c.rank<lastRank){
     const passed=chaseRows.filter(r=>!r.is_me&&Number(r.points)<=c.mine).sort((a,b)=>b.points-a.points)[0];
@@ -2072,9 +2088,10 @@ async function rpc(fn,args){
 let flushT=null,flushing=false;
 function lbSchedule(){clearTimeout(flushT);flushT=setTimeout(lbFlush,6000)}
 async function lbFlush(){
-  if(!LB_LIVE||!lb.id||lb.id==='preview'||!lb.pending||flushing)return;
-  flushing=true;const n=Math.min(lb.pending,1500);
-  try{await rpc('lb_add',{p_id:lb.id,p_secret:lb.secret,p_points:n});lb.pending-=n;save();if(lb.pending)lbSchedule()}
+  if(!LB_LIVE||!lb.id||lb.id==='preview'||flushing)return;
+  const k=Object.keys(lb.L).find(x=>lb.L[x].pending>0);if(!k)return; // send each language's points to its own board
+  flushing=true;const x=lb.L[k],n=Math.min(x.pending,1500);
+  try{await rpc('lb_add',{p_id:lb.id,p_secret:lb.secret,p_points:n,p_lang:k});x.pending-=n;save();if(Object.values(lb.L).some(y=>y.pending>0))lbSchedule()}
   catch(e){if(/not allowed/.test(e.message)){lb.id=null;save()}else setTimeout(lbFlush,30000)} // offline: retry later, points are kept
   finally{flushing=false}
 }
@@ -2083,7 +2100,7 @@ addEventListener('pagehide',lbFlush);
 
 const SAMPLE=[['camille',3920],['mateo_r',3410],['lena.k',2980],['sofia',2550],['jules',2140],['noah_fr',1730],['ines',1290],['max',860],['eva',540]];
 function sampleRows(){
-  const scale={today:.12,week:1,all:6.5}[lbTab],mine={today:lb.today,week:lb.week,all:lb.total}[lbTab];
+  lbRoll();const scale={today:.12,week:1,all:6.5}[lbTab],mine={today:LS.today,week:LS.week,all:LS.total}[lbTab];
   const rows=SAMPLE.map(([n,p])=>({name:n,points:Math.round(p*scale),is_me:false}));
   if(lb.id)rows.push({name:lb.name,points:mine,is_me:true});
   rows.sort((a,b)=>b.points-a.points);let r=0,prev=null;
@@ -2093,7 +2110,7 @@ async function lbLoad(){
   lbErr='';
   if(!LB_LIVE){lbRows=sampleRows();lbRender();return}
   lbBusy=true;lbRender();
-  try{await lbFlush();lbRows=await rpc('lb_top',{p_period:lbTab,p_id:lb.id&&lb.id!=='preview'?lb.id:null})}
+  try{await lbFlush();lbRows=await rpc('lb_top',{p_period:lbTab,p_id:lb.id&&lb.id!=='preview'?lb.id:null,p_lang:cfg.lang})}
   catch(e){lbErr="couldn't reach the leaderboard · your points are saved and will sync";lbRows=lbRows||[]}
   lbBusy=false;lbRender();
 }
@@ -2108,7 +2125,7 @@ async function lbJoin(name){
 }
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function lbRender(){
-  if(!lbOpen)return;lbRoll();
+  if(!lbOpen)return;lbRoll();document.querySelector('.bhead .t').innerHTML=`leaderboard <small>${FLAG[cfg.lang]} ${L().name}</small>`;
   $('btabs').innerHTML='';
   [['today','today'],['week','this week'],['all','all time']].forEach(([k,n])=>{const b=btn(n,lbTab===k,()=>{lbTab=k;lbRows=null;lbLoad()});$('btabs').appendChild(b)});
   const body=$('bbody');
@@ -2123,8 +2140,8 @@ function lbRender(){
     setTimeout(()=>{const n=$('bname');if(n&&!TOUCH)n.focus()},50);
   }else body.innerHTML=`<div class="blist">${list}</div>`;
   rollDaily();
-  const left=m=>Math.max(0,LIMIT-(cfg.daily[m]||0));
-  $('bfoot').innerHTML=(lb.id?`<div class="bstat"><span><b>${lb.today.toLocaleString('en')}</b> pts today</span><span><b>${left('verbs')}</b> ranked verbs left</span><span><b>${left('words')}</b> ranked words left</span></div>`:'')+
+  const left=m=>Math.max(0,LIMIT-(cfg.daily[dk(m)]||0));
+  $('bfoot').innerHTML=(lb.id?`<div class="bstat"><span><b>${LS.today.toLocaleString('en')}</b> pts today</span><span><b>${left('verbs')}</b> ranked verbs left</span><span><b>${left('words')}</b> ranked words left</span></div>`:'')+
    `<div class="blegend"><span class="t1">+10</span><span class="t2">+20</span><span class="t3">+30</span><span class="t4">+50</span>
      <em>harder questions earn more, and verble adapts to you. Your first 50 verbs and 50 words each day go on the board.</em></div>`+
    (lb.id?`<button class="bleave" id="bleave">${leaveArm?'tap again to stop logging':'signed in as '+esc(lb.name)+' · stop logging'}</button>`:'')+
